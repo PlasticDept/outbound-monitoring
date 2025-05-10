@@ -1,64 +1,55 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+// sortir.js
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+import { db } from "./config.js";
+import { ref, set, get, update, child } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
-const jobTableBody = document.querySelector("#jobTable tbody");
-const addSelectedBtn = document.getElementById("addSelectedBtn");
+const fileInput = document.getElementById("fileInput");
+const uploadBtn = document.getElementById("uploadBtn");
+const jobTable = document.getElementById("jobTable");
 
-function loadJobs() {
-  const jobRef = ref(db, "jobs/");
-  onValue(jobRef, (snapshot) => {
-    const data = snapshot.val();
-    jobTableBody.innerHTML = "";
-    for (let id in data) {
-      const job = data[id];
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td><input type="checkbox" class="job-checkbox" data-id="${id}"></td>
-        <td>${id}</td>
-        <td>${job.team}</td>
-        <td>${job.status}</td>
-        <td>${job.tanggal}</td>
-        <td><button class="add-btn" data-id="${id}">Add</button></td>
-      `;
-      jobTableBody.appendChild(row);
-    }
+function parseExcel(file) {
+  const reader = new FileReader();
 
-    // Add per row
-    document.querySelectorAll(".add-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const jobId = btn.dataset.id;
-        sendJobToTeam(jobId);
-      });
-    });
+  reader.onload = function (e) {
+    const data = new Uint8Array(e.target.result);
+
+    const workbook = XLSX.read(data, { type: "array" });
+
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const json = XLSX.utils.sheet_to_json(worksheet);
+
+    syncJobsToFirebase(json);
+  };
+
+  reader.readAsArrayBuffer(file);
+}
+
+function syncJobsToFirebase(jobs) {
+  jobs.forEach(job => {
+    const jobNo = job["Job No"];
+    if (!jobNo) return;
+
+    const jobData = {
+      jobNo: job["Job No"] || "",
+      deliveryDate: job["Delivery Date"] || "",
+      deliveryNote: job["Delivery Note"] || "",
+      remark: job["Remark"] || "",
+      status: job["Status"] || "",
+      qty: job["Qty"] || "",
+      team: "" // Akan diisi saat assign ke team
+    };
+
+    const jobRef = ref(db, "outboundJobs/" + jobNo);
+    set(jobRef, jobData);
   });
 }
 
-function sendJobToTeam(jobId) {
-  const targetRef = ref(db, `targets/Reguler/${jobId}`);
-  set(targetRef, { jobId, status: "Assigned" });
-  alert(`Job ${jobId} added to Reguler Team.`);
-}
-
-addSelectedBtn.addEventListener("click", () => {
-  const selected = document.querySelectorAll(".job-checkbox:checked");
-  selected.forEach(input => {
-    const jobId = input.dataset.id;
-    sendJobToTeam(jobId);
-  });
+uploadBtn.addEventListener("click", () => {
+  const file = fileInput.files[0];
+  if (file) {
+    parseExcel(file);
+  } else {
+    alert("Please choose a file first.");
+  }
 });
-
-// Sorting buttons (placeholder)
-document.getElementById("sortStatusBtn").addEventListener("click", () => alert("Sort by Status clicked"));
-document.getElementById("sortDateBtn").addEventListener("click", () => alert("Sort by Date clicked"));
-document.getElementById("sortTeamBtn").addEventListener("click", () => alert("Sort by Team clicked"));
-
-// Select All Checkbox
-document.getElementById("checkAll").addEventListener("change", function() {
-  const checkboxes = document.querySelectorAll(".job-checkbox");
-  checkboxes.forEach(cb => cb.checked = this.checked);
-});
-
-loadJobs();

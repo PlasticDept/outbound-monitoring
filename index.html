@@ -7,33 +7,36 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <h2>Login Outbound Monitoring</h2>
-  <form id="loginForm">
-    <label for="shift">Shift:</label>
-    <select id="shift" required>
-      <option value="">Pilih Shift</option>
-      <option value="BLUE TEAM">BLUE TEAM</option>
-      <option value="GREEN TEAM">GREEN TEAM</option>
-    </select><br />
-
-    <label for="position">Position:</label>
-    <select id="position" required>
-      <option value="">Pilih Posisi</option>
-      <option value="OPERATOR">OPERATOR</option>
-      <option value="TEAM LEADER">TEAM LEADER</option>
-      <option value="SPV">SPV</option>
-      <option value="ASST MANAGER">ASST MANAGER</option>
-      <option value="MANAGER">MANAGER</option>
-    </select><br />
-
-    <label for="username">Username:</label>
-    <input type="text" id="username" required><br />
-
-    <label for="password">Password:</label>
-    <input type="password" id="password" required><br />
-
-    <button type="submit">Login</button>
-  </form>
+  <div class="login-container">
+    <h2>Login Outbound Monitoring</h2>
+    
+    <form id="loginForm">
+      <label for="shift">Shift:</label>
+      <select id="shift" required>
+        <option value="">Pilih Shift</option>
+        <option value="BLUE TEAM">BLUE TEAM</option>
+        <option value="GREEN TEAM">GREEN TEAM</option>
+      </select><br />
+  
+      <label for="position">Position:</label>
+      <select id="position" required>
+        <option value="">Pilih Posisi</option>
+        <option value="OPERATOR">OPERATOR</option>
+        <option value="TEAM LEADER">TEAM LEADER</option>
+        <option value="SPV">SPV</option>
+        <option value="ASST MANAGER">ASST MANAGER</option>
+        <option value="MANAGER">MANAGER</option>
+      </select><br />
+  
+      <label for="username">Username:</label>
+      <input type="text" id="username" required><br />
+  
+      <label for="password">Password:</label>
+      <input type="password" id="password" required><br />
+  
+      <button type="submit">Login</button>
+    </form>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>

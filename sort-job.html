@@ -1,1 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sortir Data Outbound</title>
+  <link rel="stylesheet" href="css/sortir.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Sortir Outbound Job</h2>
 
+    <div class="actions">
+      <button id="addSelectedBtn">Add (Selected)</button>
+      <button id="sortStatusBtn">Sort by Status</button>
+      <button id="sortDateBtn">Sort by Tanggal</button>
+      <button id="sortTeamBtn">Sort by Team</button>
+    </div>
+
+    <table id="jobTable">
+      <thead>
+        <tr>
+          <th><input type="checkbox" id="checkAll"></th>
+          <th>Job ID</th>
+          <th>Team</th>
+          <th>Status</th>
+          <th>Tanggal</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data dari Firebase akan ditampilkan di sini -->
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/sortir.js"></script>
+</body>
+</html>

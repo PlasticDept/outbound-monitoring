@@ -1,35 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sortir Data Outbound</title>
-  <link rel="stylesheet" href="css/sortir.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sortir Outbound Job</title>
+  <link rel="stylesheet" href="css/sortir.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script type="module" src="js/sortir.js"></script>
 </head>
 <body>
   <div class="container">
     <h2>Sortir Outbound Job</h2>
 
-    <div class="actions">
-      <button id="addSelectedBtn">Add (Selected)</button>
+    <div class="upload-section">
+      <input type="file" id="fileInput" accept=".xlsx, .xls" />
+      <button id="uploadBtn">Upload</button>
+    </div>
+
+    <div class="action-bar">
+      <button id="bulkAddBtn">Add Selected</button>
       <button id="sortStatusBtn">Sort by Status</button>
-      <button id="sortDateBtn">Sort by Tanggal</button>
+      <button id="sortDateBtn">Sort by Date</button>
       <button id="sortTeamBtn">Sort by Team</button>
     </div>
 
     <table id="jobTable">
       <thead>
         <tr>
-          <th><input type="checkbox" id="checkAll"></th>
-          <th>Job ID</th>
-          <th>Team</th>
+          <th><input type="checkbox" id="selectAll"></th>
+          <th>Job No</th>
+          <th>Delivery Date</th>
+          <th>Delivery Note</th>
+          <th>Remark</th>
           <th>Status</th>
-          <th>Tanggal</th>
+          <th>Qty</th>
+          <th>Team</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        <!-- Data dari Firebase akan ditampilkan di sini -->
+        <!-- Data rows will be injected here -->
       </tbody>
     </table>
   </div>

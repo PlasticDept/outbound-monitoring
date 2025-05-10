@@ -14,6 +14,23 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
+  padding: 1rem;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeSlideIn 0.8s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Judul */
+.login-container h2 {
+  margin-bottom: 1.2rem;
+  color: #333;
+  font-size: 1.6rem;
 }
 
 /* Login Container */
@@ -83,6 +100,14 @@ button[type="submit"]:hover {
 
   h2 {
     font-size: 1.25rem;
+  }
+}
+
+/* Animasi */
+@keyframes fadeSlideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 /* ============== ini batas akhir skrip untuk login ==============*/

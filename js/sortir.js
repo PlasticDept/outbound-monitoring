@@ -1,148 +1,151 @@
 // sortir.js
 import { db } from "./config.js";
-import { ref, set, get, update, child, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+import { ref, set, get, update, child, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
 const fileInput = document.getElementById("fileInput");
 const uploadBtn = document.getElementById("uploadBtn");
-const jobTable = document.getElementById("jobTable").getElementsByTagName('tbody')[0];
+const jobTable = document.getElementById("jobTable").getElementsByTagName("tbody")[0];
 const bulkAddBtn = document.getElementById("bulkAddBtn");
-const modal = document.getElementById("selectionModal");
-const closeModalBtn = document.getElementById("closeModal");
-const submitSelectionBtn = document.getElementById("submitSelection");
-
-const teamSelect = document.getElementById("teamSelect");
-const jobTypeSelect = document.getElementById("jobTypeSelect");
+const modal = document.getElementById("addModal");
+const closeModal = document.getElementById("closeModal");
+const confirmAdd = document.getElementById("confirmAdd");
 const selectAllCheckbox = document.getElementById("selectAll");
 
-function showAlert(message) {
-  alert(message);
-}
-
-function formatDate(input) {
-  if (!input) return "";
-  const date = new Date(input);
-  const options = { day: '2-digit', month: 'short', year: 'numeric' };
-  return date.toLocaleDateString('en-GB', options).replace(/ /g, '-');
-}
-
+// Parsing Excel
 function parseExcel(file) {
-  showAlert("Memulai proses upload...");
   const reader = new FileReader();
-
+  alert("Memulai proses upload file...");
   reader.onload = function (e) {
     const data = new Uint8Array(e.target.result);
     const workbook = XLSX.read(data, { type: "array" });
-    const sheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[sheetName];
-    const json = XLSX.utils.sheet_to_json(worksheet);
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const json = XLSX.utils.sheet_to_json(sheet);
     syncJobsToFirebase(json);
   };
-
   reader.readAsArrayBuffer(file);
 }
 
-function syncJobsToFirebase(jobs) {
-  const updates = {};
+// Format Tanggal
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  if (isNaN(date)) return dateString;
+  const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+  return date.toLocaleDateString("en-CA", options);
+}
 
-  jobs.forEach(job => {
+// Upload ke Firebase
+function syncJobsToFirebase(jobs) {
+  jobs.forEach((job) => {
     const jobNo = job["Job No"];
     if (!jobNo) return;
 
     const jobData = {
       jobNo: job["Job No"] || "",
-      deliveryDate: formatDate(job["Delivery Date"]),
+      deliveryDate: formatDate(job["Delivery Date"] || ""),
       deliveryNote: job["Delivery Note"] || "",
       remark: job["Remark"] || "",
       status: job["Status"] || "",
-      qty: job["Plan Qty"] || "",
-      team: ""
+      qty: job["Plan Qty"] || job["Qty"] || "",
+      team: "",
+      jobType: ""
     };
 
-    updates["outboundJobs/" + jobNo] = jobData;
+    const jobRef = ref(db, "outboundJobs/" + jobNo);
+    set(jobRef, jobData);
   });
 
-  update(ref(db), updates)
-    .then(() => showAlert("Data berhasil diupload dan diperbarui."))
-    .catch((error) => console.error("Upload error: ", error));
+  alert("Data berhasil diupload ke database!");
 }
 
+// Load data dari Firebase
+function loadJobsFromFirebase() {
+  const jobsRef = ref(db, "outboundJobs");
+  onValue(jobsRef, (snapshot) => {
+    const data = snapshot.val();
+    jobTable.innerHTML = "";
+
+    if (data) {
+      Object.values(data).forEach((job) => {
+        const row = jobTable.insertRow();
+        row.innerHTML = `
+          <td><input type="checkbox" data-jobno="${job.jobNo}"></td>
+          <td>${job.jobNo}</td>
+          <td>${job.deliveryDate}</td>
+          <td>${job.deliveryNote}</td>
+          <td>${job.remark}</td>
+          <td>${job.status}</td>
+          <td>${job.qty}</td>
+          <td>${job.team}</td>
+          <td><button class="add-single" data-jobno="${job.jobNo}">Add</button></td>
+        `;
+      });
+    }
+  });
+}
+
+// Ambil job terpilih
+function getSelectedJobs() {
+  const checkboxes = document.querySelectorAll("tbody input[type='checkbox']:checked");
+  return Array.from(checkboxes).map(cb => cb.getAttribute("data-jobno"));
+}
+
+// Tampilkan Modal
+function showModal() {
+  modal.style.display = "block";
+}
+
+// Sembunyikan Modal
+function hideModal() {
+  modal.style.display = "none";
+}
+
+// Event Listeners
 uploadBtn.addEventListener("click", () => {
   const file = fileInput.files[0];
   if (file) {
     parseExcel(file);
   } else {
-    showAlert("Silakan pilih file terlebih dahulu.");
+    alert("Pilih file Excel terlebih dahulu.");
   }
 });
 
-function renderJobs(jobs) {
-  jobTable.innerHTML = "";
-  jobs.forEach(job => {
-    const row = jobTable.insertRow();
-
-    const checkboxCell = row.insertCell(0);
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.classList.add("rowCheckbox");
-    checkbox.dataset.jobNo = job.jobNo;
-    checkboxCell.appendChild(checkbox);
-
-    row.insertCell(1).textContent = job.jobNo;
-    row.insertCell(2).textContent = job.deliveryDate;
-    row.insertCell(3).textContent = job.deliveryNote;
-    row.insertCell(4).textContent = job.remark;
-    row.insertCell(5).textContent = job.status;
-    row.insertCell(6).textContent = job.qty;
-    row.insertCell(7).textContent = job.team;
-
-    const actionCell = row.insertCell(8);
-    const addBtn = document.createElement("button");
-    addBtn.textContent = "Add";
-    addBtn.classList.add("action-btn");
-    actionCell.appendChild(addBtn);
-  });
-}
-
-function loadJobs() {
-  const jobsRef = ref(db, "outboundJobs");
-  onValue(jobsRef, (snapshot) => {
-    const data = snapshot.val();
-    const jobs = data ? Object.values(data) : [];
-    renderJobs(jobs);
-  });
-}
-
 bulkAddBtn.addEventListener("click", () => {
-  modal.style.display = "block";
+  const selectedJobs = getSelectedJobs();
+  if (selectedJobs.length === 0) {
+    alert("Pilih minimal satu job terlebih dahulu.");
+    return;
+  }
+  showModal();
 });
 
-closeModalBtn.addEventListener("click", () => {
-  modal.style.display = "none";
-});
+closeModal.addEventListener("click", hideModal);
 
-submitSelectionBtn.addEventListener("click", () => {
-  const selectedTeam = teamSelect.value;
-  const selectedJobType = jobTypeSelect.value;
+confirmAdd.addEventListener("click", () => {
+  const selectedJobs = getSelectedJobs();
+  const team = document.getElementById("teamSelect").value;
+  const jobType = document.getElementById("jobTypeSelect").value;
 
-  const selectedCheckboxes = document.querySelectorAll(".rowCheckbox:checked");
-
-  selectedCheckboxes.forEach(cb => {
-    const jobNo = cb.dataset.jobNo;
+  selectedJobs.forEach((jobNo) => {
     const jobRef = ref(db, "outboundJobs/" + jobNo);
-
-    update(jobRef, {
-      team: selectedTeam,
-      jobType: selectedJobType
-    });
+    update(jobRef, { team, jobType });
   });
 
-  modal.style.display = "none";
-  showAlert("Job berhasil ditambahkan ke " + selectedTeam);
+  alert(`Job berhasil ditambahkan ke team: ${team}`);
+  hideModal();
 });
 
-selectAllCheckbox.addEventListener("change", function () {
-  const checkboxes = document.querySelectorAll(".rowCheckbox");
-  checkboxes.forEach(cb => cb.checked = this.checked);
+// Select All Checkbox
+selectAllCheckbox.addEventListener("change", (e) => {
+  const checkboxes = document.querySelectorAll("tbody input[type='checkbox']");
+  checkboxes.forEach(cb => cb.checked = e.target.checked);
 });
 
-loadJobs();
+// Klik di luar modal
+window.addEventListener("click", (event) => {
+  if (event.target === modal) {
+    hideModal();
+  }
+});
+
+// Load data saat halaman siap
+loadJobsFromFirebase();

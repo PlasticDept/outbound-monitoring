@@ -26,11 +26,30 @@ function parseExcel(file) {
 }
 
 // Format Tanggal
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  if (isNaN(date)) return dateString;
-  const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-  return date.toLocaleDateString("en-CA", options);
+function formatDate(input) {
+  if (!input) return "";
+
+  // Jika input adalah angka (serial Excel)
+  if (typeof input === "number") {
+    const epoch = new Date(Date.UTC(1899, 11, 30)); // Excel start date
+    const date = new Date(epoch.getTime() + input * 86400000);
+    return formatToCustomDate(date);
+  }
+
+  // Jika input adalah string
+  const parsed = new Date(input);
+  if (!isNaN(parsed)) {
+    return formatToCustomDate(parsed);
+  }
+
+  return input; // fallback kalau semua gagal
+}
+
+function formatToCustomDate(date) {
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = date.toLocaleString("en-US", { month: "short" });
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
 }
 
 // Upload ke Firebase
@@ -70,7 +89,7 @@ function loadJobsFromFirebase() {
         row.innerHTML = `
           <td><input type="checkbox" data-jobno="${job.jobNo}"></td>
           <td>${job.jobNo}</td>
-          <td>${job.deliveryDate}</td>
+          <td>${formatDate(job.deliveryDate)}</td>
           <td>${job.deliveryNote}</td>
           <td>${job.remark}</td>
           <td>${job.status}</td>

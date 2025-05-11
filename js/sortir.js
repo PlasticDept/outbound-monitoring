@@ -1,18 +1,12 @@
 // sortir.js
 
 import { db } from "./config.js";
-import {
-  ref,
-  set
-} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+import { ref, set, get } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
 const fileInput = document.getElementById("fileInput");
 const uploadBtn = document.getElementById("uploadBtn");
-const jobTable = document.getElementById("jobTable");
+const jobTableBody = document.querySelector("#jobTable tbody");
 
-/**
- * Fungsi membaca file Excel dan parsing ke JSON
- */
 function parseExcel(file) {
   const reader = new FileReader();
 
@@ -23,35 +17,25 @@ function parseExcel(file) {
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       const json = XLSX.utils.sheet_to_json(worksheet);
-
-      if (json.length === 0) {
-        alert("File Excel kosong atau tidak sesuai format.");
-        return;
-      }
-
       syncJobsToFirebase(json);
     } catch (error) {
-      console.error("Error parsing file:", error);
-      alert("Terjadi kesalahan saat membaca file. Pastikan format Excel benar.");
+      alert("Gagal memproses file Excel. Periksa format dan coba lagi.");
+      console.error(error);
     }
   };
 
   reader.readAsArrayBuffer(file);
 }
 
-/**
- * Fungsi sinkronisasi data ke Firebase Realtime Database
- */
 function syncJobsToFirebase(jobs) {
-  let successCount = 0;
-  let failedCount = 0;
+  let total = jobs.length;
+  let uploaded = 0;
+
+  alert("Proses upload dimulai...");
 
   jobs.forEach((job, index) => {
     const jobNo = job["Job No"];
-    if (!jobNo) {
-      failedCount++;
-      return;
-    }
+    if (!jobNo) return;
 
     const jobData = {
       jobNo: job["Job No"] || "",
@@ -59,39 +43,67 @@ function syncJobsToFirebase(jobs) {
       deliveryNote: job["Delivery Note"] || "",
       remark: job["Remark"] || "",
       status: job["Status"] || "",
-      qty: job["Qty"] || "",
+      qty: job["Plan Qty"] || "", // Ambil dari Plan Qty
       team: "" // Akan diisi saat assign ke team
     };
 
     const jobRef = ref(db, "outboundJobs/" + jobNo);
-
     set(jobRef, jobData)
       .then(() => {
-        successCount++;
-        if (index === jobs.length - 1) {
-          alert(`Upload selesai: ${successCount} berhasil, ${failedCount} gagal.`);
+        uploaded++;
+        if (uploaded === total) {
+          alert("Upload dan sinkronisasi berhasil!");
+          fetchJobs(); // Refresh tabel setelah upload selesai
         }
       })
       .catch((error) => {
-        console.error("Upload error:", error);
-        failedCount++;
-        if (index === jobs.length - 1) {
-          alert(`Upload selesai dengan error: ${successCount} berhasil, ${failedCount} gagal.`);
-        }
+        alert("Terjadi kesalahan saat menyimpan data ke database.");
+        console.error("Firebase set error:", error);
       });
   });
 }
 
-/**
- * Event listener tombol upload
- */
+function fetchJobs() {
+  const jobsRef = ref(db, "outboundJobs");
+  get(jobsRef).then((snapshot) => {
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      renderTable(Object.values(data));
+    } else {
+      jobTableBody.innerHTML = "<tr><td colspan='9'>Tidak ada data ditemukan.</td></tr>";
+    }
+  });
+}
+
+function renderTable(jobs) {
+  jobTableBody.innerHTML = "";
+  jobs.forEach((job) => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td><input type="checkbox" class="selectJob"></td>
+      <td>${job.jobNo}</td>
+      <td>${job.deliveryDate}</td>
+      <td>${job.deliveryNote}</td>
+      <td>${job.remark}</td>
+      <td>${job.status}</td>
+      <td>${job.qty}</td>
+      <td>${job.team}</td>
+      <td><button class="addBtn">Add</button></td>
+    `;
+
+    jobTableBody.appendChild(row);
+  });
+}
+
 uploadBtn.addEventListener("click", () => {
   const file = fileInput.files[0];
-  if (!file) {
-    alert("Silakan pilih file Excel terlebih dahulu.");
-    return;
+  if (file) {
+    parseExcel(file);
+  } else {
+    alert("Silakan pilih file terlebih dahulu.");
   }
-
-  alert("Memulai proses upload...");
-  parseExcel(file);
 });
+
+// Panggil saat halaman dimuat
+fetchJobs();

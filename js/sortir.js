@@ -180,18 +180,41 @@ bulkAddBtn.addEventListener("click", () => {
   showModal();
 });
 
+document.addEventListener("click", function (e) {
+  if (e.target.classList.contains("add-single")) {
+    const jobNo = e.target.getAttribute("data-jobno");
+    selectedSingleJob = jobNo;  // simpan jobNo yang diklik
+    showModal();
+  }
+});
+
 // Event konfirmasi modal
 confirmAdd.addEventListener("click", () => {
-  const selectedJobs = getSelectedJobs();
   const team = document.getElementById("teamSelect").value;
   const jobType = document.getElementById("jobTypeSelect").value;
 
-  selectedJobs.forEach((jobNo) => {
+  let jobsToUpdate = [];
+
+  if (selectedSingleJob) {
+    jobsToUpdate.push(selectedSingleJob);
+  } else {
+    jobsToUpdate = getSelectedJobs();
+  }
+
+  if (jobsToUpdate.length === 0) {
+    alert("Tidak ada job yang dipilih.");
+    return;
+  }
+
+  jobsToUpdate.forEach((jobNo) => {
     const jobRef = ref(db, "outboundJobs/" + jobNo);
     update(jobRef, { team, jobType });
   });
 
   alert(`Job berhasil ditambahkan ke team: ${team}`);
+
+  // Reset
+  selectedSingleJob = null;
   hideModal();
 });
 

@@ -1,85 +1,92 @@
+/* css/sortir.css */
+
 body {
-  background: #f5f8fa;
-  font-family: 'Segoe UI', sans-serif;
-  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f8;
+  margin: 0;
+  padding: 20px;
 }
 
 .container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: auto;
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-  animation: fadeSlide 0.7s ease-out;
+  background: #ffffff;
+  padding: 30px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
 h2 {
   text-align: center;
   color: #333;
-  margin-bottom: 1.5rem;
+  margin-bottom: 30px;
 }
 
-.actions {
+.controls {
   display: flex;
-  gap: 10px;
-  margin-bottom: 1rem;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 10px;
 }
 
-.actions button {
-  padding: 0.6rem 1rem;
-  background-color: #0077cc;
-  border: none;
-  color: white;
+.controls input[type="file"],
+.controls button,
+.controls select {
+  padding: 10px;
+  border: 1px solid #ccc;
   border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s;
+  font-size: 14px;
+  background-color: white;
 }
 
-.actions button:hover {
-  background-color: #005fa3;
+.controls button {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.controls button:hover {
+  background-color: #0056b3;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
+  margin-top: 10px;
 }
 
-th, td {
-  padding: 0.75rem;
+table th,
+table td {
+  padding: 12px 10px;
+  text-align: left;
   border-bottom: 1px solid #ddd;
+}
+
+table th {
+  background-color: #007bff;
+  color: white;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+.checkbox-cell {
+  width: 40px;
   text-align: center;
 }
 
-th {
-  background-color: #f0f4f8;
-  font-weight: bold;
-}
-
-.add-btn {
+.action-btn {
+  padding: 6px 12px;
   background-color: #28a745;
   color: white;
   border: none;
-  padding: 6px 10px;
-  border-radius: 4px;
+  border-radius: 5px;
+  font-size: 13px;
   cursor: pointer;
-  transition: background 0.3s;
 }
 
-.add-btn:hover {
+.action-btn:hover {
   background-color: #218838;
-}
-
-@keyframes fadeSlide {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }

@@ -248,16 +248,17 @@ loadJobsFromFirebase();
 
 // Delegasi event untuk tombol Add per baris
 jobTable.addEventListener("click", (event) => {
-  if (event.target.classList.contains("add-single")) {
+  const addButton = event.target.closest(".add-single"); // pastikan tombolnya
+
+  if (addButton) {
     const checkboxes = document.querySelectorAll("tbody input[type='checkbox']:checked");
 
-    // Cek jika ada job yang dicentang
     if (checkboxes.length > 0) {
       alert("Silakan kosongkan centang sebelum menambahkan job secara individual.");
-      return; // Stop di sini, jangan lanjutkan
+      return;
     }
 
-    const jobNo = event.target.getAttribute("data-jobno");
+    const jobNo = addButton.getAttribute("data-jobno");
     if (jobNo) {
       selectedSingleJob = jobNo;
       showModal();

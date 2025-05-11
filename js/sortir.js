@@ -1,125 +1,69 @@
 // sortir.js
-
 import { db } from "./config.js";
-import { ref, set, get } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+import { ref, set, get, update, child, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
 const fileInput = document.getElementById("fileInput");
 const uploadBtn = document.getElementById("uploadBtn");
-const jobTableBody = document.querySelector("#jobTable tbody");
+const jobTable = document.getElementById("jobTable").getElementsByTagName('tbody')[0];
+const bulkAddBtn = document.getElementById("bulkAddBtn");
+const modal = document.getElementById("selectionModal");
+const closeModalBtn = document.getElementById("closeModal");
+const submitSelectionBtn = document.getElementById("submitSelection");
+
+const teamSelect = document.getElementById("teamSelect");
+const jobTypeSelect = document.getElementById("jobTypeSelect");
+const selectAllCheckbox = document.getElementById("selectAll");
+
+function showAlert(message) {
+  alert(message);
+}
+
+function formatDate(input) {
+  if (!input) return "";
+  const date = new Date(input);
+  const options = { day: '2-digit', month: 'short', year: 'numeric' };
+  return date.toLocaleDateString('en-GB', options).replace(/ /g, '-');
+}
 
 function parseExcel(file) {
+  showAlert("Memulai proses upload...");
   const reader = new FileReader();
 
   reader.onload = function (e) {
-    try {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      const json = XLSX.utils.sheet_to_json(worksheet);
-      syncJobsToFirebase(json);
-    } catch (error) {
-      alert("Gagal memproses file Excel. Periksa format dan coba lagi.");
-      console.error(error);
-    }
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: "array" });
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const json = XLSX.utils.sheet_to_json(worksheet);
+    syncJobsToFirebase(json);
   };
 
   reader.readAsArrayBuffer(file);
 }
 
 function syncJobsToFirebase(jobs) {
-  let total = jobs.length;
-  let uploaded = 0;
+  const updates = {};
 
-  alert("Proses upload dimulai...");
-
-  jobs.forEach((job, index) => {
+  jobs.forEach(job => {
     const jobNo = job["Job No"];
     if (!jobNo) return;
 
     const jobData = {
       jobNo: job["Job No"] || "",
-      deliveryDate: job["Delivery Date"] || "",
+      deliveryDate: formatDate(job["Delivery Date"]),
       deliveryNote: job["Delivery Note"] || "",
       remark: job["Remark"] || "",
       status: job["Status"] || "",
-      qty: job["Plan Qty"] || "", // Ambil dari Plan Qty
-      team: "" // Akan diisi saat assign ke team
+      qty: job["Plan Qty"] || "",
+      team: ""
     };
 
-    const jobRef = ref(db, "outboundJobs/" + jobNo);
-    set(jobRef, jobData)
-      .then(() => {
-        uploaded++;
-        if (uploaded === total) {
-          alert("Upload dan sinkronisasi berhasil!");
-          fetchJobs(); // Refresh tabel setelah upload selesai
-        }
-      })
-      .catch((error) => {
-        alert("Terjadi kesalahan saat menyimpan data ke database.");
-        console.error("Firebase set error:", error);
-      });
+    updates["outboundJobs/" + jobNo] = jobData;
   });
-}
 
-function fetchJobs() {
-  const jobsRef = ref(db, "outboundJobs");
-  get(jobsRef).then((snapshot) => {
-    if (snapshot.exists()) {
-      const data = snapshot.val();
-      renderTable(Object.values(data));
-    } else {
-      jobTableBody.innerHTML = "<tr><td colspan='9'>Tidak ada data ditemukan.</td></tr>";
-    }
-  });
-}
-
-function formatDate(input) {
-  if (!input) return "";
-
-  // Jika input adalah angka (serial Excel)
-  if (typeof input === "number") {
-    const epoch = new Date(Date.UTC(1899, 11, 30)); // Excel start date
-    const date = new Date(epoch.getTime() + input * 86400000);
-    return formatToCustomDate(date);
-  }
-
-  // Jika input adalah string
-  const parsed = new Date(input);
-  if (!isNaN(parsed)) {
-    return formatToCustomDate(parsed);
-  }
-
-  return input; // fallback kalau semua gagal
-}
-
-function formatToCustomDate(date) {
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = date.toLocaleString("en-US", { month: "short" });
-  const year = date.getFullYear();
-  return `${day}-${month}-${year}`;
-}
-
-function renderTable(jobs) {
-  jobTableBody.innerHTML = "";
-  jobs.forEach((job) => {
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
-      <td><input type="checkbox" class="selectJob"></td>
-      <td>${job.jobNo}</td>
-      <td>${formatDate(job.deliveryDate)}</td>
-      <td>${job.deliveryNote}</td>
-      <td>${job.remark}</td>
-      <td>${job.status}</td>
-      <td>${job.qty}</td>
-      <td>${job.team}</td>
-      <td><button class="addBtn">Add</button></td>
-    `;
-
-    jobTableBody.appendChild(row);
-  });
+  update(ref(db), updates)
+    .then(() => showAlert("Data berhasil diupload dan diperbarui."))
+    .catch((error) => console.error("Upload error: ", error));
 }
 
 uploadBtn.addEventListener("click", () => {
@@ -127,9 +71,78 @@ uploadBtn.addEventListener("click", () => {
   if (file) {
     parseExcel(file);
   } else {
-    alert("Silakan pilih file terlebih dahulu.");
+    showAlert("Silakan pilih file terlebih dahulu.");
   }
 });
 
-// Panggil saat halaman dimuat
-fetchJobs();
+function renderJobs(jobs) {
+  jobTable.innerHTML = "";
+  jobs.forEach(job => {
+    const row = jobTable.insertRow();
+
+    const checkboxCell = row.insertCell(0);
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.classList.add("rowCheckbox");
+    checkbox.dataset.jobNo = job.jobNo;
+    checkboxCell.appendChild(checkbox);
+
+    row.insertCell(1).textContent = job.jobNo;
+    row.insertCell(2).textContent = job.deliveryDate;
+    row.insertCell(3).textContent = job.deliveryNote;
+    row.insertCell(4).textContent = job.remark;
+    row.insertCell(5).textContent = job.status;
+    row.insertCell(6).textContent = job.qty;
+    row.insertCell(7).textContent = job.team;
+
+    const actionCell = row.insertCell(8);
+    const addBtn = document.createElement("button");
+    addBtn.textContent = "Add";
+    addBtn.classList.add("action-btn");
+    actionCell.appendChild(addBtn);
+  });
+}
+
+function loadJobs() {
+  const jobsRef = ref(db, "outboundJobs");
+  onValue(jobsRef, (snapshot) => {
+    const data = snapshot.val();
+    const jobs = data ? Object.values(data) : [];
+    renderJobs(jobs);
+  });
+}
+
+bulkAddBtn.addEventListener("click", () => {
+  modal.style.display = "block";
+});
+
+closeModalBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+});
+
+submitSelectionBtn.addEventListener("click", () => {
+  const selectedTeam = teamSelect.value;
+  const selectedJobType = jobTypeSelect.value;
+
+  const selectedCheckboxes = document.querySelectorAll(".rowCheckbox:checked");
+
+  selectedCheckboxes.forEach(cb => {
+    const jobNo = cb.dataset.jobNo;
+    const jobRef = ref(db, "outboundJobs/" + jobNo);
+
+    update(jobRef, {
+      team: selectedTeam,
+      jobType: selectedJobType
+    });
+  });
+
+  modal.style.display = "none";
+  showAlert("Job berhasil ditambahkan ke " + selectedTeam);
+});
+
+selectAllCheckbox.addEventListener("change", function () {
+  const checkboxes = document.querySelectorAll(".rowCheckbox");
+  checkboxes.forEach(cb => cb.checked = this.checked);
+});
+
+loadJobs();

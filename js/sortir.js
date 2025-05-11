@@ -15,28 +15,6 @@ const selectAllCheckbox = document.getElementById("selectAll");
 // Variabel golbal
 let selectedSingleJob = null;
 
-// Delegasi event untuk tombol Add per baris
-jobTable.addEventListener("click", (event) => {
-  const target = event.target;
-  
-  // Pastikan yang diklik adalah tombol "Add"
-  if (target.classList.contains("add-single")) {
-    // Cek apakah ada checkbox yang dicentang
-    const anyChecked = document.querySelector("tbody input[type='checkbox']:checked");
-    if (anyChecked) {
-      alert("Harap kosongkan centang sebelum menambahkan job satuan.");
-      return; // STOP di sini, jangan lanjutkan!
-    }
-
-    // Jika tidak ada checkbox yang dicentang, baru lanjut
-    const jobNo = target.getAttribute("data-jobno");
-    if (jobNo) {
-      selectedSingleJob = jobNo;
-      showModal();
-    }
-  }
-});
-
 // Fungsi untuk membaca dan parsing file Excel
 function parseExcel(file) {
   const reader = new FileReader();
@@ -205,11 +183,25 @@ bulkAddBtn.addEventListener("click", () => {
   showModal();
 });
 
-document.addEventListener("click", function (e) {
-  if (e.target.classList.contains("add-single")) {
-    const jobNo = e.target.getAttribute("data-jobno");
-    selectedSingleJob = jobNo;  // simpan jobNo yang diklik
-    showModal();
+// Delegasi event untuk tombol Add per baris
+jobTable.addEventListener("click", (event) => {
+  const target = event.target;
+  
+  // Pastikan yang diklik adalah tombol "Add"
+  if (target.classList.contains("add-single")) {
+    // Cek apakah ada checkbox yang dicentang
+    const anyChecked = document.querySelector("tbody input[type='checkbox']:checked");
+    if (anyChecked) {
+      alert("Harap kosongkan centang sebelum menambahkan job satuan.");
+      return; // STOP di sini, jangan lanjutkan!
+    }
+
+    // Jika tidak ada checkbox yang dicentang, baru lanjut
+    const jobNo = target.getAttribute("data-jobno");
+    if (jobNo) {
+      selectedSingleJob = jobNo;
+      showModal();
+    }
   }
 });
 

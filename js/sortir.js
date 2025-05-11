@@ -88,10 +88,14 @@ function syncJobsToFirebase(jobs) {
     const jobNo = job["Job No"];
     if (!jobNo) return;
 
-    const rawDate = job["Delivery Date"];
-    const formattedDate = formatDate(rawDate);
+    let rawDate = job["Delivery Date"];
+    let formattedDate = formatDate(rawDate);
 
+    // Debug log
     debugDiv.innerHTML += `Job: ${jobNo} | Raw Date: ${rawDate} | Formatted: ${formattedDate}<br>`;
+
+    // Overwrite rawDate with formatted value (just in case)
+    job["Delivery Date"] = formattedDate;
 
     const jobData = {
       jobNo: job["Job No"] || "",
@@ -109,7 +113,7 @@ function syncJobsToFirebase(jobs) {
   });
 
   alert("Data berhasil diunggah ke Firebase.");
-  loadJobsFromFirebase(); // Reload setelah upload
+  loadJobsFromFirebase();
 }
 
 // Ambil dan tampilkan data dari Firebase

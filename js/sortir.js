@@ -201,9 +201,18 @@ selectAllCheckbox.addEventListener("change", (e) => {
   checkboxes.forEach(cb => cb.checked = e.target.checked);
 });
 
+// Tutup modal jika klik tombol ×
+closeModal.addEventListener("click", hideModal);
+
 // Tutup modal jika klik luar area
 window.addEventListener("click", (event) => {
   if (event.target === modal) {
+    hideModal();
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
     hideModal();
   }
 });

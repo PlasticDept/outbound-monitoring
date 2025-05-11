@@ -12,6 +12,9 @@ const closeModal = document.getElementById("closeModal");
 const confirmAdd = document.getElementById("confirmAdd");
 const selectAllCheckbox = document.getElementById("selectAll");
 
+// Variabel golbal
+let selectedSingleJob = null;
+
 // Fungsi untuk membaca dan parsing file Excel
 function parseExcel(file) {
   const reader = new FileReader();
@@ -242,3 +245,14 @@ document.addEventListener("keydown", (e) => {
 
 // Load data pertama kali saat halaman siap
 loadJobsFromFirebase();
+
+// Delegasi event untuk tombol Add per baris
+jobTable.addEventListener("click", (event) => {
+  if (event.target.classList.contains("add-single")) {
+    const jobNo = event.target.getAttribute("data-jobno");
+    if (jobNo) {
+      selectedSingleJob = jobNo;
+      showModal();
+    }
+  }
+});

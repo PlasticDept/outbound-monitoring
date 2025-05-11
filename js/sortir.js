@@ -54,13 +54,22 @@ function formatToCustomDate(date) {
 
 // Upload ke Firebase
 function syncJobsToFirebase(jobs) {
-  jobs.forEach((job) => {
+  const debugDiv = document.getElementById("debugLog");
+  debugDiv.innerHTML = "<strong>Debug Log:</strong><br>";
+
+  jobs.forEach(job => {
     const jobNo = job["Job No"];
     if (!jobNo) return;
 
+    const rawDate = job["Delivery Date"];
+    const formattedDate = formatDate(rawDate);
+
+    // Tampilkan log di halaman
+    debugDiv.innerHTML += `Job: ${jobNo} | Raw Date: ${rawDate} | Formatted: ${formattedDate}<br>`;
+
     const jobData = {
       jobNo: job["Job No"] || "",
-      deliveryDate: formatDate(job["Delivery Date"] || ""),
+      deliveryDate: formattedDate,
       deliveryNote: job["Delivery Note"] || "",
       remark: job["Remark"] || "",
       status: job["Status"] || "",
@@ -73,9 +82,8 @@ function syncJobsToFirebase(jobs) {
     set(jobRef, jobData);
   });
 
-  alert("Data berhasil diupload ke database!");
+  alert("Data berhasil diunggah ke Firebase.");
 }
-
 // Load data dari Firebase
 function loadJobsFromFirebase() {
   const jobsRef = ref(db, "outboundJobs");

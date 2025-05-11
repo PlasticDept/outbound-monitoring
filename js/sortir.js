@@ -138,7 +138,7 @@ function loadJobsFromFirebase() {
           <td>${job.deliveryNote}</td>
           <td>${job.remark}</td>
           <td>${job.status}</td>
-          <td>${job.qty}</td>
+          <td>${Number(job.qty).toLocaleString()}</td>
           <td>${job.team}</td>
           <td><button class="add-single" data-jobno="${job.jobNo}">Add</button></td>
         `;

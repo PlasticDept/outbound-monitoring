@@ -75,16 +75,30 @@ function fetchJobs() {
   });
 }
 
-function formatDate(inputDate) {
-  if (!inputDate) return "";
-  const date = new Date(inputDate);
-  if (isNaN(date)) return inputDate;
+function formatDate(input) {
+  if (!input) return "";
 
-  const day = date.getDate();
+  // Jika input adalah angka (serial Excel)
+  if (typeof input === "number") {
+    const epoch = new Date(Date.UTC(1899, 11, 30)); // Excel start date
+    const date = new Date(epoch.getTime() + input * 86400000);
+    return formatToCustomDate(date);
+  }
+
+  // Jika input adalah string
+  const parsed = new Date(input);
+  if (!isNaN(parsed)) {
+    return formatToCustomDate(parsed);
+  }
+
+  return input; // fallback kalau semua gagal
+}
+
+function formatToCustomDate(date) {
+  const day = String(date.getDate()).padStart(2, "0");
   const month = date.toLocaleString("en-US", { month: "short" });
   const year = date.getFullYear();
-
-  return `${day < 10 ? "0" + day : day}-${month}-${year}`;
+  return `${day}-${month}-${year}`;
 }
 
 function renderTable(jobs) {

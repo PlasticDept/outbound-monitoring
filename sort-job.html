@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sortir Outbound Job</title>
-  <link rel="stylesheet" href="css/sortir.css">
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="css/sortir.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script type="module" src="js/sortir.js"></script>
+</head>
 <body>
   <div class="container">
     <h2>Sortir Outbound Job</h2>
 
-    <div class="controls">
+    <div class="upload-section">
       <input type="file" id="fileInput" accept=".xlsx, .xls" />
       <button id="uploadBtn">Upload</button>
+    </div>
+
+    <div class="action-bar">
       <button id="bulkAddBtn">Add Selected</button>
       <button id="sortStatusBtn">Sort by Status</button>
       <button id="sortDateBtn">Sort by Date</button>
@@ -24,7 +26,7 @@
     <table id="jobTable">
       <thead>
         <tr>
-          <th><input type="checkbox" id="selectAll"></th>
+          <th><input type="checkbox" id="selectAll" /></th>
           <th>Job No</th>
           <th>Delivery Date</th>
           <th>Delivery Note</th>
@@ -35,16 +37,35 @@
           <th>Action</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- Data rows will be injected here -->
-      </tbody>
+      <tbody></tbody>
     </table>
   </div>
-</body>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h3>Pilih Target Team & Job Type</h3>
+      <label>Team:</label>
+      <select id="teamSelect">
+        <option value="Reguler">Reguler</option>
+        <option value="Sugity">Sugity</option>
+      </select>
+      <label>Job Type:</label>
+      <select id="jobTypeSelect">
+        <option value="Remaining">Remaining</option>
+        <option value="Additional">Additional</option>
+        <option value="OT">OT</option>
+      </select>
+      <div class="modal-buttons">
+        <button id="confirmBulkAdd">Tambahkan</button>
+        <button id="cancelModal">Batal</button>
+      </div>
+    </div>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-  <script src="js/config.js"></script>
-  <script src="js/sortir.js"></script>
+  <script src="js/config.js" type="module"></script>
+  <script src="js/sortir.js" type="module"></script>
 </body>
 </html>

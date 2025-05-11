@@ -87,11 +87,11 @@ function syncJobsToFirebase(jobs) {
  */
 uploadBtn.addEventListener("click", () => {
   const file = fileInput.files[0];
-
   if (!file) {
     alert("Silakan pilih file Excel terlebih dahulu.");
     return;
   }
 
+  alert("Memulai proses upload...");
   parseExcel(file);
 });

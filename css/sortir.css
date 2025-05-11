@@ -1,92 +1,109 @@
-/* css/sortir.css */
+/* sortir.css */
 
+/* Reset dasar dan layout */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f4f6f8;
   margin: 0;
-  padding: 20px;
+  padding: 0;
 }
 
 .container {
-  max-width: 1200px;
-  margin: auto;
-  background: #ffffff;
+  max-width: 1100px;
+  margin: 40px auto;
   padding: 30px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
+/* Judul Halaman */
 h2 {
   text-align: center;
   color: #333;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
 }
 
+/* Tombol dan input file */
 .controls {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  margin-bottom: 20px;
   gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
-.controls input[type="file"],
 .controls button,
-.controls select {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+.controls input[type="file"] {
+  padding: 10px 16px;
   font-size: 14px;
-  background-color: white;
-}
-
-.controls button {
+  border-radius: 6px;
+  border: 1px solid #ccc;
   background-color: #007bff;
   color: white;
   cursor: pointer;
-  border: none;
-  transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.2s ease;
+}
+
+.controls input[type="file"] {
+  background-color: #f8f9fa;
+  color: #333;
 }
 
 .controls button:hover {
   background-color: #0056b3;
 }
 
+.controls input[type="file"]:hover {
+  background-color: #e2e6ea;
+}
+
+/* Tabel */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
 }
 
-table th,
-table td {
-  padding: 12px 10px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-table th {
+thead {
   background-color: #007bff;
   color: white;
-  text-transform: uppercase;
-  font-size: 13px;
 }
 
-.checkbox-cell {
-  width: 40px;
+th, td {
+  padding: 12px 10px;
+  text-align: left;
+  border: 1px solid #dee2e6;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Checkbox kolom pertama */
+td:first-child,
+th:first-child {
   text-align: center;
+  width: 40px;
 }
 
+/* Tombol aksi per baris */
 .action-btn {
-  padding: 6px 12px;
+  padding: 6px 10px;
   background-color: #28a745;
-  color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
+  color: white;
   font-size: 13px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .action-btn:hover {
-  background-color: #218838;
+  background-color: #1e7e34;
 }

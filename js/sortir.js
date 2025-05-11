@@ -75,6 +75,18 @@ function fetchJobs() {
   });
 }
 
+function formatDate(inputDate) {
+  if (!inputDate) return "";
+  const date = new Date(inputDate);
+  if (isNaN(date)) return inputDate;
+
+  const day = date.getDate();
+  const month = date.toLocaleString("en-US", { month: "short" });
+  const year = date.getFullYear();
+
+  return `${day < 10 ? "0" + day : day}-${month}-${year}`;
+}
+
 function renderTable(jobs) {
   jobTableBody.innerHTML = "";
   jobs.forEach((job) => {
@@ -83,7 +95,7 @@ function renderTable(jobs) {
     row.innerHTML = `
       <td><input type="checkbox" class="selectJob"></td>
       <td>${job.jobNo}</td>
-      <td>${job.deliveryDate}</td>
+      <td>${formatDate(job.deliveryDate)}</td>
       <td>${job.deliveryNote}</td>
       <td>${job.remark}</td>
       <td>${job.status}</td>

@@ -250,6 +250,14 @@ loadJobsFromFirebase();
 jobTable.addEventListener("click", (event) => {
   if (event.target.classList.contains("add-single")) {
     const jobNo = event.target.getAttribute("data-jobno");
+    const checkboxes = document.querySelectorAll("tbody input[type='checkbox']:checked");
+
+    // Cek jika ada lebih dari 0 yang dicentang
+    if (checkboxes.length > 0) {
+      alert("Silakan kosongkan centang sebelum menambahkan job secara individual.");
+      return;
+    }
+
     if (jobNo) {
       selectedSingleJob = jobNo;
       showModal();

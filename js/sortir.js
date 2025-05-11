@@ -2,6 +2,7 @@
 import { db } from "./config.js";
 import { ref, set, get, update, child, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
+// Ambil elemen DOM
 const fileInput = document.getElementById("fileInput");
 const uploadBtn = document.getElementById("uploadBtn");
 const jobTable = document.getElementById("jobTable").getElementsByTagName("tbody")[0];
@@ -11,17 +12,18 @@ const closeModal = document.getElementById("closeModal");
 const confirmAdd = document.getElementById("confirmAdd");
 const selectAllCheckbox = document.getElementById("selectAll");
 
-// Parsing Excel
+// Fungsi untuk membaca dan parsing file Excel
 function parseExcel(file) {
   const reader = new FileReader();
   alert("Memulai proses upload file...");
+
   reader.onload = function (e) {
     const data = new Uint8Array(e.target.result);
     const workbook = XLSX.read(data, { type: "array" });
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const json = XLSX.utils.sheet_to_json(sheet);
 
-    // Tambahkan debug log untuk satu entri pertama
+    // Tampilkan contoh tanggal pertama sebagai debugging
     const firstJob = json[0];
     if (firstJob) {
       alert(`Contoh delivery date dari Excel:\n${firstJob["Delivery Date"]} (type: ${typeof firstJob["Delivery Date"]})`);
@@ -29,30 +31,31 @@ function parseExcel(file) {
 
     syncJobsToFirebase(json);
   };
+
   reader.readAsArrayBuffer(file);
 }
 
-// Format Tanggal
+// Fungsi format tanggal
 function formatDate(input) {
   if (!input) {
     console.warn("Tanggal kosong atau null:", input);
     return "";
   }
 
-  // Excel serial number
+  // Jika input berupa angka serial Excel
   if (typeof input === "number") {
     const epoch = new Date(Date.UTC(1899, 11, 30));
     const date = new Date(epoch.getTime() + input * 86400000);
     return formatToCustomDate(date);
   }
 
-  // Format string normal
+  // Jika input berupa string yang bisa diparse
   const parsed = new Date(input);
   if (!isNaN(parsed)) {
     return formatToCustomDate(parsed);
   }
 
-  // Format "13/05", "13-05"
+  // Jika input berupa format pendek seperti "13/05"
   const parts = input.split(/[-/]/);
   if (parts.length >= 2) {
     const day = parseInt(parts[0]);
@@ -64,10 +67,11 @@ function formatDate(input) {
     }
   }
 
-  console.warn("Format tidak dikenal:", input);
+  console.warn("Format tanggal tidak dikenali:", input);
   return input;
 }
 
+// Format akhir menjadi "dd-MMM-yyyy"
 function formatToCustomDate(date) {
   const day = String(date.getDate()).padStart(2, "0");
   const month = date.toLocaleString("en-US", { month: "short" });
@@ -75,7 +79,7 @@ function formatToCustomDate(date) {
   return `${day}-${month}-${year}`;
 }
 
-// Upload ke Firebase
+// Simpan ke Firebase
 function syncJobsToFirebase(jobs) {
   const debugDiv = document.getElementById("debugLog");
   debugDiv.innerHTML = "<strong>Debug Log:</strong><br>";
@@ -87,7 +91,6 @@ function syncJobsToFirebase(jobs) {
     const rawDate = job["Delivery Date"];
     const formattedDate = formatDate(rawDate);
 
-    // Tampilkan log di halaman
     debugDiv.innerHTML += `Job: ${jobNo} | Raw Date: ${rawDate} | Formatted: ${formattedDate}<br>`;
 
     const jobData = {
@@ -106,15 +109,17 @@ function syncJobsToFirebase(jobs) {
   });
 
   alert("Data berhasil diunggah ke Firebase.");
-loadJobsFromFirebase(); // Tambahkan baris ini
+  loadJobsFromFirebase(); // Reload setelah upload
 }
-// Load data dari Firebase
+
+// Ambil dan tampilkan data dari Firebase
 function loadJobsFromFirebase() {
   const jobsRef = ref(db, "outboundJobs");
+
   onValue(jobsRef, (snapshot) => {
-  const data = snapshot.val();
-  console.log("Data dari Firebase:", data);
-  jobTable.innerHTML = "";
+    const data = snapshot.val();
+    console.log("Data dari Firebase:", data);
+    jobTable.innerHTML = "";
 
     if (data) {
       Object.values(data).forEach((job) => {
@@ -123,7 +128,7 @@ function loadJobsFromFirebase() {
           <td><input type="checkbox" data-jobno="${job.jobNo}"></td>
           <td>${job.jobNo}</td>
           <td>${job.deliveryDate}</td>
-          <td>${formatDate(job.deliveryDate)}</td>
+          <td>${job.deliveryNote}</td>
           <td>${job.remark}</td>
           <td>${job.status}</td>
           <td>${job.qty}</td>
@@ -135,23 +140,23 @@ function loadJobsFromFirebase() {
   });
 }
 
-// Ambil job terpilih
+// Ambil job yang dipilih
 function getSelectedJobs() {
   const checkboxes = document.querySelectorAll("tbody input[type='checkbox']:checked");
   return Array.from(checkboxes).map(cb => cb.getAttribute("data-jobno"));
 }
 
-// Tampilkan Modal
+// Tampilkan modal
 function showModal() {
   modal.style.display = "block";
 }
 
-// Sembunyikan Modal
+// Sembunyikan modal
 function hideModal() {
   modal.style.display = "none";
 }
 
-// Event Listeners
+// Event upload file
 uploadBtn.addEventListener("click", () => {
   const file = fileInput.files[0];
   if (file) {
@@ -161,6 +166,7 @@ uploadBtn.addEventListener("click", () => {
   }
 });
 
+// Event tombol "Add Selected"
 bulkAddBtn.addEventListener("click", () => {
   const selectedJobs = getSelectedJobs();
   if (selectedJobs.length === 0) {
@@ -170,8 +176,7 @@ bulkAddBtn.addEventListener("click", () => {
   showModal();
 });
 
-closeModal.addEventListener("click", hideModal);
-
+// Event konfirmasi modal
 confirmAdd.addEventListener("click", () => {
   const selectedJobs = getSelectedJobs();
   const team = document.getElementById("teamSelect").value;
@@ -186,18 +191,18 @@ confirmAdd.addEventListener("click", () => {
   hideModal();
 });
 
-// Select All Checkbox
+// Event checkbox "select all"
 selectAllCheckbox.addEventListener("change", (e) => {
   const checkboxes = document.querySelectorAll("tbody input[type='checkbox']");
   checkboxes.forEach(cb => cb.checked = e.target.checked);
 });
 
-// Klik di luar modal
+// Tutup modal jika klik luar area
 window.addEventListener("click", (event) => {
   if (event.target === modal) {
     hideModal();
   }
 });
 
-// Load data saat halaman siap
+// Load data pertama kali saat halaman siap
 loadJobsFromFirebase();

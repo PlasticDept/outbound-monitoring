@@ -123,7 +123,7 @@ function loadJobsFromFirebase() {
           <td><input type="checkbox" data-jobno="${job.jobNo}"></td>
           <td>${job.jobNo}</td>
           <td>${job.deliveryDate}</td>
-          <td>${job.deliveryNote}</td>
+          <td>${formatDate(job.deliveryDate)}</td>
           <td>${job.remark}</td>
           <td>${job.status}</td>
           <td>${job.qty}</td>

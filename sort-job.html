@@ -7,17 +7,13 @@
   <link rel="stylesheet" href="css/sortir.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script type="module" src="js/sortir.js"></script>
-</head>
 <body>
   <div class="container">
     <h2>Sortir Outbound Job</h2>
 
-    <div class="upload-section">
+    <div class="controls">
       <input type="file" id="fileInput" accept=".xlsx, .xls" />
       <button id="uploadBtn">Upload</button>
-    </div>
-
-    <div class="action-bar">
       <button id="bulkAddBtn">Add Selected</button>
       <button id="sortStatusBtn">Sort by Status</button>
       <button id="sortDateBtn">Sort by Date</button>
@@ -43,6 +39,7 @@
       </tbody>
     </table>
   </div>
+</body>
 
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>

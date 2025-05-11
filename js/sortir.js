@@ -106,13 +106,15 @@ function syncJobsToFirebase(jobs) {
   });
 
   alert("Data berhasil diunggah ke Firebase.");
+loadJobsFromFirebase(); // Tambahkan baris ini
 }
 // Load data dari Firebase
 function loadJobsFromFirebase() {
   const jobsRef = ref(db, "outboundJobs");
   onValue(jobsRef, (snapshot) => {
-    const data = snapshot.val();
-    jobTable.innerHTML = "";
+  const data = snapshot.val();
+  console.log("Data dari Firebase:", data);
+  jobTable.innerHTML = "";
 
     if (data) {
       Object.values(data).forEach((job) => {

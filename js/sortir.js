@@ -19,7 +19,14 @@ function parseExcel(file) {
     const data = new Uint8Array(e.target.result);
     const workbook = XLSX.read(data, { type: "array" });
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const json = XLSX.utils.sheet_to_json(sheet, { raw: true }); // Tambahkan raw: true
+    const json = XLSX.utils.sheet_to_json(sheet);
+
+    // Tambahkan debug log untuk satu entri pertama
+    const firstJob = json[0];
+    if (firstJob) {
+      alert(`Contoh delivery date dari Excel:\n${firstJob["Delivery Date"]} (type: ${typeof firstJob["Delivery Date"]})`);
+    }
+
     syncJobsToFirebase(json);
   };
   reader.readAsArrayBuffer(file);
@@ -27,34 +34,38 @@ function parseExcel(file) {
 
 // Format Tanggal
 function formatDate(input) {
-  if (!input) return "";
+  if (!input) {
+    console.warn("Tanggal kosong atau null:", input);
+    return "";
+  }
 
-  // Jika input adalah angka (Excel serial number)
+  // Excel serial number
   if (typeof input === "number") {
     const epoch = new Date(Date.UTC(1899, 11, 30));
     const date = new Date(epoch.getTime() + input * 86400000);
     return formatToCustomDate(date);
   }
 
-  // Jika input adalah string
-  let parsed = new Date(input);
+  // Format string normal
+  const parsed = new Date(input);
   if (!isNaN(parsed)) {
     return formatToCustomDate(parsed);
   }
 
-  // Tangani kasus manual (misal: "13/05", "13-05")
+  // Format "13/05", "13-05"
   const parts = input.split(/[-/]/);
   if (parts.length >= 2) {
     const day = parseInt(parts[0]);
-    const month = parseInt(parts[1]) - 1; // bulan dimulai dari 0
-    const year = new Date().getFullYear(); // fallback tahun sekarang
+    const month = parseInt(parts[1]) - 1;
+    const year = new Date().getFullYear();
     const date = new Date(year, month, day);
     if (!isNaN(date)) {
       return formatToCustomDate(date);
     }
   }
 
-  return input; // fallback akhir
+  console.warn("Format tidak dikenal:", input);
+  return input;
 }
 
 function formatToCustomDate(date) {

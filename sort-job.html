@@ -1,4 +1,4 @@
-l<!DOCTYPE html>
+ll<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -20,32 +20,30 @@ l<!DOCTYPE html>
   <button id="bulkAddBtn">Add Selected</button>
 
   <!-- Tombol + dropdown Sort by Status -->
-  <div class="dropdown-container" style="position: relative; display: inline-block;">
-    <button id="sortStatusBtn">Sort by Status</button>
-    <div id="statusDropdown" class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; padding: 5px; z-index: 100;">
-      <select id="statusOptions">
-        <option value="all">-- Show All --</option>
-        <option value="NewJob">NewJob</option>
-        <option value="Downloaded">Downloaded</option>
-        <option value="PartialPicked">PartialPicked</option>
-        <option value="Picked">Picked</option>
-        <option value="Packed">Packed</option>
-        <option value="Loaded">Loaded</option>
-      </select>
-    </div>
+<div class="dropdown-container" style="position: relative; display: inline-block;">
+  <button id="sortStatusBtn">Sort by Status</button>
+  <div id="statusDropdown" class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; padding: 5px; z-index: 100;">
+    <select id="statusOptions">
+      <option value="all">-- Show All --</option>
+      <option value="NewJob">NewJob</option>
+      <option value="Downloaded">Downloaded</option>
+      <option value="PartialPicked">PartialPicked</option>
+      <option value="Picked">Picked</option>
+      <option value="Packed">Packed</option>
+      <option value="Loaded">Loaded</option>
+    </select>
   </div>
+</div>
 
-  <!-- Tombol + dropdown Sort by Date -->
-  <div class="dropdown-container" style="position: relative; display: inline-block;">
-    <button id="sortDateBtn">Sort by Date</button>
-    <div id="dateDropdown" class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; padding: 5px; z-index: 100;">
-      <select id="dateOptions">
-        <option value="all">-- Show All --</option>
-        <!-- Opsi tanggal akan diisi otomatis dari data Firebase -->
-      </select>
-    </div>
+<!-- Tombol + dropdown Sort by Date -->
+<div class="dropdown-container" style="position: relative; display: inline-block;">
+  <button id="sortDateBtn">Sort by Date</button>
+  <div id="dateDropdown" class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; padding: 5px; z-index: 100;">
+    <select id="dateOptions">
+      <option value="all">-- Show All --</option>
+      <!-- Tanggal akan diisi otomatis -->
+    </select>
   </div>
-  <button id="sortTeamBtn">Sort by Team</button>
 </div>
 
 <!-- Tombol + dropdown Sort by Team -->
@@ -59,7 +57,7 @@ l<!DOCTYPE html>
       <option value="none">None / Blank</option>
     </select>
   </div>
-</div>    
+</div>
     
     <table id="jobTable">
       <thead>

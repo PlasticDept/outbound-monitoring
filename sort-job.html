@@ -105,5 +105,26 @@
   <!-- Firebase config and app logic -->
   <script type="module" src="js/config.js"></script>
   <script type="module" src="js/sortir.js"></script>
+  <script>
+    document.querySelectorAll(".dropdown-container").forEach(container => {
+      const button = container.querySelector("button");
+      const menu = container.querySelector(".dropdown-menu");
+  
+      button.addEventListener("click", (e) => {
+        // Tutup dropdown lain
+        document.querySelectorAll(".dropdown-container").forEach(c => {
+          if (c !== container) c.classList.remove("show");
+        });
+  
+        container.classList.toggle("show");
+      });
+    });
+  
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".dropdown-container")) {
+        document.querySelectorAll(".dropdown-container").forEach(c => c.classList.remove("show"));
+      }
+    });
+  </script>
 </body>
 </html>

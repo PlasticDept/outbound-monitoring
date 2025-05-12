@@ -24,6 +24,9 @@ const statusOptions = document.getElementById("statusOptions");
 const sortDateBtn = document.getElementById("sortDateBtn");
 const dateDropdown = document.getElementById("dateDropdown");
 const dateOptions = document.getElementById("dateOptions");
+const sortTeamBtn = document.getElementById("sortTeamBtn");
+const teamDropdown = document.getElementById("teamDropdown");
+const teamOptions = document.getElementById("teamOptions");
 
 let selectedSingleJob = null;
 
@@ -202,6 +205,26 @@ function filterJobsByDate(date) {
   });
 }
 
+// Fungsi untuk filter berdasarkan Team
+function filterJobsByTeam(team) {
+  const rows = jobTable.querySelectorAll("tr");
+
+  rows.forEach((row) => {
+    const teamCell = row.cells[7];
+    if (!teamCell) return;
+
+    const jobTeam = teamCell.textContent.trim();
+    const isBlank = jobTeam === "" || jobTeam.toLowerCase() === "none";
+
+    const match =
+      team === "all" ||
+      (team === "none" && isBlank) ||
+      jobTeam === team;
+
+    row.style.display = match ? "" : "none";
+  });
+}
+
 // Event listeners
 uploadBtn.addEventListener("click", () => {
   const file = fileInput.files[0];
@@ -282,6 +305,16 @@ sortDateBtn.addEventListener("click", () => {
 dateOptions.addEventListener("change", () => {
   filterJobsByDate(dateOptions.value);
   dateDropdown.style.display = "none";
+});
+
+sortTeamBtn.addEventListener("click", () => {
+  teamDropdown.style.display = teamDropdown.style.display === "block" ? "none" : "block";
+});
+
+teamOptions.addEventListener("change", () => {
+  const selectedTeam = teamOptions.value;
+  filterJobsByTeam(selectedTeam);
+  teamDropdown.style.display = "none";
 });
 
 // Load data pertama kali saat halaman siap

@@ -48,6 +48,19 @@ l<!DOCTYPE html>
   <button id="sortTeamBtn">Sort by Team</button>
 </div>
 
+<!-- Tombol + dropdown Sort by Team -->
+<div class="dropdown-container" style="position: relative; display: inline-block;">
+  <button id="sortTeamBtn">Sort by Team</button>
+  <div id="teamDropdown" class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; padding: 5px; z-index: 100;">
+    <select id="teamOptions">
+      <option value="all">-- Show All --</option>
+      <option value="Reguler">Reguler</option>
+      <option value="Sugity">Sugity</option>
+      <option value="none">None / Blank</option>
+    </select>
+  </div>
+</div>    
+    
     <table id="jobTable">
       <thead>
         <tr>

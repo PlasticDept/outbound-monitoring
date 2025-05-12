@@ -72,6 +72,23 @@ h2 {
   background-color: #27ae60;
 }
 
+/* Styling untuk dropdown menu sort status */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 5px;
+  z-index: 100;
+}
+
 /* ====== Table Style ====== */
 table {
   width: 100%;

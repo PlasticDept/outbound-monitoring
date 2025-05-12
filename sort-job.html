@@ -17,11 +17,28 @@ l<!DOCTYPE html>
     </div>
 
     <div class="action-bar">
-      <button id="bulkAddBtn">Add Selected</button>
-      <button id="sortStatusBtn">Sort by Status</button>
-      <button id="sortDateBtn">Sort by Date</button>
-      <button id="sortTeamBtn">Sort by Team</button>
+  <button id="bulkAddBtn">Add Selected</button>
+
+  <!-- Tombol + dropdown Sort by Status -->
+  <div class="dropdown-container" style="position: relative; display: inline-block;">
+    <button id="sortStatusBtn">Sort by Status</button>
+    <div id="statusDropdown" class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; padding: 5px; z-index: 100;">
+      <select id="statusOptions">
+        <option value="all">-- Show All --</option>
+        <option value="NewJob">NewJob</option>
+        <option value="Downloaded">Downloaded</option>
+        <option value="PartialPicked">PartialPicked</option>
+        <option value="Picked">Picked</option>
+        <option value="Packed">Packed</option>
+        <option value="Loaded">Loaded</option>
+      </select>
     </div>
+  </div>
+
+  <!-- Tombol lainnya -->
+  <button id="sortDateBtn">Sort by Date</button>
+  <button id="sortTeamBtn">Sort by Team</button>
+</div>
 
     <table id="jobTable">
       <thead>

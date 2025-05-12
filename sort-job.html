@@ -16,8 +16,7 @@
     <button id="uploadBtn">Upload</button>
   </div>
 
-  <!-- Sticky Action Bar -->
-  <div class="action-bar sticky-toolbar">
+  <div class="action-bar">
     <button id="bulkAddBtn">Add Selected</button>
 
     <!-- Dropdown Sort by Status -->
@@ -60,25 +59,22 @@
     </div>
   </div>
 
-  <!-- Scrollable Table Container -->
-  <div class="table-container">
-    <table id="jobTable">
-      <thead>
-        <tr>
-          <th><input type="checkbox" id="selectAll" /></th>
-          <th>Job No</th>
-          <th>Delivery Date</th>
-          <th>Delivery Note</th>
-          <th>Remark</th>
-          <th>Status</th>
-          <th>Qty</th>
-          <th>Team</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+  <table id="jobTable">
+    <thead>
+      <tr>
+        <th><input type="checkbox" id="selectAll" /></th>
+        <th>Job No</th>
+        <th>Delivery Date</th>
+        <th>Delivery Note</th>
+        <th>Remark</th>
+        <th>Status</th>
+        <th>Qty</th>
+        <th>Team</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
 
 <!-- Modal Pop-up -->
@@ -86,6 +82,7 @@
   <div class="modal-content">
     <span class="close" id="closeModal">&times;</span>
     <h3>Pilih Team dan Job Type</h3>
+
     <label for="teamSelect">Team:</label>
     <select id="teamSelect">
       <option value="Reguler">Reguler</option>

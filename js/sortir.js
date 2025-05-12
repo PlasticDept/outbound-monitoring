@@ -286,3 +286,82 @@ function filterJobsByStatus(status) {
     row.style.display = match ? "" : "none";
   });
 }
+
+const sortDateBtn = document.getElementById("sortDateBtn");
+const dateDropdown = document.getElementById("dateDropdown");
+const dateOptions = document.getElementById("dateOptions");
+
+sortDateBtn.addEventListener("click", () => {
+  dateDropdown.style.display = dateDropdown.style.display === "block" ? "none" : "block";
+});
+
+// Dropdwon list untuk action bar Sort by Date
+dateOptions.addEventListener("change", () => {
+  const selectedDate = dateOptions.value;
+  filterJobsByDate(selectedDate);
+  dateDropdown.style.display = "none";
+});
+
+function filterJobsByDate(date) {
+  const rows = jobTable.getElementsByTagName("tr");
+
+  Array.from(rows).forEach((row) => {
+    const dateCell = row.cells[2]; // kolom Delivery Date
+    const jobDate = dateCell.textContent.trim();
+    const match = date === "all" || jobDate === date;
+
+    row.style.display = match ? "" : "none";
+  });
+}
+
+// Fungsi bantu untuk mengisi dropdown tanggal unik dari data tabel
+function populateDateOptions() {
+  const rows = jobTable.getElementsByTagName("tr");
+  const dates = new Set();
+
+  Array.from(rows).forEach((row) => {
+    const dateCell = row.cells[2];
+    if (dateCell) {
+      dates.add(dateCell.textContent.trim());
+    }
+  });
+
+  // Kosongkan dan isi ulang opsi tanggal
+  dateOptions.innerHTML = '<option value="all">-- Show All --</option>';
+  [...dates].sort().forEach(date => {
+    const option = document.createElement("option");
+    option.value = date;
+    option.textContent = date;
+    dateOptions.appendChild(option);
+  });
+}
+
+// Jalankan ulang populate tanggal setiap kali data diambil dari Firebase
+function loadJobsFromFirebase() {
+  const jobsRef = ref(db, "outboundJobs");
+
+  onValue(jobsRef, (snapshot) => {
+    const data = snapshot.val();
+    jobTable.innerHTML = "";
+
+    if (data) {
+      Object.values(data).forEach((job) => {
+        const row = jobTable.insertRow();
+        row.innerHTML = `
+          <td><input type="checkbox" data-jobno="${job.jobNo}"></td>
+          <td>${job.jobNo}</td>
+          <td>${job.deliveryDate}</td>
+          <td>${job.deliveryNote}</td>
+          <td>${job.remark}</td>
+          <td>${job.status}</td>
+          <td>${job.qty}</td>
+          <td>${job.team}</td>
+          <td><button class="add-single" data-jobno="${job.jobNo}">Add</button></td>
+        `;
+      });
+
+      // Isi ulang dropdown tanggal
+      populateDateOptions();
+    }
+  });
+}

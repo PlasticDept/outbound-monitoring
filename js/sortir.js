@@ -5,7 +5,6 @@ import {
   set,
   get,
   update,
-  child,
   onValue
 } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
@@ -29,6 +28,7 @@ const teamDropdown = document.getElementById("teamDropdown");
 const teamOptions = document.getElementById("teamOptions");
 
 let selectedSingleJob = null;
+let allJobsData = []; // Simpan semua job untuk multi-filter
 
 // Membaca dan parsing file Excel
 function parseExcel(file) {
@@ -43,7 +43,7 @@ function parseExcel(file) {
 
     const firstJob = json[0];
     if (firstJob) {
-      alert(`Contoh delivery date dari Excel:\n${firstJob["Delivery Date"]} (type: ${typeof firstJob["Delivery Date"]})`);
+      alert(`Contoh delivery date dari Excel:\n${firstJob["Delivery Date"]}`);
     }
 
     syncJobsToFirebase(json);
@@ -98,12 +98,8 @@ function syncJobsToFirebase(jobs) {
     const jobNo = job["Job No"];
     if (!jobNo) return;
 
-    let rawDate = job["Delivery Date"];
-    let formattedDate = formatDate(rawDate);
-
-    debugDiv.innerHTML += `Job: ${jobNo} | Raw Date: ${rawDate} | Formatted: ${formattedDate}<br>`;
-
-    job["Delivery Date"] = formattedDate;
+    const formattedDate = formatDate(job["Delivery Date"]);
+    debugDiv.innerHTML += `Job: ${jobNo} | Tanggal: ${formattedDate}<br>`;
 
     const jobData = {
       jobNo: job["Job No"] || "",
@@ -116,50 +112,54 @@ function syncJobsToFirebase(jobs) {
       jobType: ""
     };
 
-    const jobRef = ref(db, "outboundJobs/" + jobNo);
-    set(jobRef, jobData);
+    set(ref(db, "outboundJobs/" + jobNo), jobData);
   });
 
   alert("Data berhasil diunggah ke Firebase.");
   loadJobsFromFirebase();
 }
 
-// Memuat dan menampilkan data dari Firebase
+// Load data dari Firebase
 function loadJobsFromFirebase() {
-  const jobsRef = ref(db, "outboundJobs");
-  onValue(jobsRef, (snapshot) => {
+  onValue(ref(db, "outboundJobs"), snapshot => {
     const data = snapshot.val();
     jobTable.innerHTML = "";
+    allJobsData = [];
 
     if (data) {
       const uniqueDates = new Set();
-
-      Object.values(data).forEach((job) => {
-        const row = jobTable.insertRow();
-        row.innerHTML = `
-          <td><input type="checkbox" data-jobno="${job.jobNo}"></td>
-          <td>${job.jobNo}</td>
-          <td>${job.deliveryDate}</td>
-          <td>${job.deliveryNote}</td>
-          <td>${job.remark}</td>
-          <td>${job.status}</td>
-          <td>${Number(job.qty).toLocaleString()}</td>
-          <td>${job.team}</td>
-          <td><button class="add-single" data-jobno="${job.jobNo}">Add</button></td>
-        `;
-
+      Object.values(data).forEach(job => {
+        allJobsData.push(job);
+        const row = createTableRow(job);
+        jobTable.appendChild(row);
         uniqueDates.add(job.deliveryDate);
       });
-
       populateDateOptions(uniqueDates);
     }
   });
 }
 
-// Mengisi dropdown tanggal
+// Buat baris tabel
+function createTableRow(job) {
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td><input type="checkbox" data-jobno="${job.jobNo}"></td>
+    <td>${job.jobNo}</td>
+    <td>${job.deliveryDate}</td>
+    <td>${job.deliveryNote}</td>
+    <td>${job.remark}</td>
+    <td>${job.status}</td>
+    <td>${Number(job.qty).toLocaleString()}</td>
+    <td>${job.team}</td>
+    <td><button class="add-single" data-jobno="${job.jobNo}">Add</button></td>
+  `;
+  return row;
+}
+
+// Isi opsi tanggal di dropdown
 function populateDateOptions(dates) {
   dateOptions.innerHTML = '<option value="all">-- Show All --</option>';
-  Array.from(dates).sort().forEach(date => {
+  [...dates].sort().forEach(date => {
     const option = document.createElement("option");
     option.value = date;
     option.textContent = date;
@@ -167,112 +167,67 @@ function populateDateOptions(dates) {
   });
 }
 
-// Mendapatkan job yang dipilih dari checkbox
+// Ambil job yang dicentang
 function getSelectedJobs() {
   const checkboxes = document.querySelectorAll("tbody input[type='checkbox']:checked");
   return Array.from(checkboxes).map(cb => cb.getAttribute("data-jobno"));
 }
 
-// Menampilkan modal
-function showModal() {
-  modal.style.display = "block";
-}
+// Tampilkan / sembunyikan modal
+function showModal() { modal.style.display = "block"; }
+function hideModal() { modal.style.display = "none"; }
 
-// Menyembunyikan modal
-function hideModal() {
-  modal.style.display = "none";
-}
+// MULTI FILTER - berdasarkan status, tanggal, dan team
+function applyMultiFilter() {
+  const selectedStatus = statusOptions.value;
+  const selectedDate = dateOptions.value;
+  const selectedTeam = teamOptions.value;
 
-// Filter berdasarkan status
-function filterJobsByStatus(status) {
-  const rows = jobTable.querySelectorAll("tr");
-  rows.forEach(row => {
-    const statusCell = row.cells[5];
-    if (!statusCell) return;
-    const jobStatus = statusCell.textContent.trim();
-    row.style.display = (status === "all" || jobStatus === status) ? "" : "none";
+  jobTable.innerHTML = "";
+
+  allJobsData.forEach(job => {
+    const matchStatus = selectedStatus === "all" || job.status === selectedStatus;
+    const matchDate = selectedDate === "all" || job.deliveryDate === selectedDate;
+    const isBlankTeam = !job.team || job.team.toLowerCase() === "none";
+    const matchTeam = selectedTeam === "all" || (selectedTeam === "none" && isBlankTeam) || job.team === selectedTeam;
+
+    if (matchStatus && matchDate && matchTeam) {
+      jobTable.appendChild(createTableRow(job));
+    }
   });
 }
 
-// Filter berdasarkan tanggal
-function filterJobsByDate(date) {
-  const rows = jobTable.querySelectorAll("tr");
-  rows.forEach(row => {
-    const dateCell = row.cells[2];
-    if (!dateCell) return;
-    const jobDate = dateCell.textContent.trim();
-    row.style.display = (date === "all" || jobDate === date) ? "" : "none";
-  });
-}
-
-// Fungsi untuk filter berdasarkan Team
-function filterJobsByTeam(team) {
-  const rows = jobTable.querySelectorAll("tr");
-
-  rows.forEach((row) => {
-    const teamCell = row.cells[7];
-    if (!teamCell) return;
-
-    const jobTeam = teamCell.textContent.trim();
-    const isBlank = jobTeam === "" || jobTeam.toLowerCase() === "none";
-
-    const match =
-      team === "all" ||
-      (team === "none" && isBlank) ||
-      jobTeam === team;
-
-    row.style.display = match ? "" : "none";
-  });
-}
-
-// Event listeners
+// Event listeners utama
 uploadBtn.addEventListener("click", () => {
   const file = fileInput.files[0];
-  if (file) {
-    parseExcel(file);
-  } else {
-    alert("Pilih file Excel terlebih dahulu.");
-  }
+  if (file) parseExcel(file);
+  else alert("Pilih file Excel terlebih dahulu.");
 });
 
 bulkAddBtn.addEventListener("click", () => {
   const selectedJobs = getSelectedJobs();
-  if (selectedJobs.length === 0) {
-    alert("Pilih minimal satu job terlebih dahulu.");
-    return;
-  }
+  if (selectedJobs.length === 0) return alert("Pilih minimal satu job.");
   showModal();
 });
 
-jobTable.addEventListener("click", (event) => {
-  const target = event.target;
-  if (target.classList.contains("add-single")) {
+jobTable.addEventListener("click", e => {
+  if (e.target.classList.contains("add-single")) {
     const anyChecked = document.querySelector("tbody input[type='checkbox']:checked");
-    if (anyChecked) {
-      alert("Harap kosongkan centang sebelum menambahkan job satuan.");
-      return;
-    }
-    const jobNo = target.getAttribute("data-jobno");
-    if (jobNo) {
-      selectedSingleJob = jobNo;
-      showModal();
-    }
+    if (anyChecked) return alert("Kosongkan centang terlebih dahulu.");
+    selectedSingleJob = e.target.getAttribute("data-jobno");
+    showModal();
   }
 });
 
 confirmAdd.addEventListener("click", () => {
   const team = document.getElementById("teamSelect").value;
   const jobType = document.getElementById("jobTypeSelect").value;
-  let jobsToUpdate = selectedSingleJob ? [selectedSingleJob] : getSelectedJobs();
+  const jobsToUpdate = selectedSingleJob ? [selectedSingleJob] : getSelectedJobs();
 
-  if (jobsToUpdate.length === 0) {
-    alert("Tidak ada job yang dipilih.");
-    return;
-  }
+  if (jobsToUpdate.length === 0) return alert("Tidak ada job yang dipilih.");
 
   jobsToUpdate.forEach(jobNo => {
-    const jobRef = ref(db, "outboundJobs/" + jobNo);
-    update(jobRef, { team, jobType });
+    update(ref(db, "outboundJobs/" + jobNo), { team, jobType });
   });
 
   alert(`Job berhasil ditambahkan ke team: ${team}`);
@@ -281,41 +236,38 @@ confirmAdd.addEventListener("click", () => {
 });
 
 selectAllCheckbox.addEventListener("change", (e) => {
-  const checkboxes = document.querySelectorAll("tbody input[type='checkbox']");
-  checkboxes.forEach(cb => cb.checked = e.target.checked);
+  document.querySelectorAll("tbody input[type='checkbox']")
+    .forEach(cb => cb.checked = e.target.checked);
 });
 
 closeModal.addEventListener("click", hideModal);
 window.addEventListener("click", (e) => { if (e.target === modal) hideModal(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") hideModal(); });
 
+// TOMBOL DROPDOWN SORT
 sortStatusBtn.addEventListener("click", () => {
   statusDropdown.style.display = statusDropdown.style.display === "block" ? "none" : "block";
 });
-
-statusOptions.addEventListener("change", () => {
-  filterJobsByStatus(statusOptions.value);
-  statusDropdown.style.display = "none";
-});
-
 sortDateBtn.addEventListener("click", () => {
   dateDropdown.style.display = dateDropdown.style.display === "block" ? "none" : "block";
 });
-
-dateOptions.addEventListener("change", () => {
-  filterJobsByDate(dateOptions.value);
-  dateDropdown.style.display = "none";
-});
-
 sortTeamBtn.addEventListener("click", () => {
   teamDropdown.style.display = teamDropdown.style.display === "block" ? "none" : "block";
 });
 
+// FILTER saat dropdown berubah
+statusOptions.addEventListener("change", () => {
+  applyMultiFilter();
+  statusDropdown.style.display = "none";
+});
+dateOptions.addEventListener("change", () => {
+  applyMultiFilter();
+  dateDropdown.style.display = "none";
+});
 teamOptions.addEventListener("change", () => {
-  const selectedTeam = teamOptions.value;
-  filterJobsByTeam(selectedTeam);
+  applyMultiFilter();
   teamDropdown.style.display = "none";
 });
 
-// Load data pertama kali saat halaman siap
+// Load pertama kali saat halaman dimuat
 loadJobsFromFirebase();

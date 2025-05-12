@@ -1,6 +1,8 @@
 /* sortir.css */
 
-/* ====== Global Style ====== */
+/* =======================================
+   Global Styles
+======================================= */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f4f6f8;
@@ -18,14 +20,23 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* ====== Heading ====== */
+/* =======================================
+   Heading Styles
+======================================= */
 h2 {
   text-align: center;
   color: #2c3e50;
   margin-bottom: 30px;
+  position: sticky;
+  top: 0;
+  background-color: #ffffff;
+  z-index: 20;
+  padding: 10px 0;
 }
 
-/* ====== Upload Section ====== */
+/* =======================================
+   Upload Section
+======================================= */
 .upload-section {
   text-align: center;
   margin-bottom: 20px;
@@ -49,12 +60,20 @@ h2 {
   background-color: #2980b9;
 }
 
-/* ====== Action Bar ====== */
+/* =======================================
+   Action Bar & Sorting Buttons
+======================================= */
 .action-bar {
   display: flex;
   justify-content: center;
   gap: 15px;
   margin-bottom: 20px;
+  position: sticky;
+  top: 60px; /* Sticky tepat di bawah heading */
+  background-color: #ffffff;
+  z-index: 15;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
 }
 
 .action-bar button {
@@ -72,7 +91,7 @@ h2 {
   background-color: #27ae60;
 }
 
-/* Styling untuk dropdown menu sort status */
+/* Dropdown Sort (Status, Date, Team) */
 .dropdown-container {
   position: relative;
   display: inline-block;
@@ -98,7 +117,9 @@ h2 {
   transform: translateY(0);
 }
 
-/* ====== Table Style ====== */
+/* =======================================
+   Table Styles
+======================================= */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -111,17 +132,20 @@ th, td {
   border-bottom: 1px solid #ddd;
 }
 
-th {
+thead th {
   background-color: #ecf0f1;
   font-weight: bold;
   color: #2c3e50;
+  position: sticky;
+  top: 120px; /* Menyesuaikan h2 + action bar */
+  z-index: 10;
 }
 
 tr:hover {
   background-color: #f1f1f1;
 }
 
-/* ====== Add Button in Table ====== */
+/* Tombol "Add" di dalam Tabel */
 .add-single {
   background-color: #9b59b6;
   color: white;
@@ -136,20 +160,21 @@ tr:hover {
   background-color: #8e44ad;
 }
 
-/* ====== Modal Pop-up ====== */
+/* =======================================
+   Modal Styles
+======================================= */
 .modal {
-  display: none; /* Hidden by default */
+  display: none; /* Default hidden */
   position: fixed;
-  z-index: 10;
+  z-index: 100; /* Di atas elemen sticky */
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0,0,0,0.5); /* Black with transparency */
+  background-color: rgba(0,0,0,0.5);
 }
 
-/* Modal Box */
 .modal-content {
   background-color: #fff;
   margin: 10% auto;
@@ -157,9 +182,11 @@ tr:hover {
   border-radius: 12px;
   width: 400px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 101;
 }
 
-/* Close Button (X) */
+/* Tombol Close (X) */
 .close {
   color: #aaa;
   float: right;
@@ -172,7 +199,7 @@ tr:hover {
   color: #e74c3c;
 }
 
-/* Dropdowns and Labels */
+/* Form dalam Modal */
 .modal-content label {
   display: block;
   margin-top: 15px;
@@ -188,7 +215,6 @@ tr:hover {
   margin-bottom: 15px;
 }
 
-/* Confirm Button in Modal */
 #confirmAdd {
   background-color: #34495e;
   color: white;
@@ -205,31 +231,9 @@ tr:hover {
   background-color: #2c3e50;
 }
 
-h2 {
-  position: sticky;
-  top: 0;
-  background-color: #ffffff;
-  z-index: 20;
-  padding: 10px 0;
-}
-
-.action-bar {
-  position: sticky;
-  top: 60px; /* Sesuaikan jika header lebih tinggi */
-  background-color: #ffffff;
-  z-index: 15;
-  padding: 10px 0;
-  border-bottom: 1px solid #ddd;
-}
-
-thead th {
-  position: sticky;
-  top: 120px; /* Tinggi dari h2 + action bar */
-  background-color: #ecf0f1;
-  z-index: 10;
-}
-
-/* ====== Responsive Design for Mobile ====== */
+/* =======================================
+   Responsive Styles (Mobile)
+======================================= */
 @media (max-width: 768px) {
   .container {
     padding: 20px;

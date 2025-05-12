@@ -87,18 +87,15 @@ h2 {
   border: 1px solid #ccc;
   padding: 5px;
   z-index: 100;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* Styling untuk dropdown menu sort date */
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: white;
-  border: 1px solid #ccc;
-  padding: 5px;
-  z-index: 100;
+.dropdown-container.show .dropdown-menu {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ====== Table Style ====== */

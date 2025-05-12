@@ -145,6 +145,7 @@ function loadJobsFromFirebase() {
       });
     }
   });
+  populateDateOptions();
 }
 
 // Ambil job yang dipilih
@@ -333,35 +334,5 @@ function populateDateOptions() {
     option.value = date;
     option.textContent = date;
     dateOptions.appendChild(option);
-  });
-}
-
-// Jalankan ulang populate tanggal setiap kali data diambil dari Firebase
-function loadJobsFromFirebase() {
-  const jobsRef = ref(db, "outboundJobs");
-
-  onValue(jobsRef, (snapshot) => {
-    const data = snapshot.val();
-    jobTable.innerHTML = "";
-
-    if (data) {
-      Object.values(data).forEach((job) => {
-        const row = jobTable.insertRow();
-        row.innerHTML = `
-          <td><input type="checkbox" data-jobno="${job.jobNo}"></td>
-          <td>${job.jobNo}</td>
-          <td>${job.deliveryDate}</td>
-          <td>${job.deliveryNote}</td>
-          <td>${job.remark}</td>
-          <td>${job.status}</td>
-          <td>${job.qty}</td>
-          <td>${job.team}</td>
-          <td><button class="add-single" data-jobno="${job.jobNo}">Add</button></td>
-        `;
-      });
-
-      // Isi ulang dropdown tanggal
-      populateDateOptions();
-    }
   });
 }

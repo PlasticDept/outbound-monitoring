@@ -288,22 +288,6 @@ function filterJobsByStatus(status) {
   });
 }
 
-// Tampilkan atau sembunyikan dropdown tanggal saat tombol diklik
-const sortDateBtn = document.getElementById("sortDateBtn");
-const dateDropdown = document.getElementById("dateDropdown");
-
-sortDateBtn.addEventListener("click", () => {
-  dateDropdown.style.display = dateDropdown.style.display === "block" ? "none" : "block";
-});
-
-// Event ketika opsi tanggal dipilih
-const dateOptions = document.getElementById("dateOptions");
-dateOptions.addEventListener("change", () => {
-  const selectedDate = dateOptions.value;
-  filterJobsByDate(selectedDate);
-  dateDropdown.style.display = "none";
-});
-
 function filterJobsByDate(date) {
   const rows = jobTable.querySelectorAll("tr");
 

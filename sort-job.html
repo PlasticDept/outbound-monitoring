@@ -35,8 +35,16 @@ l<!DOCTYPE html>
     </div>
   </div>
 
-  <!-- Tombol lainnya -->
-  <button id="sortDateBtn">Sort by Date</button>
+  <!-- Tombol + dropdown Sort by Date -->
+  <div class="dropdown-container" style="position: relative; display: inline-block;">
+    <button id="sortDateBtn">Sort by Date</button>
+    <div id="dateDropdown" class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid #ccc; padding: 5px; z-index: 100;">
+      <select id="dateOptions">
+        <option value="all">-- Show All --</option>
+        <!-- Opsi tanggal akan diisi otomatis dari data Firebase -->
+      </select>
+    </div>
+  </div>
   <button id="sortTeamBtn">Sort by Team</button>
 </div>
 

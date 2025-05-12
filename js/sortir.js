@@ -259,3 +259,30 @@ document.addEventListener("keydown", (e) => {
 
 // Load data pertama kali saat halaman siap
 loadJobsFromFirebase();
+
+// Dropdwon list untuk action bar Status
+const sortStatusBtn = document.getElementById("sortStatusBtn");
+const statusDropdown = document.getElementById("statusDropdown");
+const statusOptions = document.getElementById("statusOptions");
+
+sortStatusBtn.addEventListener("click", () => {
+  statusDropdown.style.display = statusDropdown.style.display === "block" ? "none" : "block";
+});
+
+statusOptions.addEventListener("change", () => {
+  const selectedStatus = statusOptions.value;
+  filterJobsByStatus(selectedStatus);
+  statusDropdown.style.display = "none"; // Sembunyikan dropdown setelah memilih
+});
+
+function filterJobsByStatus(status) {
+  const rows = jobTable.getElementsByTagName("tr");
+
+  Array.from(rows).forEach((row) => {
+    const statusCell = row.cells[5]; // kolom Status
+    const jobStatus = statusCell.textContent.trim();
+    const match = status === "all" || jobStatus === status;
+
+    row.style.display = match ? "" : "none";
+  });
+}

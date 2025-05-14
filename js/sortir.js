@@ -158,26 +158,33 @@ function syncJobsToFirebase(jobs) {
 
 // Load data dari Firebase
 function loadJobsFromFirebase() {
-  onValue(ref(db, "outboundJobs"), snapshot => {
-    const data = snapshot.val();
-    jobTable.innerHTML = "";
-    allJobsData = [];
+  const debugDiv = document.getElementById("debugLog");
+  jobTable.innerHTML = "";
+  allJobsData = [];
 
-    if (data) {
-      const uniqueDates = new Set();
-      const uniqueTeams = new Set();
+  get(ref(db, "outboundJobs"))
+    .then(snapshot => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const uniqueDates = new Set();
+        const uniqueTeams = new Set();
 
-      Object.values(data).forEach(job => {
-        allJobsData.push(job);
-        const row = createTableRow(job);
-        jobTable.appendChild(row);
-        uniqueDates.add(job.deliveryDate);
-        uniqueTeams.add(job.team || "");
-      });
-      populateDateOptions(uniqueDates);
-      populateTeamOptions(uniqueTeams);
-    }
-  });
+        Object.values(data).forEach(job => {
+          allJobsData.push(job);
+          const row = createTableRow(job);
+          jobTable.appendChild(row);
+          uniqueDates.add(job.deliveryDate);
+          uniqueTeams.add(job.team || "");
+        });
+
+        populateDateOptions(uniqueDates);
+        populateTeamOptions(uniqueTeams);
+      }
+    })
+    .catch(error => {
+      console.error("Gagal mengambil data:", error);
+      showNotification("Gagal mengambil data dari Firebase.", true);
+    });
 }
 
 // Buat baris tabel

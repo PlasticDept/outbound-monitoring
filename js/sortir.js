@@ -55,17 +55,26 @@ function parseExcel(file) {
   showNotification("Memulai proses upload file...");
 
   reader.onload = function (e) {
-    const data = new Uint8Array(e.target.result);
-    const workbook = XLSX.read(data, { type: "array" });
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const json = XLSX.utils.sheet_to_json(sheet);
+    try {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const json = XLSX.utils.sheet_to_json(sheet);
 
-    const firstJob = json[0];
-    if (firstJob) {
-      showNotification(`Contoh delivery date dari Excel:\n${firstJob["Delivery Date"]}`);
+      const firstJob = json[0];
+      if (!firstJob || !firstJob["Job No"] || !firstJob["Delivery Date"]) {
+        showNotification("Format file Excel tidak sesuai. Pastikan ada kolom 'Job No' dan 'Delivery Date'.", true);
+        fileInput.value = "";
+        return;
+      }
+
+      showNotification(`Contoh delivery date dari Excel:
+${firstJob["Delivery Date"]}`);
+      syncJobsToFirebase(json);
+    } catch (err) {
+      console.error("Gagal parsing Excel:", err);
+      showNotification("Terjadi kesalahan saat membaca file Excel.", true);
     }
-
-    syncJobsToFirebase(json);
     fileInput.value = "";
   };
 
@@ -123,7 +132,7 @@ function syncJobsToFirebase(jobs) {
     }
 
     const formattedDate = formatDate(job["Delivery Date"]);
-
+    
     const jobData = {
       jobNo,
       deliveryDate: sanitizeValue(formattedDate),
@@ -183,6 +192,7 @@ function loadJobsFromFirebase() {
       showNotification("Gagal mengambil data dari Firebase.", true);
     });
 }
+
 
 // Buat baris tabel
 function createTableRow(job) {

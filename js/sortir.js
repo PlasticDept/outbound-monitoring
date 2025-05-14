@@ -22,7 +22,7 @@ function showNotification(message, isError = false) {
 
 // Fungsi bantu untuk membersihkan nilai dari Excel
 function sanitizeValue(value) {
-  if (typeof value === "object") return JSON.stringify(value);
+  if (typeof value === "object") return ""; // Hindari stringify object
   if (typeof value === "function") return "";
   return value ?? "";
 }
@@ -109,7 +109,7 @@ function formatDate(input) {
   return input;
 }
 
-// Menyimpan data dari Excel ke Firebase (overwrite semua data)
+// Menyimpan data dari Excel ke Firebase (per job, aman)
 function syncJobsToFirebase(jobs) {
   const debugDiv = document.getElementById("debugLog");
   debugDiv.innerHTML = "<strong>Debug Log:</strong><br>";
@@ -119,7 +119,10 @@ function syncJobsToFirebase(jobs) {
 
   jobs.forEach(job => {
     const jobNo = sanitizeValue(job["Job No"]);
-    if (!jobNo) return;
+    if (!jobNo || /[.#$\[\]]/.test(jobNo)) {
+      console.warn("Lewatkan jobNo invalid:", jobNo);
+      return;
+    }
 
     const formattedDate = formatDate(job["Delivery Date"]);
     debugDiv.innerHTML += `Job: ${jobNo} | Tanggal: ${formattedDate}<br>`;

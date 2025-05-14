@@ -91,17 +91,14 @@ function formatDate(input) {
 
 // Menyimpan data dari Excel ke Firebase
 function syncJobsToFirebase(jobs) {
-  const debugDiv = document.getElementById("debugLog");
-  debugDiv.innerHTML = "<strong>Debug Log:</strong><br>";
+  const parsedData = {};
 
   jobs.forEach(job => {
     const jobNo = job["Job No"];
     if (!jobNo) return;
 
     const formattedDate = formatDate(job["Delivery Date"]);
-    debugDiv.innerHTML += `Job: ${jobNo} | Tanggal: ${formattedDate}<br>`;
-
-    const jobData = {
+    parsedData[jobNo] = {
       jobNo: job["Job No"] || "",
       deliveryDate: formattedDate,
       deliveryNote: job["Delivery Note"] || "",
@@ -111,12 +108,19 @@ function syncJobsToFirebase(jobs) {
       team: "",
       jobType: ""
     };
-
-    set(ref(db, "outboundJobs/" + jobNo), jobData);
   });
 
-  alert("Data berhasil diunggah ke Firebase.");
-  loadJobsFromFirebase();
+  // Konfirmasi sebelum menimpa semua data
+  if (confirm("Upload ini akan menghapus semua data lama dan menggantinya dengan data baru. Lanjutkan?")) {
+    set(ref(db, "outboundJobs"), parsedData)
+      .then(() => {
+        alert("Data berhasil diunggah dan diperbarui di Firebase.");
+        loadJobsFromFirebase();
+      })
+      .catch(error => {
+        alert("Gagal mengunggah data: " + error.message);
+      });
+  }
 }
 
 // Load data dari Firebase

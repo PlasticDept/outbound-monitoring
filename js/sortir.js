@@ -13,14 +13,15 @@ function showNotification(message, isError = false) {
   const notification = document.getElementById('notification');
   notification.textContent = message;
   notification.style.display = 'block';
-  notification.style.backgroundColor = isError ? '#f8d7da' : '#d4edda';
-  notification.style.color = isError ? '#721c24' : '#155724';
-  notification.style.border = isError ? '1px solid #f5c6cb' : '1px solid #c3e6cb';
+
+  // Tambah atau hapus class 'error' sesuai jenis notifikasi
+  notification.classList.toggle('error', isError);
 
   setTimeout(() => {
     notification.style.display = 'none';
   }, 4000);
 }
+
 
 // Ambil elemen DOM
 const fileInput = document.getElementById("fileInput");

@@ -178,6 +178,7 @@ tr:hover {
 #jobTable th:nth-child(5),
 #jobTable td:nth-child(5) {
   width: 250px;
+  text-align: left;
 }
 
 /* Kolom 6: Status */
@@ -204,6 +205,10 @@ tr:hover {
   width: 90px;
 }
 
+/* ubah font menjadi bold*/
+#jobTable td {
+  font-weight: bold; /*<==== ubah bagian ini*/
+}
 
 /* Tombol "Add" di dalam Tabel */
 .add-single {

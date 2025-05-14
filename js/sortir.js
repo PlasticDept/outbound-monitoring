@@ -153,17 +153,6 @@ function syncJobsToFirebase(jobs) {
   });
 }
 
-  set(ref(db, "outboundJobs"), cleanedData)
-    .then(() => {
-      showNotification("Data berhasil diunggah ke Firebase.");
-      loadJobsFromFirebase();
-    })
-    .catch((error) => {
-      console.error("Upload error:", error);
-      showNotification("Terjadi kesalahan saat upload ke Firebase.", true);
-    });
-}
-
 // Load data dari Firebase
 function loadJobsFromFirebase() {
   onValue(ref(db, "outboundJobs"), snapshot => {

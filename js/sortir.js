@@ -8,6 +8,20 @@ import {
   onValue
 } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
+// === Notifikasi di atas header ===
+function showNotification(message, isError = false) {
+  const notification = document.getElementById('notification');
+  notification.textContent = message;
+  notification.style.display = 'block';
+  notification.style.backgroundColor = isError ? '#f8d7da' : '#d4edda';
+  notification.style.color = isError ? '#721c24' : '#155724';
+  notification.style.border = isError ? '1px solid #f5c6cb' : '1px solid #c3e6cb';
+
+  setTimeout(() => {
+    notification.style.display = 'none';
+  }, 4000);
+}
+
 // Ambil elemen DOM
 const fileInput = document.getElementById("fileInput");
 const uploadBtn = document.getElementById("uploadBtn");
@@ -33,7 +47,7 @@ let allJobsData = []; // Simpan semua job untuk multi-filter
 // Membaca dan parsing file Excel
 function parseExcel(file) {
   const reader = new FileReader();
-  alert("Memulai proses upload file...");
+  showNotification("Memulai proses upload file...");
 
   reader.onload = function (e) {
     const data = new Uint8Array(e.target.result);
@@ -43,10 +57,11 @@ function parseExcel(file) {
 
     const firstJob = json[0];
     if (firstJob) {
-      alert(`Contoh delivery date dari Excel:\n${firstJob["Delivery Date"]}`);
+      showNotification(`Contoh delivery date dari Excel:\n${firstJob["Delivery Date"]}`);
     }
 
     syncJobsToFirebase(json);
+    fileInput.value = "";
   };
 
   reader.readAsArrayBuffer(file);
@@ -115,7 +130,7 @@ function syncJobsToFirebase(jobs) {
     set(ref(db, "outboundJobs/" + jobNo), jobData);
   });
 
-  alert("Data berhasil diunggah ke Firebase.");
+  showNotification("Data berhasil diunggah ke Firebase.");
   loadJobsFromFirebase();
 }
 
@@ -219,19 +234,19 @@ function applyMultiFilter() {
 uploadBtn.addEventListener("click", () => {
   const file = fileInput.files[0];
   if (file) parseExcel(file);
-  else alert("Pilih file Excel terlebih dahulu.");
+  else showNotification("Pilih file Excel terlebih dahulu.", true);
 });
 
 bulkAddBtn.addEventListener("click", () => {
   const selectedJobs = getSelectedJobs();
-  if (selectedJobs.length === 0) return alert("Pilih minimal satu job.");
+  if (selectedJobs.length === 0) return showNotification("Pilih minimal satu job.", true);
   showModal();
 });
 
 jobTable.addEventListener("click", e => {
   if (e.target.classList.contains("add-single")) {
     const anyChecked = document.querySelector("tbody input[type='checkbox']:checked");
-    if (anyChecked) return alert("Kosongkan centang terlebih dahulu.");
+    if (anyChecked) return showNotification("Kosongkan centang terlebih dahulu.", true);
     selectedSingleJob = e.target.getAttribute("data-jobno");
     showModal();
   }
@@ -242,13 +257,13 @@ confirmAdd.addEventListener("click", () => {
   const jobType = document.getElementById("jobTypeSelect").value;
   const jobsToUpdate = selectedSingleJob ? [selectedSingleJob] : getSelectedJobs();
 
-  if (jobsToUpdate.length === 0) return alert("Tidak ada job yang dipilih.");
+  if (jobsToUpdate.length === 0) return showNotification("Tidak ada job yang dipilih.", true);
 
   jobsToUpdate.forEach(jobNo => {
     update(ref(db, "outboundJobs/" + jobNo), { team, jobType });
   });
 
-  alert(`Job berhasil ditambahkan ke team: ${team}`);
+  showNotification(`Job berhasil ditambahkan ke team: ${team}`);
   selectedSingleJob = null;
   hideModal();
 });

@@ -62,11 +62,21 @@ function parseExcel(file) {
     }
 
     syncJobsToFirebase(json);
+
+    // ✅ Kosongkan input file setelah selesai dibaca
+    fileInput.value = "";
+  };
+
+  reader.onerror = function () {
+    showNotification("Gagal membaca file Excel.", true);
+
+    // ✅ Tetap kosongkan input meskipun gagal
     fileInput.value = "";
   };
 
   reader.readAsArrayBuffer(file);
 }
+
 
 // Format tanggal ke "dd-MMM-yyyy"
 function formatToCustomDate(date) {

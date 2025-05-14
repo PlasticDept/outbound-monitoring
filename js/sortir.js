@@ -91,14 +91,17 @@ function formatDate(input) {
 
 // Menyimpan data dari Excel ke Firebase
 function syncJobsToFirebase(jobs) {
-  const parsedData = {};
+  const debugDiv = document.getElementById("debugLog");
+  debugDiv.innerHTML = "<strong>Debug Log:</strong><br>";
 
   jobs.forEach(job => {
     const jobNo = job["Job No"];
     if (!jobNo) return;
 
     const formattedDate = formatDate(job["Delivery Date"]);
-    parsedData[jobNo] = {
+    debugDiv.innerHTML += `Job: ${jobNo} | Tanggal: ${formattedDate}<br>`;
+
+    const jobData = {
       jobNo: job["Job No"] || "",
       deliveryDate: formattedDate,
       deliveryNote: job["Delivery Note"] || "",
@@ -108,19 +111,12 @@ function syncJobsToFirebase(jobs) {
       team: "",
       jobType: ""
     };
+
+    set(ref(db, "outboundJobs/" + jobNo), jobData);
   });
 
-  // Konfirmasi sebelum menimpa semua data
-  if (confirm("Upload ini akan menghapus semua data lama dan menggantinya dengan data baru. Lanjutkan?")) {
-    set(ref(db, "outboundJobs"), parsedData)
-      .then(() => {
-        alert("Data berhasil diunggah dan diperbarui di Firebase.");
-        loadJobsFromFirebase();
-      })
-      .catch(error => {
-        alert("Gagal mengunggah data: " + error.message);
-      });
-  }
+  alert("Data berhasil diunggah ke Firebase.");
+  loadJobsFromFirebase();
 }
 
 // Load data dari Firebase
@@ -132,13 +128,17 @@ function loadJobsFromFirebase() {
 
     if (data) {
       const uniqueDates = new Set();
+      const uniqueTeams = new Set();
+
       Object.values(data).forEach(job => {
         allJobsData.push(job);
         const row = createTableRow(job);
         jobTable.appendChild(row);
         uniqueDates.add(job.deliveryDate);
+        uniqueTeams.add(job.team || "");
       });
       populateDateOptions(uniqueDates);
+      populateTeamOptions(uniqueTeams);
     }
   });
 }
@@ -168,6 +168,20 @@ function populateDateOptions(dates) {
     option.value = date;
     option.textContent = date;
     dateOptions.appendChild(option);
+  });
+}
+
+// Isi opsi team di dropdown
+function populateTeamOptions(teams) {
+  teamOptions.innerHTML = '<option value="all">-- Show All --</option>';
+  const uniqueTeams = new Set(teams);
+  uniqueTeams.forEach(team => {
+    const value = team.trim() === "" ? "none" : team;
+    const label = team.trim() === "" ? "None/blank" : team;
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = label;
+    teamOptions.appendChild(option);
   });
 }
 

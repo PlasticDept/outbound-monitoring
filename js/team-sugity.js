@@ -20,7 +20,9 @@ function loadTeamJobs(teamName) {
               <td>${job.remark}</td>
               <td>${job.status}</td>
               <td>${Number(job.qty).toLocaleString()}</td>
+              <td>${job.jobType || ""}</td> <!-- ✅ Tambahan -->
             `;
+
             teamTable.appendChild(row);
           }
         });

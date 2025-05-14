@@ -119,7 +119,6 @@ function formatDate(input) {
 
 // Menyimpan data dari Excel ke Firebase (per job, aman)
 function syncJobsToFirebase(jobs) {
-  
   let uploadCount = 0;
   let errorCount = 0;
 
@@ -131,33 +130,38 @@ function syncJobsToFirebase(jobs) {
     }
 
     const formattedDate = formatDate(job["Delivery Date"]);
-    
-    const jobData = {
-      jobNo,
-      deliveryDate: sanitizeValue(formattedDate),
-      deliveryNote: sanitizeValue(job["Delivery Note"]),
-      remark: sanitizeValue(job["Remark"]),
-      status: sanitizeValue(job["Status"]),
-      qty: sanitizeValue(job["Plan Qty"] || job["Qty"]),
-      team: "",
-      jobType: ""
-    };
+    const jobRef = ref(db, "outboundJobs/" + jobNo);
 
-    set(ref(db, "outboundJobs/" + jobNo), jobData)
-      .then(() => {
-        uploadCount++;
-        if (uploadCount + errorCount === jobs.length) {
-          showNotification("Upload selesai. Berhasil: " + uploadCount + ", Gagal: " + errorCount);
-          loadJobsFromFirebase();
-        }
-      })
-      .catch((error) => {
-        errorCount++;
-        console.error("Error update job:", jobNo, error);
-        if (uploadCount + errorCount === jobs.length) {
-          showNotification("Upload selesai. Berhasil: " + uploadCount + ", Gagal: " + errorCount, true);
-        }
-      });
+    get(jobRef).then(existingSnap => {
+      const existing = existingSnap.exists() ? existingSnap.val() : {};
+
+      const jobData = {
+        jobNo,
+        deliveryDate: sanitizeValue(formattedDate),
+        deliveryNote: sanitizeValue(job["Delivery Note"]),
+        remark: sanitizeValue(job["Remark"]),
+        status: sanitizeValue(job["Status"]),
+        qty: sanitizeValue(job["Plan Qty"] || job["Qty"]),
+        team: existing.team || "",
+        jobType: existing.jobType || ""
+      };
+
+      return set(jobRef, jobData);
+    })
+    .then(() => {
+      uploadCount++;
+      if (uploadCount + errorCount === jobs.length) {
+        showNotification("Upload selesai. Berhasil: " + uploadCount + ", Gagal: " + errorCount);
+        loadJobsFromFirebase();
+      }
+    })
+    .catch(error => {
+      errorCount++;
+      console.error("Error update job:", jobNo, error);
+      if (uploadCount + errorCount === jobs.length) {
+        showNotification("Upload selesai. Berhasil: " + uploadCount + ", Gagal: " + errorCount, true);
+      }
+    });
   });
 }
 

@@ -114,7 +114,8 @@ function syncJobsToFirebase(jobs) {
   const debugDiv = document.getElementById("debugLog");
   debugDiv.innerHTML = "<strong>Debug Log:</strong><br>";
 
-  const cleanedData = {};
+  let uploadCount = 0;
+  let errorCount = 0;
 
   jobs.forEach(job => {
     const jobNo = sanitizeValue(job["Job No"]);
@@ -123,7 +124,7 @@ function syncJobsToFirebase(jobs) {
     const formattedDate = formatDate(job["Delivery Date"]);
     debugDiv.innerHTML += `Job: ${jobNo} | Tanggal: ${formattedDate}<br>`;
 
-    cleanedData[jobNo] = {
+    const jobData = {
       jobNo,
       deliveryDate: sanitizeValue(formattedDate),
       deliveryNote: sanitizeValue(job["Delivery Note"]),
@@ -133,7 +134,24 @@ function syncJobsToFirebase(jobs) {
       team: "",
       jobType: ""
     };
+
+    set(ref(db, "outboundJobs/" + jobNo), jobData)
+      .then(() => {
+        uploadCount++;
+        if (uploadCount + errorCount === jobs.length) {
+          showNotification("Upload selesai. Berhasil: " + uploadCount + ", Gagal: " + errorCount);
+          loadJobsFromFirebase();
+        }
+      })
+      .catch((error) => {
+        errorCount++;
+        console.error("Error update job:", jobNo, error);
+        if (uploadCount + errorCount === jobs.length) {
+          showNotification("Upload selesai. Berhasil: " + uploadCount + ", Gagal: " + errorCount, true);
+        }
+      });
   });
+}
 
   set(ref(db, "outboundJobs"), cleanedData)
     .then(() => {

@@ -12,7 +12,7 @@ body {
 }
 
 .container {
-  max-width: 1600px;
+  max-width: 1800px;
   width: 100%;
   margin: 40px auto;
   background-color: #ffffff;
@@ -126,13 +126,14 @@ h2 {
 table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: auto;
   margin-bottom: 30px;
 }
 
 th, td {
   padding: 10px;
   text-align: center;
-  border-bottom: 1px solid #ddd;
+  border: 1px solid #ddd;
 }
 
 thead th {
@@ -148,6 +149,61 @@ thead th {
 tr:hover {
   background-color: #f1f1f1;
 }
+
+/* Kolom 1: Checkbox */
+#jobTable th:nth-child(1),
+#jobTable td:nth-child(1) {
+  width: 40px;
+}
+
+/* Kolom 2: Job No */
+#jobTable th:nth-child(2),
+#jobTable td:nth-child(2) {
+  width: 160px;
+}
+
+/* Kolom 3: Delivery Date */
+#jobTable th:nth-child(3),
+#jobTable td:nth-child(3) {
+  width: 130px;
+}
+
+/* Kolom 4: Delivery Note */
+#jobTable th:nth-child(4),
+#jobTable td:nth-child(4) {
+  width: 160px;
+}
+
+/* Kolom 5: Remark */
+#jobTable th:nth-child(5),
+#jobTable td:nth-child(5) {
+  width: 250px;
+}
+
+/* Kolom 6: Status */
+#jobTable th:nth-child(6),
+#jobTable td:nth-child(6) {
+  width: 120px;
+}
+
+/* Kolom 7: Qty */
+#jobTable th:nth-child(7),
+#jobTable td:nth-child(7) {
+  width: 100px;
+}
+
+/* Kolom 8: Team */
+#jobTable th:nth-child(8),
+#jobTable td:nth-child(8) {
+  width: 110px;
+}
+
+/* Kolom 9: Action */
+#jobTable th:nth-child(9),
+#jobTable td:nth-child(9) {
+  width: 90px;
+}
+
 
 /* Tombol "Add" di dalam Tabel */
 .add-single {

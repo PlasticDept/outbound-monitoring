@@ -111,9 +111,7 @@ function formatDate(input) {
 
 // Menyimpan data dari Excel ke Firebase (per job, aman)
 function syncJobsToFirebase(jobs) {
-  const debugDiv = document.getElementById("debugLog");
-  debugDiv.innerHTML = "<strong>Debug Log:</strong><br>";
-
+  
   let uploadCount = 0;
   let errorCount = 0;
 
@@ -125,7 +123,6 @@ function syncJobsToFirebase(jobs) {
     }
 
     const formattedDate = formatDate(job["Delivery Date"]);
-    debugDiv.innerHTML += `Job: ${jobNo} | Tanggal: ${formattedDate}<br>`;
 
     const jobData = {
       jobNo,

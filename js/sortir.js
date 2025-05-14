@@ -63,7 +63,6 @@ function parseExcel(file) {
 
       const firstJob = json[0];
       if (!firstJob || !firstJob["Job No"] || !firstJob["Delivery Date"]) {
-        showNotification("Format file Excel tidak sesuai. Pastikan ada kolom 'Job No' dan 'Delivery Date'.", true);
         fileInput.value = "";
         return;
       }

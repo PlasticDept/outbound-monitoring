@@ -13,8 +13,6 @@ function showNotification(message, isError = false) {
   const notification = document.getElementById('notification');
   notification.textContent = message;
   notification.style.display = 'block';
-
-  // Tambah atau hapus class 'error' sesuai jenis notifikasi
   notification.classList.toggle('error', isError);
 
   setTimeout(() => {
@@ -22,6 +20,12 @@ function showNotification(message, isError = false) {
   }, 4000);
 }
 
+// Fungsi bantu untuk membersihkan nilai dari Excel
+function sanitizeValue(value) {
+  if (typeof value === "object") return JSON.stringify(value);
+  if (typeof value === "function") return "";
+  return value ?? "";
+}
 
 // Ambil elemen DOM
 const fileInput = document.getElementById("fileInput");
@@ -62,21 +66,11 @@ function parseExcel(file) {
     }
 
     syncJobsToFirebase(json);
-
-    // ✅ Kosongkan input file setelah selesai dibaca
-    fileInput.value = "";
-  };
-
-  reader.onerror = function () {
-    showNotification("Gagal membaca file Excel.", true);
-
-    // ✅ Tetap kosongkan input meskipun gagal
     fileInput.value = "";
   };
 
   reader.readAsArrayBuffer(file);
 }
-
 
 // Format tanggal ke "dd-MMM-yyyy"
 function formatToCustomDate(date) {
@@ -115,34 +109,41 @@ function formatDate(input) {
   return input;
 }
 
-// Menyimpan data dari Excel ke Firebase
+// Menyimpan data dari Excel ke Firebase (overwrite semua data)
 function syncJobsToFirebase(jobs) {
   const debugDiv = document.getElementById("debugLog");
   debugDiv.innerHTML = "<strong>Debug Log:</strong><br>";
 
+  const cleanedData = {};
+
   jobs.forEach(job => {
-    const jobNo = job["Job No"];
+    const jobNo = sanitizeValue(job["Job No"]);
     if (!jobNo) return;
 
     const formattedDate = formatDate(job["Delivery Date"]);
     debugDiv.innerHTML += `Job: ${jobNo} | Tanggal: ${formattedDate}<br>`;
 
-    const jobData = {
-      jobNo: job["Job No"] || "",
-      deliveryDate: formattedDate,
-      deliveryNote: job["Delivery Note"] || "",
-      remark: job["Remark"] || "",
-      status: job["Status"] || "",
-      qty: job["Plan Qty"] || job["Qty"] || "",
+    cleanedData[jobNo] = {
+      jobNo,
+      deliveryDate: sanitizeValue(formattedDate),
+      deliveryNote: sanitizeValue(job["Delivery Note"]),
+      remark: sanitizeValue(job["Remark"]),
+      status: sanitizeValue(job["Status"]),
+      qty: sanitizeValue(job["Plan Qty"] || job["Qty"]),
       team: "",
       jobType: ""
     };
-
-    set(ref(db, "outboundJobs/" + jobNo), jobData);
   });
 
-  showNotification("Data berhasil diunggah ke Firebase.");
-  loadJobsFromFirebase();
+  set(ref(db, "outboundJobs"), cleanedData)
+    .then(() => {
+      showNotification("Data berhasil diunggah ke Firebase.");
+      loadJobsFromFirebase();
+    })
+    .catch((error) => {
+      console.error("Upload error:", error);
+      showNotification("Terjadi kesalahan saat upload ke Firebase.", true);
+    });
 }
 
 // Load data dari Firebase

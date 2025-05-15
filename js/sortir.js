@@ -316,6 +316,28 @@ function applyMultiFilter() {
   });
 }
 
+function refreshDataWithoutReset() {
+  get(ref(db, "outboundJobs")).then(snapshot => {
+    const data = snapshot.val();
+    jobTable.innerHTML = "";
+    allJobsData = [];
+
+    if (data) {
+      const uniqueDates = new Set();
+      const uniqueTeams = new Set();
+
+      Object.values(data).forEach(job => {
+        allJobsData.push(job);
+        uniqueDates.add(job.deliveryDate);
+        uniqueTeams.add(job.team || "");
+      });
+
+      applyMultiFilter();
+      updateFilterIndicator();
+    }
+  });
+}
+
 function updateFilterIndicator() {
   const status = statusOptions.value;
   const date = dateOptions.value;
@@ -389,8 +411,7 @@ confirmAdd.addEventListener("click", async () => {
 
     // Setelah sukses
     hideModal();
-    applyMultiFilter();
-    updateFilterIndicator();
+    refreshDataWithoutReset();
   } catch (error) {
     showNotification("Gagal menyimpan data ke Firebase.", true);
     console.error(error);

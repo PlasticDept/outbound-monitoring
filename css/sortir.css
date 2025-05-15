@@ -59,13 +59,13 @@ body {
 h2 {
   text-align: center;
   color: #2c3e50;
-  margin-bottom: 30px;
+  margin-bottom: 0;
+  padding: 10px 0;
   position: sticky;
   top: 0;
   background-color: #ffffff;
   backdrop-filter: none;
-  z-index: 20;
-  padding: 10px 0;
+  z-index: 30;
 }
 
 /* =======================================
@@ -103,27 +103,29 @@ h2 {
   gap: 15px;
   margin-bottom: 20px;
   position: sticky;
-  top: 60px; /* Sticky tepat di bawah heading */
+  top: 48px;
   background-color: #ffffff;
   backdrop-filter: none;
-  z-index: 15;
+  z-index: 25;
   padding: 10px 0;
   border-bottom: 1px solid #ddd;
 }
 
-.team-buttons button {
-  padding: 8px 16px;
-  margin-right: 8px;
-  background-color: #2ecc71;
-  border: none;
+.action-bar .team-buttons button {
+  background-color: #0307e9;
   color: white;
-  border-radius: 4px;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  margin-right: 10px;
+  font-weight: 500;
   cursor: pointer;
-}
-.team-buttons button:hover {
-  background-color: #27ae60;
+  transition: background-color 0.2s ease;
 }
 
+.action-bar .team-buttons button:hover {
+  background-color: #0237c7b0;
+}
 
 .action-bar button {
   padding: 8px 14px;
@@ -188,8 +190,9 @@ thead th {
   font-weight: bold;
   color: #2c3e50;
   position: sticky;
-  top: 120px; /* Menyesuaikan h2 + action bar */
-  z-index: 10;
+  top: 100px;
+  z-index: 20;
+  background-color: #29bbff;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
 }
@@ -273,12 +276,6 @@ tr:hover {
   background-color: #8e44ad;
 }
 
-h2,
-.action-bar,
-thead th {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
 /* =======================================
    Modal Styles
 ======================================= */
@@ -349,6 +346,8 @@ thead th {
 #confirmAdd:hover {
   background-color: #2c3e50;
 }
+
+
 
 /* =======================================
    Responsive Styles (Mobile)

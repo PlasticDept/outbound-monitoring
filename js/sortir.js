@@ -4,26 +4,30 @@ import {
   ref,
   set,
   get,
-  update
+  update,
+  onValue
 } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
+// === Notifikasi di atas header ===
 function showNotification(message, isError = false) {
-  const notification = document.getElementById("notification");
+  const notification = document.getElementById('notification');
   notification.textContent = message;
-  notification.style.display = "block";
-  notification.classList.toggle("error", isError);
+  notification.style.display = 'block';
+  notification.classList.toggle('error', isError);
 
   setTimeout(() => {
-    notification.style.display = "none";
+    notification.style.display = 'none';
   }, 4000);
 }
 
+// Fungsi bantu untuk membersihkan nilai dari Excel
 function sanitizeValue(value) {
-  if (typeof value === "object") return "";
+  if (typeof value === "object") return ""; // Hindari stringify object
   if (typeof value === "function") return "";
   return value ?? "";
 }
 
+// Ambil elemen DOM
 const fileInput = document.getElementById("fileInput");
 const uploadBtn = document.getElementById("uploadBtn");
 const jobTable = document.getElementById("jobTable").getElementsByTagName("tbody")[0];
@@ -43,8 +47,9 @@ const teamDropdown = document.getElementById("teamDropdown");
 const teamOptions = document.getElementById("teamOptions");
 
 let selectedSingleJob = null;
-let allJobsData = [];
+let allJobsData = []; // Simpan semua job untuk multi-filter
 
+// Membaca dan parsing file Excel
 function parseExcel(file) {
   const reader = new FileReader();
   showNotification("Memulai proses upload file...");
@@ -58,11 +63,12 @@ function parseExcel(file) {
 
       const firstJob = json[0];
       if (!firstJob || !firstJob["Job No"] || !firstJob["Delivery Date"]) {
-        showNotification("Format file Excel tidak sesuai. Pastikan ada kolom 'Job No' dan 'Delivery Date'.", true);
         fileInput.value = "";
         return;
       }
 
+      showNotification(`Contoh delivery date dari Excel:
+${firstJob["Delivery Date"]}`);
       syncJobsToFirebase(json);
     } catch (err) {
       console.error("Gagal parsing Excel:", err);
@@ -74,6 +80,7 @@ function parseExcel(file) {
   reader.readAsArrayBuffer(file);
 }
 
+// Format tanggal ke "dd-MMM-yyyy"
 function formatToCustomDate(date) {
   const day = String(date.getDate()).padStart(2, "0");
   const month = date.toLocaleString("en-US", { month: "short" });
@@ -81,6 +88,7 @@ function formatToCustomDate(date) {
   return `${day}-${month}-${year}`;
 }
 
+// Memformat nilai tanggal dari Excel
 function formatDate(input) {
   if (!input) return "";
 
@@ -109,6 +117,7 @@ function formatDate(input) {
   return input;
 }
 
+// Menyimpan data dari Excel ke Firebase (per job, aman)
 function syncJobsToFirebase(jobs) {
   let uploadCount = 0;
   let errorCount = 0;
@@ -156,7 +165,9 @@ function syncJobsToFirebase(jobs) {
   });
 }
 
+// Load data dari Firebase
 function loadJobsFromFirebase() {
+  const debugDiv = document.getElementById("debugLog");
   jobTable.innerHTML = "";
   allJobsData = [];
 
@@ -185,6 +196,8 @@ function loadJobsFromFirebase() {
     });
 }
 
+
+// Buat baris tabel
 function createTableRow(job) {
   const row = document.createElement("tr");
   row.innerHTML = `
@@ -201,19 +214,42 @@ function createTableRow(job) {
   return row;
 }
 
+// Isi opsi tanggal di dropdown
+function populateDateOptions(dates) {
+  dateOptions.innerHTML = '<option value="all">-- Show All --</option>';
+  [...dates].sort().forEach(date => {
+    const option = document.createElement("option");
+    option.value = date;
+    option.textContent = date;
+    dateOptions.appendChild(option);
+  });
+}
+
+// Isi opsi team di dropdown
+function populateTeamOptions(teams) {
+  teamOptions.innerHTML = '<option value="all">-- Show All --</option>';
+  const uniqueTeams = new Set(teams);
+  uniqueTeams.forEach(team => {
+    const value = team.trim() === "" ? "none" : team;
+    const label = team.trim() === "" ? "None/blank" : team;
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = label;
+    teamOptions.appendChild(option);
+  });
+}
+
+// Ambil job yang dicentang
 function getSelectedJobs() {
   const checkboxes = document.querySelectorAll("tbody input[type='checkbox']:checked");
   return Array.from(checkboxes).map(cb => cb.getAttribute("data-jobno"));
 }
 
-function showModal() {
-  modal.style.display = "block";
-}
+// Tampilkan / sembunyikan modal
+function showModal() { modal.style.display = "block"; }
+function hideModal() { modal.style.display = "none"; }
 
-function hideModal() {
-  modal.style.display = "none";
-}
-
+// MULTI FILTER - berdasarkan status, tanggal, dan team
 function applyMultiFilter() {
   const selectedStatus = statusOptions.value;
   const selectedDate = dateOptions.value;
@@ -233,6 +269,7 @@ function applyMultiFilter() {
   });
 }
 
+// Event listeners utama
 uploadBtn.addEventListener("click", () => {
   const file = fileInput.files[0];
   if (file) parseExcel(file);
@@ -279,6 +316,7 @@ closeModal.addEventListener("click", hideModal);
 window.addEventListener("click", (e) => { if (e.target === modal) hideModal(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") hideModal(); });
 
+// TOMBOL DROPDOWN SORT
 sortStatusBtn.addEventListener("click", () => {
   statusDropdown.style.display = statusDropdown.style.display === "block" ? "none" : "block";
 });
@@ -289,6 +327,7 @@ sortTeamBtn.addEventListener("click", () => {
   teamDropdown.style.display = teamDropdown.style.display === "block" ? "none" : "block";
 });
 
+// FILTER saat dropdown berubah
 statusOptions.addEventListener("change", () => {
   applyMultiFilter();
   statusDropdown.style.display = "none";
@@ -302,8 +341,10 @@ teamOptions.addEventListener("change", () => {
   teamDropdown.style.display = "none";
 });
 
+// Load pertama kali saat halaman dimuat
 loadJobsFromFirebase();
 
 window.navigateTo = function(page) {
   window.location.href = page;
 };
+

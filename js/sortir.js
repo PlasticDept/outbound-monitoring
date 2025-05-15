@@ -48,6 +48,30 @@ const teamOptions = document.getElementById("teamOptions");
 
 let selectedSingleJob = null;
 let allJobsData = []; // Simpan semua job untuk multi-filter
+let currentSort = { key: null, asc: true };
+
+function sortTableBy(key) {
+  if (currentSort.key === key) {
+    currentSort.asc = !currentSort.asc;
+  } else {
+    currentSort.key = key;
+    currentSort.asc = true;
+  }
+
+  const sortedJobs = [...allJobsData].sort((a, b) => {
+    const valA = (a[key] || "").toString().toLowerCase();
+    const valB = (b[key] || "").toString().toLowerCase();
+    if (valA < valB) return currentSort.asc ? -1 : 1;
+    if (valA > valB) return currentSort.asc ? 1 : -1;
+    return 0;
+  });
+
+  jobTable.innerHTML = "";
+  sortedJobs.forEach(job => {
+    const row = createTableRow(job);
+    jobTable.appendChild(row);
+  });
+}
 
 // Membaca dan parsing file Excel
 function parseExcel(file) {

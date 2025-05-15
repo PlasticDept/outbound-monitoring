@@ -58,14 +58,6 @@ window.sortTableBy = function(key) {
     currentSort.asc = true;
   }
 
-
-  jobTable.innerHTML = "";
-  sortedJobs.forEach(job => {
-    const row = createTableRow(job);
-    jobTable.appendChild(row);
-  });
-};
-
   const sortedJobs = [...allJobsData].sort((a, b) => {
     const valA = (a[key] || "").toString().toLowerCase();
     const valB = (b[key] || "").toString().toLowerCase();

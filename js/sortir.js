@@ -365,20 +365,39 @@ jobTable.addEventListener("click", e => {
   }
 });
 
-confirmAdd.addEventListener("click", () => {
+confirmAdd.addEventListener("click", async () => {
   const team = document.getElementById("teamSelect").value;
   const jobType = document.getElementById("jobTypeSelect").value;
   const jobsToUpdate = selectedSingleJob ? [selectedSingleJob] : getSelectedJobs();
+  const loadingIndicator = document.getElementById("loadingIndicator");
 
   if (jobsToUpdate.length === 0) return showNotification("Tidak ada job yang dipilih.", true);
 
-  jobsToUpdate.forEach(jobNo => {
-    update(ref(db, "outboundJobs/" + jobNo), { team, jobType });
-  });
+  // Tampilkan loading
+  loadingIndicator.style.display = "block";
+  confirmAdd.disabled = true;
 
-  showNotification(`Job berhasil ditambahkan ke team: ${team}`);
-  selectedSingleJob = null;
-  hideModal();
+  try {
+    await Promise.all(
+      jobsToUpdate.map(jobNo =>
+        update(ref(db, "outboundJobs/" + jobNo), { team, jobType })
+      )
+    );
+
+    showNotification(`Job berhasil ditambahkan ke team: ${team}`);
+    selectedSingleJob = null;
+
+    // Setelah sukses
+    hideModal();
+    applyMultiFilter();
+    updateFilterIndicator();
+  } catch (error) {
+    showNotification("Gagal menyimpan data ke Firebase.", true);
+    console.error(error);
+  } finally {
+    loadingIndicator.style.display = "none";
+    confirmAdd.disabled = false;
+  }
 });
 
 selectAllCheckbox.addEventListener("change", (e) => {

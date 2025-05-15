@@ -26,7 +26,7 @@
 
     <!-- Dropdown Sort by Status -->
     <div class="dropdown-container">
-      <button id="sortStatusBtn">Sort by Status</button>
+      <button id="sortStatusBtn">Filter by Status</button>
       <div id="statusDropdown" class="dropdown-menu">
         <select id="statusOptions">
           <option value="all">-- Show All --</option>
@@ -42,7 +42,7 @@
 
     <!-- Dropdown Sort by Date -->
     <div class="dropdown-container">
-      <button id="sortDateBtn">Sort by Date</button>
+      <button id="sortDateBtn">Filter by Date</button>
       <div id="dateDropdown" class="dropdown-menu">
         <select id="dateOptions">
           <option value="all">-- Show All --</option>
@@ -52,7 +52,7 @@
 
     <!-- Dropdown Sort by Team -->
     <div class="dropdown-container">
-      <button id="sortTeamBtn">Sort by Team</button>
+      <button id="sortTeamBtn">Filter by Team</button>
       <div id="teamDropdown" class="dropdown-menu">
         <select id="teamOptions">
           <option value="all">-- Show All --</option>
@@ -73,17 +73,18 @@
   <table id="jobTable">
     <thead>
       <tr>
-        <th><input type="checkbox" id="selectAll"></th>
-        <th onclick="sortTableBy('jobNo')">Job No ▲▼</th>
-        <th onclick="sortTableBy('deliveryDate')">Delivery Date ▲▼</th>
-        <th onclick="sortTableBy('deliveryNote')">Delivery Note ▲▼</th>
-        <th onclick="sortTableBy('remark')">Remark ▲▼</th>
-        <th onclick="sortTableBy('status')">Status ▲▼</th>
-        <th onclick="sortTableBy('qty')">Qty ▲▼</th>
-        <th onclick="sortTableBy('team')">Team ▲▼</th>
+        <th><input type="checkbox" id="selectAll" /></th>
+        <th onclick="sortTableBy('jobNo')" data-key="jobNo">Job No</th>
+        <th onclick="sortTableBy('deliveryDate')" data-key="deliveryDate">Delivery Date</th>
+        <th onclick="sortTableBy('deliveryNote')" data-key="deliveryNote">Delivery Note</th>
+        <th onclick="sortTableBy('remark')" data-key="remark">Remark</th>
+        <th onclick="sortTableBy('status')" data-key="status">Status</th>
+        <th onclick="sortTableBy('qty')" data-key="qty">Qty</th>
+        <th onclick="sortTableBy('team')" data-key="team">Team</th>
         <th>Action</th>
       </tr>
     </thead>
+    
 
     <tbody></tbody>
   </table>

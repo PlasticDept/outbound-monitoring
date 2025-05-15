@@ -61,14 +61,22 @@ function parseExcel(file) {
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const json = XLSX.utils.sheet_to_json(sheet);
 
-      const firstJob = json[0];
-      if (!firstJob || !firstJob["Job No"] || !firstJob["Delivery Date"]) {
+      if (!Array.isArray(json) || json.length === 0) {
+        showNotification("File Excel kosong atau tidak terbaca.", true);
         fileInput.value = "";
         return;
       }
 
-      showNotification(`Contoh delivery date dari Excel:
-${firstJob["Delivery Date"]}`);
+      const requiredKeys = ["Job No", "Delivery Date"];
+      const firstRow = Object.keys(json[0]);
+      const missingHeaders = requiredKeys.filter(key => !firstRow.includes(key));
+
+      if (missingHeaders.length > 0) {
+        showNotification(`Header Excel tidak lengkap: ${missingHeaders.join(", ")}`, true);
+        fileInput.value = "";
+        return;
+      }
+
       syncJobsToFirebase(json);
     } catch (err) {
       console.error("Gagal parsing Excel:", err);

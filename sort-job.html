@@ -73,17 +73,18 @@
   <table id="jobTable">
     <thead>
       <tr>
-        <th><input type="checkbox" id="selectAll" /></th>
-        <th>Job No</th>
-        <th>Delivery Date</th>
-        <th>Delivery Note</th>
-        <th>Remark</th>
-        <th>Status</th>
-        <th>Qty</th>
-        <th>Team</th>
+        <th><input type="checkbox" id="selectAll"></th>
+        <th onclick="sortTableBy('jobNo')">Job No ▲▼</th>
+        <th onclick="sortTableBy('deliveryDate')">Delivery Date ▲▼</th>
+        <th onclick="sortTableBy('deliveryNote')">Delivery Note ▲▼</th>
+        <th onclick="sortTableBy('remark')">Remark ▲▼</th>
+        <th onclick="sortTableBy('status')">Status ▲▼</th>
+        <th onclick="sortTableBy('qty')">Qty ▲▼</th>
+        <th onclick="sortTableBy('team')">Team ▲▼</th>
         <th>Action</th>
       </tr>
     </thead>
+
     <tbody></tbody>
   </table>
 </div>

@@ -343,3 +343,7 @@ teamOptions.addEventListener("change", () => {
 
 // Load pertama kali saat halaman dimuat
 loadJobsFromFirebase();
+
+function navigateTo(page) {
+  window.location.href = page;
+}

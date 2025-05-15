@@ -72,7 +72,7 @@ function parseExcel(file) {
       const missingHeaders = requiredKeys.filter(key => !firstRow.includes(key));
 
       if (missingHeaders.length > 0) {
-        showNotification(`Header Excel tidak lengkap: ${missingHeaders.join(", ")}`, true);
+        showNotification(`File tidak bisa diproses pastikan baris pertama harus ${missingHeaders.join(", ")}`, true);
         fileInput.value = "";
         return;
       }

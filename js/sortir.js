@@ -58,13 +58,6 @@ window.sortTableBy = function(key) {
     currentSort.asc = true;
   }
 
-  const sortedJobs = [...allJobsData].sort((a, b) => {
-    const valA = (a[key] || "").toString().toLowerCase();
-    const valB = (b[key] || "").toString().toLowerCase();
-    if (valA < valB) return currentSort.asc ? -1 : 1;
-    if (valA > valB) return currentSort.asc ? 1 : -1;
-    return 0;
-  });
 
   jobTable.innerHTML = "";
   sortedJobs.forEach(job => {

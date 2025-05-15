@@ -49,6 +49,9 @@ const teamOptions = document.getElementById("teamOptions");
 let selectedSingleJob = null;
 let allJobsData = [];
 let currentSort = { key: null, asc: true };
+let isStatusOpen = false;
+let isDateOpen = false;
+let isTeamOpen = false;
 
 window.sortTableBy = function(key) {
   if (currentSort.key === key) {
@@ -80,7 +83,6 @@ window.sortTableBy = function(key) {
     jobTable.appendChild(row);
   });
 };
-
 
 // Membaca dan parsing file Excel
 function parseExcel(file) {
@@ -310,6 +312,33 @@ function applyMultiFilter() {
   });
 }
 
+function updateFilterIndicator() {
+  const status = statusOptions.value;
+  const date = dateOptions.value;
+  const team = teamOptions.value;
+
+  const filters = [];
+
+  if (status !== "all") filters.push(`Status: ${status}`);
+  if (date !== "all") filters.push(`Date: ${date}`);
+  if (team !== "all") {
+    filters.push(`Team: ${team === "none" ? "None/blank" : team}`);
+  }
+
+  const filterIndicator = document.getElementById("filterIndicator");
+  if (filters.length > 0) {
+    filterIndicator.textContent = "Filtered by: " + filters.join(" | ");
+  } else {
+    filterIndicator.textContent = "";
+  }
+}
+
+function closeAllDropdowns() {
+  statusDropdown.style.display = "none";
+  dateDropdown.style.display = "none";
+  teamDropdown.style.display = "none";
+}
+
 // Event listeners utama
 uploadBtn.addEventListener("click", () => {
   const file = fileInput.files[0];
@@ -357,28 +386,45 @@ closeModal.addEventListener("click", hideModal);
 window.addEventListener("click", (e) => { if (e.target === modal) hideModal(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") hideModal(); });
 
-// TOMBOL DROPDOWN SORT
+// TOMBOL DROPDOWN FILTER
 sortStatusBtn.addEventListener("click", () => {
-  statusDropdown.style.display = statusDropdown.style.display === "block" ? "none" : "block";
+  const isCurrentlyOpen = statusDropdown.style.display === "block";
+  closeAllDropdowns();
+  if (!isCurrentlyOpen) {
+    statusDropdown.style.display = "block";
+  }
 });
+
 sortDateBtn.addEventListener("click", () => {
-  dateDropdown.style.display = dateDropdown.style.display === "block" ? "none" : "block";
+  const isCurrentlyOpen = dateDropdown.style.display === "block";
+  closeAllDropdowns();
+  if (!isCurrentlyOpen) {
+    dateDropdown.style.display = "block";
+  }
 });
+
 sortTeamBtn.addEventListener("click", () => {
-  teamDropdown.style.display = teamDropdown.style.display === "block" ? "none" : "block";
+  const isCurrentlyOpen = teamDropdown.style.display === "block";
+  closeAllDropdowns();
+  if (!isCurrentlyOpen) {
+    teamDropdown.style.display = "block";
+  }
 });
 
 // FILTER saat dropdown berubah
 statusOptions.addEventListener("change", () => {
   applyMultiFilter();
+  updateFilterIndicator();
   statusDropdown.style.display = "none";
 });
 dateOptions.addEventListener("change", () => {
   applyMultiFilter();
+  updateFilterIndicator();
   dateDropdown.style.display = "none";
 });
 teamOptions.addEventListener("change", () => {
   applyMultiFilter();
+  updateFilterIndicator();
   teamDropdown.style.display = "none";
 });
 
@@ -388,4 +434,3 @@ loadJobsFromFirebase();
 window.navigateTo = function(page) {
   window.location.href = page;
 };
-

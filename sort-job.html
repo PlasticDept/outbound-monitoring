@@ -10,109 +10,114 @@
 </head>
 <body>
   <div class="container">
+    <div class="main-content">
     
-  <!-- Notification bar -->
-  <div id="notification" class="notification-bar"></div>
+      <!-- Notification bar -->
+      <div id="notification" class="notification-bar"></div>
 
-  <h2>Sortir Outbound Job</h2>
+      <h2>Sortir Outbound Job</h2>
 
-  <div class="upload-section">
-    <input type="file" id="fileInput" accept=".xlsx, .xls" />
-    <button id="uploadBtn">Upload</button>
-  </div>
-
-  <div class="action-bar">
-    <button id="bulkAddBtn">Add Selected</button>
-
-    <!-- Dropdown Sort by Status -->
-    <div class="dropdown-container">
-      <button id="sortStatusBtn">Filter by Status</button>
-      <div id="statusDropdown" class="dropdown-menu">
-        <select id="statusOptions">
-          <option value="all">-- Show All --</option>
-          <option value="NewJob">NewJob</option>
-          <option value="Downloaded">Downloaded</option>
-          <option value="PartialPicked">PartialPicked</option>
-          <option value="Picked">Picked</option>
-          <option value="Packed">Packed</option>
-          <option value="Loaded">Loaded</option>
-        </select>
+      <div class="upload-section">
+        <input type="file" id="fileInput" accept=".xlsx, .xls" />
+        <button id="uploadBtn">Upload</button>
       </div>
-    </div>
 
-    <!-- Dropdown Sort by Date -->
-    <div class="dropdown-container">
-      <button id="sortDateBtn">Filter by Date</button>
-      <div id="dateDropdown" class="dropdown-menu">
-        <select id="dateOptions">
-          <option value="all">-- Show All --</option>
-        </select>
+      <div class="action-bar">
+        <button id="bulkAddBtn">Add Selected</button>
+
+        <!-- Dropdown Sort by Status -->
+        <div class="dropdown-container">
+          <button id="sortStatusBtn">Filter by Status</button>
+          <div id="statusDropdown" class="dropdown-menu">
+            <select id="statusOptions">
+              <option value="all">-- Show All --</option>
+              <option value="NewJob">NewJob</option>
+              <option value="Downloaded">Downloaded</option>
+              <option value="PartialPicked">PartialPicked</option>
+              <option value="Picked">Picked</option>
+              <option value="Packed">Packed</option>
+              <option value="Loaded">Loaded</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Dropdown Sort by Date -->
+        <div class="dropdown-container">
+          <button id="sortDateBtn">Filter by Date</button>
+          <div id="dateDropdown" class="dropdown-menu">
+            <select id="dateOptions">
+              <option value="all">-- Show All --</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Dropdown Sort by Team -->
+        <div class="dropdown-container">
+          <button id="sortTeamBtn">Filter by Team</button>
+          <div id="teamDropdown" class="dropdown-menu">
+            <select id="teamOptions">
+              <option value="all">-- Show All --</option>
+              <option value="Reguler">Reguler</option>
+              <option value="Sugity">Sugity</option>
+              <option value="none">None / Blank</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="team-buttons">
+          <button onclick="navigateTo('team-sugity.html')">Team Sugity Target</button>
+          <button onclick="navigateTo('team-reguler.html')">Team Reguler Target</button>
+          <button onclick="navigateTo('index.html')">Outbound Dashboard</button>
+        </div> 
       </div>
-    </div>
 
-    <!-- Dropdown Sort by Team -->
-    <div class="dropdown-container">
-      <button id="sortTeamBtn">Filter by Team</button>
-      <div id="teamDropdown" class="dropdown-menu">
-        <select id="teamOptions">
-          <option value="all">-- Show All --</option>
+      <div id="filterIndicator" style="margin-bottom: 10px; font-style: italic; color: #2c3e50;"></div>
+
+
+      <table id="jobTable">
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="selectAll" /></th>
+            <th onclick="sortTableBy('jobNo')" data-key="jobNo">Job No</th>
+            <th onclick="sortTableBy('deliveryDate')" data-key="deliveryDate">Delivery Date</th>
+            <th onclick="sortTableBy('deliveryNote')" data-key="deliveryNote">Delivery Note</th>
+            <th onclick="sortTableBy('remark')" data-key="remark">Remark</th>
+            <th onclick="sortTableBy('status')" data-key="status">Status</th>
+            <th onclick="sortTableBy('qty')" data-key="qty">Qty</th>
+            <th onclick="sortTableBy('team')" data-key="team">Team</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        
+
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>  
+
+    <!-- Modal Pop-up -->
+    <div id="addModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <h3>Pilih Team dan Job Type</h3>
+
+        <label for="teamSelect">Team:</label>
+        <select id="teamSelect">
           <option value="Reguler">Reguler</option>
           <option value="Sugity">Sugity</option>
-          <option value="none">None / Blank</option>
         </select>
+
+        <label for="jobTypeSelect">Job Type:</label>
+        <select id="jobTypeSelect">
+          <option value="Remaining">Remaining</option>
+          <option value="Additional">Additional</option>
+          <option value="OT">OT</option>
+          <option value="H-1">H-1</option>
+        </select>
+
+        <button id="confirmAdd">Tambah Job</button>
       </div>
     </div>
-
-    <div class="team-buttons">
-      <button onclick="navigateTo('team-sugity.html')">Team Sugity</button>
-      <button onclick="navigateTo('team-reguler.html')">Team Reguler</button>
-      <button onclick="navigateTo('index.html')">Dashboard</button>
-    </div> 
-  </div>
-
-  <table id="jobTable">
-    <thead>
-      <tr>
-        <th><input type="checkbox" id="selectAll" /></th>
-        <th onclick="sortTableBy('jobNo')" data-key="jobNo">Job No</th>
-        <th onclick="sortTableBy('deliveryDate')" data-key="deliveryDate">Delivery Date</th>
-        <th onclick="sortTableBy('deliveryNote')" data-key="deliveryNote">Delivery Note</th>
-        <th onclick="sortTableBy('remark')" data-key="remark">Remark</th>
-        <th onclick="sortTableBy('status')" data-key="status">Status</th>
-        <th onclick="sortTableBy('qty')" data-key="qty">Qty</th>
-        <th onclick="sortTableBy('team')" data-key="team">Team</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    
-
-    <tbody></tbody>
-  </table>
-</div>
-
-<!-- Modal Pop-up -->
-<div id="addModal" class="modal">
-  <div class="modal-content">
-    <span class="close" id="closeModal">&times;</span>
-    <h3>Pilih Team dan Job Type</h3>
-
-    <label for="teamSelect">Team:</label>
-    <select id="teamSelect">
-      <option value="Reguler">Reguler</option>
-      <option value="Sugity">Sugity</option>
-    </select>
-
-    <label for="jobTypeSelect">Job Type:</label>
-    <select id="jobTypeSelect">
-      <option value="Remaining">Remaining</option>
-      <option value="Additional">Additional</option>
-      <option value="OT">OT</option>
-      <option value="H-1">H-1</option>
-    </select>
-
-    <button id="confirmAdd">Tambah Job</button>
-  </div>
-</div>
 
   <!-- Firebase config and app logic -->
   <script type="module" src="js/config.js"></script>

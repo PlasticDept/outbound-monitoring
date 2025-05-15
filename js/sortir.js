@@ -48,6 +48,7 @@ const teamOptions = document.getElementById("teamOptions");
 
 let selectedSingleJob = null;
 let allJobsData = [];
+let filteredJobs = [];
 let currentSort = { key: null, asc: true };
 let isStatusOpen = false;
 let isDateOpen = false;
@@ -69,7 +70,7 @@ window.sortTableBy = function(key) {
     }
   });
 
-  const sortedJobs = [...allJobsData].sort((a, b) => {
+  const sortedJobs = [...filteredJobs].sort((a, b) => {
     const valA = (a[key] || "").toString().toLowerCase();
     const valB = (b[key] || "").toString().toLowerCase();
     if (valA < valB) return currentSort.asc ? -1 : 1;
@@ -125,21 +126,22 @@ function parseExcel(file) {
 
 // Format tanggal ke "dd-MMM-yyyy"
 function formatToCustomDate(date) {
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = date.toLocaleString("en-US", { month: "short" });
-  const year = date.getFullYear();
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const month = date.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
+  const year = date.getUTCFullYear();
   return `${day}-${month}-${year}`;
 }
+
 
 // Memformat nilai tanggal dari Excel
 function formatDate(input) {
   if (!input) return "";
 
   if (typeof input === "number") {
-    const epoch = new Date(Date.UTC(1899, 11, 30));
-    const date = new Date(epoch.getTime() + input * 86400000);
+    const date = new Date(Math.round((input - 25569) * 86400 * 1000)); // Convert from Excel serial date
     return formatToCustomDate(date);
   }
+
 
   const parsed = new Date(input);
   if (!isNaN(parsed)) {
@@ -299,6 +301,7 @@ function applyMultiFilter() {
   const selectedTeam = teamOptions.value;
 
   jobTable.innerHTML = "";
+  filteredJobs = [];
 
   allJobsData.forEach(job => {
     const matchStatus = selectedStatus === "all" || job.status === selectedStatus;
@@ -308,6 +311,7 @@ function applyMultiFilter() {
 
     if (matchStatus && matchDate && matchTeam) {
       jobTable.appendChild(createTableRow(job));
+      filteredJobs.push(job);
     }
   });
 }

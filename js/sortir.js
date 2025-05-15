@@ -58,6 +58,14 @@ window.sortTableBy = function(key) {
     currentSort.asc = true;
   }
 
+  // Update header sort icon
+  document.querySelectorAll("th[data-key]").forEach(th => {
+    th.textContent = th.textContent.replace(/ ▲| ▼/, "");
+    if (th.getAttribute("data-key") === key) {
+      th.textContent += currentSort.asc ? " ▲" : " ▼";
+    }
+  });
+
   const sortedJobs = [...allJobsData].sort((a, b) => {
     const valA = (a[key] || "").toString().toLowerCase();
     const valB = (b[key] || "").toString().toLowerCase();
@@ -71,7 +79,8 @@ window.sortTableBy = function(key) {
     const row = createTableRow(job);
     jobTable.appendChild(row);
   });
-}
+};
+
 
 // Membaca dan parsing file Excel
 function parseExcel(file) {

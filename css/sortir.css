@@ -111,6 +111,20 @@ h2 {
   border-bottom: 1px solid #ddd;
 }
 
+.team-buttons button {
+  padding: 8px 16px;
+  margin-right: 8px;
+  background-color: #2ecc71;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.team-buttons button:hover {
+  background-color: #27ae60;
+}
+
+
 .action-bar button {
   padding: 8px 14px;
   border: none;
@@ -176,6 +190,8 @@ thead th {
   position: sticky;
   top: 120px; /* Menyesuaikan h2 + action bar */
   z-index: 10;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
 }
 
 tr:hover {

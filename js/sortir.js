@@ -49,35 +49,42 @@ let isDateOpen = false;
 let isTeamOpen = false;
 
 window.sortTableBy = function(key) {
-  if (currentSort.key === key) {
-    currentSort.asc = !currentSort.asc;
-  } else {
-    currentSort.key = key;
-    currentSort.asc = true;
-  }
+  const rows = Array.from(jobTable.querySelectorAll("tr"));
+  const headerRow = rows.shift(); // Buang baris header
 
-  // Update header sort icon
-  document.querySelectorAll("th[data-key]").forEach(th => {
-    th.textContent = th.textContent.replace(/ ▲| ▼/, "");
-    if (th.getAttribute("data-key") === key) {
-      th.textContent += currentSort.asc ? " ▲" : " ▼";
-    }
+  const jobsOnScreen = rows.map(row => {
+    const cells = row.querySelectorAll("td");
+    return {
+      element: row,
+      jobNo: cells[1]?.textContent.trim(),
+      deliveryDate: cells[2]?.textContent.trim(),
+      deliveryNote: cells[3]?.textContent.trim(),
+      remark: cells[4]?.textContent.trim(),
+      status: cells[5]?.textContent.trim(),
+      qty: parseInt(cells[6]?.textContent.replace(/,/g, "") || "0"),
+      team: cells[7]?.textContent.trim()
+    };
   });
 
-  const sortedJobs = [...filteredJobs].sort((a, b) => {
-    const valA = (a[key] || "").toString().toLowerCase();
-    const valB = (b[key] || "").toString().toLowerCase();
-    if (valA < valB) return currentSort.asc ? -1 : 1;
-    if (valA > valB) return currentSort.asc ? 1 : -1;
+  if (window.sortTableBy.lastKey === key) {
+    window.sortTableBy.asc = !window.sortTableBy.asc;
+  } else {
+    window.sortTableBy.asc = true;
+  }
+  window.sortTableBy.lastKey = key;
+
+  jobsOnScreen.sort((a, b) => {
+    const valA = a[key]?.toUpperCase?.() || "";
+    const valB = b[key]?.toUpperCase?.() || "";
+    if (valA < valB) return window.sortTableBy.asc ? -1 : 1;
+    if (valA > valB) return window.sortTableBy.asc ? 1 : -1;
     return 0;
   });
 
   jobTable.innerHTML = "";
-  sortedJobs.forEach(job => {
-    const row = createTableRow(job);
-    jobTable.appendChild(row);
-  });
+  jobsOnScreen.forEach(job => jobTable.appendChild(job.element));
 };
+
 
 // Membaca dan parsing file Excel
 function parseExcel(file) {

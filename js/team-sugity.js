@@ -1,6 +1,6 @@
 // team-sugity.js
 import { db } from "./config.js";
-import Chart from "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.esm.js";
+import { ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
 const teamTable = document.getElementById("teamTable").getElementsByTagName("tbody")[0];
 const currentTeam = "Sugity";

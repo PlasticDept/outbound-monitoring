@@ -142,6 +142,22 @@ h2 {
   background-color: #27ae60;
 }
 
+#clearDatabaseBtn {
+  background-color: #e74c3c;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#clearDatabaseBtn:hover {
+  background-color: #c0392b;
+}
+
+
 /* Dropdown Sort (Status, Date, Team) */
 .dropdown-container {
   position: relative;

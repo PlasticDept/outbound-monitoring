@@ -2,17 +2,19 @@
 const positionSelect = document.getElementById("position");
 const operatorFields = document.getElementById("operatorFields");
 const usernameContainer = document.getElementById("usernameContainer");
+const usernameInput = document.getElementById("username");
 
 positionSelect.addEventListener("change", () => {
   if (positionSelect.value === "OPERATOR") {
     operatorFields.style.display = "block";
-    usernameContainer.style.display = "none"; // ✅ sembunyikan username
+    usernameContainer.style.display = "none";
+    usernameInput.required = false;
   } else {
     operatorFields.style.display = "none";
-    usernameContainer.style.display = "block"; // ✅ tampilkan kembali
+    usernameContainer.style.display = "block";
+    usernameInput.required = true;
   }
 });
-
 
 document.getElementById("loginForm").addEventListener("submit", function(e) {
   e.preventDefault();
@@ -36,37 +38,35 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
   };
 
   if (positionPasswords[position] && password === positionPasswords[position]) {
-  localStorage.setItem("shift", shift);
-  localStorage.setItem("position", position);
+    localStorage.setItem("shift", shift);
+    localStorage.setItem("position", position);
 
-  if (position === "OPERATOR") {
-    const team = document.getElementById("teamSelect").value;
-    const pic = document.getElementById("picInput").value.trim();
+    if (position === "OPERATOR") {
+      const team = document.getElementById("teamSelect").value;
+      const pic = document.getElementById("picInput").value.trim();
 
-    if (!team || !pic) {
-      alert("Lengkapi pilihan Team dan PIC terlebih dahulu.");
-      return;
-    }
+      if (!team || !pic) {
+        alert("Lengkapi pilihan Team dan PIC terlebih dahulu.");
+        return;
+      }
 
-    localStorage.setItem("team", team);
-    localStorage.setItem("pic", pic);
-    localStorage.setItem("username", pic); // PIC menggantikan username
+      localStorage.setItem("team", team);
+      localStorage.setItem("pic", pic);
+      localStorage.setItem("username", pic); // PIC menggantikan username
 
-    if (team === "Sugity") {
-      window.location.href = "team-sugity.html";
-    } else if (team === "Reguler") {
-      window.location.href = "team-reguler.html";
+      if (team === "Sugity") {
+        window.location.href = "team-sugity.html";
+      } else if (team === "Reguler") {
+        window.location.href = "team-reguler.html";
+      } else {
+        alert("Team tidak valid.");
+      }
     } else {
-      alert("Team tidak valid.");
+      // Bukan operator → simpan username biasa dan arahkan ke sortir
+      localStorage.setItem("username", username);
+      window.location.href = "sort-job.html";
     }
-
   } else {
-    // Bukan operator → simpan username biasa dan arahkan ke sortir
-    localStorage.setItem("username", username);
-    window.location.href = "sort-job.html";
+    alert("Username atau password salah!");
   }
-} else {
-  alert("Username atau password salah!");
-}
-
 });

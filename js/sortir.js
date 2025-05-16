@@ -49,8 +49,7 @@ let isDateOpen = false;
 let isTeamOpen = false;
 
 window.sortTableBy = function(key) {
-  const rows = Array.from(jobTable.querySelectorAll("tr"));
-  const headerRow = rows.shift(); // Buang baris header
+  const rows = Array.from(jobTable.querySelectorAll("tbody tr")); // ✅ hanya tbody
 
   const jobsOnScreen = rows.map(row => {
     const cells = row.querySelectorAll("td");
@@ -81,9 +80,12 @@ window.sortTableBy = function(key) {
     return 0;
   });
 
-  jobTable.innerHTML = "";
-  jobsOnScreen.forEach(job => jobTable.appendChild(job.element));
+  // ✅ Bersihkan isi <tbody> saja, bukan seluruh tabel
+  const tbody = jobTable.querySelector("tbody");
+  tbody.innerHTML = "";
+  jobsOnScreen.forEach(job => tbody.appendChild(job.element));
 };
+
 
 
 // Membaca dan parsing file Excel

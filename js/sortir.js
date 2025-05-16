@@ -48,8 +48,10 @@ let isStatusOpen = false;
 let isDateOpen = false;
 let isTeamOpen = false;
 
+// Fungsi sortir tabel berdasarkan kolom
 window.sortTableBy = function(key) {
-  const rows = Array.from(jobTable.querySelectorAll("tbody tr")); // ✅ hanya tbody
+  const tbody = jobTable.querySelector("tbody");
+  const rows = Array.from(tbody.querySelectorAll("tr"));
 
   const jobsOnScreen = rows.map(row => {
     const cells = row.querySelectorAll("td");
@@ -80,13 +82,9 @@ window.sortTableBy = function(key) {
     return 0;
   });
 
-  // ✅ Bersihkan isi <tbody> saja, bukan seluruh tabel
-  const tbody = jobTable.querySelector("tbody");
   tbody.innerHTML = "";
   jobsOnScreen.forEach(job => tbody.appendChild(job.element));
 };
-
-
 
 // Membaca dan parsing file Excel
 function parseExcel(file) {

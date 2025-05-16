@@ -31,6 +31,7 @@ table {
 }
 
 thead th {
+  position: sticky;
   background-color: #3498db;
   color: white;
   padding: 12px;
@@ -54,6 +55,10 @@ tbody td {
 tr:hover {
   background-color: #d6ecfa;
   transition: background-color 0.2s;
+}
+
+tbody tr:hover {
+  background-color: #f2f9ff;
 }
 
 .status-label {
@@ -88,6 +93,16 @@ tr:hover {
   background-color: #27ae60; /* hijau tua */
 }
 
+.job-type {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-weight: bold;
+}
+.job-type.OT { background-color: #e74c3c; color: white; }
+.job-type.H-1 { background-color: #f39c12; color: white; }
+.job-type.Additional { background-color: #2ecc71; color: white; }
+.job-type.Remaining { background-color: #7f8c8d; color: white; }
 
 /*=======================================
 RENSPONSIF UNTUK TAMPILAN MOBLIE

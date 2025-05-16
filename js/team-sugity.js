@@ -77,7 +77,7 @@ function loadTeamJobs() {
             <td>${job.remark}</td>
             <td></td>
             <td>${Number(job.qty).toLocaleString()}</td>
-            <td>${job.jobType || ""}</td>
+            <td>${job.jobType ? `<span class="job-type ${job.jobType}">${job.jobType}</span>` : ""}</td>
           `;
           const statusCell = row.querySelector("td:nth-child(5)");
           statusCell.appendChild(createStatusLabel(job.status));

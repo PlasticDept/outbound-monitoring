@@ -49,10 +49,10 @@ let isDateOpen = false;
 let isTeamOpen = false;
 
 // Fungsi sortir tabel berdasarkan kolom
-window.sortTableBy = function(key) {
-  const tbody = jobTable.querySelector("tbody");
+window.sortTableBy = function (key) {
+  const tbody = document.querySelector("#jobTable tbody");
   if (!tbody) {
-    console.warn("Tbody belum ada. Tabel belum dimuat.");
+    console.warn("Tbody belum tersedia saat sort dijalankan.");
     return;
   }
 

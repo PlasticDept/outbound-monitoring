@@ -87,7 +87,7 @@ function loadTeamJobs() {
     }
 
     jobCountIndicator.textContent = `📦 Total Outbound Job Target: ${totalJobs}`;
-    qtyTotalIndicator.textContent = `🔢 Total Qty Target: ${totalQty.toLocaleString("en-US")}`;
+    qtyTotalIndicator.textContent = `🔢 Total Qty Target: ${totalQty.toLocaleString("en-US")} Kg`;
   });
 }
 

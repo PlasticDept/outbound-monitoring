@@ -56,6 +56,43 @@ tr:hover {
   transition: background-color 0.2s;
 }
 
+.status-label {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: bold;
+  color: white;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+
+.status-newjob {
+  background-color: #e74c3c; /* merah */
+}
+
+.status-partialpicked {
+  background-color: #e67e22; /* orange */
+}
+
+.status-downloaded {
+  background-color: #f1c40f; /* kuning */
+  color: #2c3e50;
+}
+
+.status-packed {
+  background-color: #2ecc71; /* hijau muda */
+}
+
+.status-loaded {
+  background-color: #27ae60; /* hijau tua */
+}
+
+
+/*=======================================
+RENSPONSIF UNTUK TAMPILAN MOBLIE
+========================================*/
+
 @media screen and (max-width: 768px) {
   .container {
     padding: 15px;

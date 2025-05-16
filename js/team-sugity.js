@@ -1,38 +1,48 @@
+// team-sugity.js
 import { db } from "./config.js";
-import { get, ref } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
 const teamTable = document.getElementById("teamTable").getElementsByTagName("tbody")[0];
 
-function loadTeamJobs(teamName) {
-  get(ref(db, "outboundJobs"))
-    .then(snapshot => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        teamTable.innerHTML = "";
+function createTableRow(job) {
+  const row = document.createElement("tr");
 
-        Object.values(data).forEach(job => {
-          if ((job.team || "").toLowerCase() === teamName.toLowerCase()) {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${job.jobNo}</td>
-              <td>${job.deliveryDate}</td>
-              <td>${job.deliveryNote}</td>
-              <td>${job.remark}</td>
-              <td>${job.status}</td>
-              <td>${Number(job.qty).toLocaleString()}</td>
-              <td>${job.jobType || ""}</td> <!-- ✅ Tambahan -->
-            `;
+  const statusClass = {
+    NewJob: "status-newjob",
+    PartialPicked: "status-partialpicked",
+    Downloaded: "status-downloaded",
+    Packed: "status-packed",
+    Loaded: "status-loaded"
+  }[job.status] || "";
 
-            teamTable.appendChild(row);
-          }
-        });
-      }
-    })
-    .catch(error => {
-      console.error("Gagal memuat data:", error);
-      alert("Gagal memuat data dari Firebase.");
-    });
+  const statusHTML = `<span class="status-label ${statusClass}">${job.status}</span>`;
+
+  row.innerHTML = `
+    <td>${job.jobNo}</td>
+    <td>${job.deliveryDate}</td>
+    <td>${job.deliveryNote}</td>
+    <td>${job.remark}</td>
+    <td>${statusHTML}</td>
+    <td>${Number(job.qty).toLocaleString()}</td>
+  `;
+
+  return row;
 }
 
-// Load untuk team Sugity
-loadTeamJobs("Sugity");
+function loadTeamJobs() {
+  onValue(ref(db, "outboundJobs"), snapshot => {
+    const data = snapshot.val();
+    teamTable.innerHTML = "";
+
+    if (data) {
+      Object.values(data).forEach(job => {
+        if (job.team === "Sugity") {
+          const row = createTableRow(job);
+          teamTable.appendChild(row);
+        }
+      });
+    }
+  });
+}
+
+loadTeamJobs();

@@ -25,44 +25,68 @@ infoContainer.appendChild(qtyTotalIndicator);
 
 document.querySelector(".container").insertBefore(infoContainer, document.getElementById("teamTable"));
 
-function createTableRow(job) {
-  const row = document.createElement("tr");
+function createStatusLabel(status) {
+  const span = document.createElement("span");
+  span.textContent = status;
+  span.classList.add("status-label");
 
-  const statusClass = {
-    NewJob: "status-newjob",
-    PartialPicked: "status-partialpicked",
-    Downloaded: "status-downloaded",
-    Packed: "status-packed",
-    Loaded: "status-loaded"
-  }[job.status] || "";
+  switch (status.toLowerCase()) {
+    case "newjob":
+      span.style.backgroundColor = "#e74c3c"; // merah
+      break;
+    case "partialpicked":
+      span.style.backgroundColor = "#f39c12"; // oranye
+      break;
+    case "downloaded":
+      span.style.backgroundColor = "#f1c40f"; // kuning
+      break;
+    case "packed":
+    case "loaded":
+      span.style.backgroundColor = "#2ecc71"; // hijau
+      break;
+    default:
+      span.style.backgroundColor = "#bdc3c7"; // abu-abu
+  }
 
-  const statusHTML = `<span class="status-label ${statusClass}">${job.status}</span>`;
+  span.style.padding = "4px 8px";
+  span.style.borderRadius = "6px";
+  span.style.color = "white";
+  span.style.fontSize = "0.85em";
 
-  row.innerHTML = `
-    <td>${job.jobNo}</td>
-    <td>${job.deliveryDate}</td>
-    <td>${job.deliveryNote}</td>
-    <td>${job.remark}</td>
-    <td>${statusHTML}</td>
-    <td>${Number(job.qty).toLocaleString()}</td>
-  `;
-
-  return row;
+  return span;
 }
 
 function loadTeamJobs() {
   onValue(ref(db, "outboundJobs"), snapshot => {
     const data = snapshot.val();
     teamTable.innerHTML = "";
+    let totalJobs = 0;
+    let totalQty = 0;
 
     if (data) {
       Object.values(data).forEach(job => {
-        if (job.team === "Sugity") {
-          const row = createTableRow(job);
+        if ((job.team || '').toLowerCase() === currentTeam.toLowerCase()) {
+          totalJobs++;
+          totalQty += Number(job.qty) || 0;
+
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${job.jobNo}</td>
+            <td>${job.deliveryDate}</td>
+            <td>${job.deliveryNote}</td>
+            <td>${job.remark}</td>
+            <td></td>
+            <td>${Number(job.qty).toLocaleString()}</td>
+          `;
+          const statusCell = row.querySelector("td:nth-child(5)");
+          statusCell.appendChild(createStatusLabel(job.status));
           teamTable.appendChild(row);
         }
       });
     }
+
+    jobCountIndicator.textContent = `📦 Total Outbound Job Target: ${totalJobs}`;
+    qtyTotalIndicator.textContent = `🔢 Total Qty Target: ${totalQty.toLocaleString("en-US")}`;
   });
 }
 

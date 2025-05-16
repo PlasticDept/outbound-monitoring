@@ -51,6 +51,13 @@ let isTeamOpen = false;
 // Fungsi sortir tabel berdasarkan kolom
 window.sortTableBy = function(key) {
   const tbody = jobTable.querySelector("tbody");
+  if (!tbody) {
+    console.warn("Tbody belum ada. Tabel belum dimuat.");
+    return;
+  }
+
+  const rows = Array.from(tbody.querySelectorAll("tr"));
+  const tbody = jobTable.querySelector("tbody");
   const rows = Array.from(tbody.querySelectorAll("tr"));
 
   const jobsOnScreen = rows.map(row => {

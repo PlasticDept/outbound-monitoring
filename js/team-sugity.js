@@ -73,6 +73,47 @@ function createStatusLabel(status) {
   return span;
 }
 
+let currentPercent = 0;
+let animationFrame;
+
+const centerTextPlugin = {
+  id: 'centerText',
+  beforeDraw(chart) {
+    const { width, height, ctx } = chart;
+    ctx.restore();
+    const fontSize = (height / 100).toFixed(2);
+    ctx.font = `${fontSize}em sans-serif`;
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#2c3e50";
+
+    const text = `${Math.round(currentPercent)}%`;
+    const textX = Math.round((width - ctx.measureText(text).width) / 2);
+    const textY = height / 2;
+
+    ctx.clearRect(width / 4, height / 2 - 10, width / 2, 20);
+    ctx.fillText(text, textX, textY);
+    ctx.save();
+  }
+};
+
+Chart.register(centerTextPlugin);
+
+function animatePercentage(target) {
+  currentPercent = 0;
+  function step() {
+    if (currentPercent < target) {
+      currentPercent += 1;
+      window.progressChartInstance.update();
+      animationFrame = requestAnimationFrame(step);
+    } else {
+      currentPercent = target;
+      window.progressChartInstance.update();
+      cancelAnimationFrame(animationFrame);
+    }
+  }
+  step();
+}
+
 function renderChart(packedCount, totalJobs) {
   const ctx = document.getElementById("progressChart").getContext("2d");
   const percentage = totalJobs === 0 ? 0 : Math.round((packedCount / totalJobs) * 100);
@@ -82,38 +123,34 @@ function renderChart(packedCount, totalJobs) {
   window.progressChartInstance = new Chart(ctx, {
     type: "doughnut",
     data: {
-      labels: ["Packed/Loaded", "Remaining"],
+      labels: ["Selesai", "Belum"],
       datasets: [{
         data: [packedCount, totalJobs - packedCount],
-        backgroundColor: ["#2ecc71", "#bdc3c7"],
-        borderWidth: 1
+        backgroundColor: ["#2ecc71", "#ecf0f1"], // ✅ hijau dan abu muda
+        hoverOffset: 6,
+        borderWidth: 2
       }]
     },
     options: {
       cutout: "70%",
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: {
+        animateRotate: true,
+        animateScale: true,
+        duration: 1000,
+        easing: "easeOutQuart"
+      },
       plugins: {
         tooltip: { enabled: false },
         legend: { display: false },
-        
-        // Plugin custom untuk menampilkan teks di tengah
-        beforeDraw: chart => {
-          const { width, height, ctx } = chart;
-          ctx.restore();
-          const fontSize = (height / 100).toFixed(2);
-          ctx.font = `${fontSize}em sans-serif`;
-          ctx.textBaseline = "middle";
-          ctx.fillStyle = "#2c3e50";
-
-          const text = `${percentage}%`;
-          const textX = Math.round((width - ctx.measureText(text).width) / 2);
-          const textY = height / 2;
-
-          ctx.fillText(text, textX, textY);
-          ctx.save();
-        }
+        centerText: {
+          text: `${percentage}%`
+        } 
       }
     }
   });
+  animatePercentage(percentage);
 }
 
 function loadTeamJobs() {

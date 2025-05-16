@@ -57,8 +57,6 @@ window.sortTableBy = function(key) {
   }
 
   const rows = Array.from(tbody.querySelectorAll("tr"));
-  const tbody = jobTable.querySelector("tbody");
-  const rows = Array.from(tbody.querySelectorAll("tr"));
 
   const jobsOnScreen = rows.map(row => {
     const cells = row.querySelectorAll("td");

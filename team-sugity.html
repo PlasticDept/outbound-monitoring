@@ -9,6 +9,9 @@
 <body>
   <div class="container">
     <h1>Team Sugity - Outbound Jobs</h1>
+
+    <!-- Chart + Info akan disisipkan lewat JS -->
+
     <table id="teamTable">
       <thead>
         <tr>
@@ -21,17 +24,17 @@
           <th>Job Type</th> <!-- ✅ Tambahan -->
         </tr>
       </thead>
-
       <tbody></tbody>
     </table>
   </div>
 
-  <!-- Chart.js sebagai script global -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- ✅ Chart.js global (tidak pakai module) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- team-sugity.js sebagai module (yang sudah import config.js di dalamnya) -->
-<script type="module" src="js/team-sugity.js"></script>
+  <!-- ✅ Firebase config -->
+  <script type="module" src="js/config.js"></script>
 
-
+  <!-- ✅ Script utama untuk halaman team sugity -->
+  <script type="module" src="js/team-sugity.js"></script>
 </body>
 </html>

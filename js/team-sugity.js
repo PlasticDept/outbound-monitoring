@@ -6,15 +6,24 @@ const teamTable = document.getElementById("teamTable").getElementsByTagName("tbo
 const currentTeam = "Sugity";
 const picName = localStorage.getItem("pic") || "";
 
-// Tampilkan nama PIC jika tersedia
+// Buat container untuk info PIC dan total
+const infoContainer = document.createElement("div");
+infoContainer.id = "infoContainer";
+infoContainer.style.margin = "10px 0";
+infoContainer.style.fontStyle = "italic";
+infoContainer.style.color = "#2c3e50";
+
 const picIndicator = document.createElement("div");
-picIndicator.id = "picIndicator";
-picIndicator.style.margin = "10px 0";
-picIndicator.style.fontStyle = "italic";
-picIndicator.style.color = "#2c3e50";
+const jobCountIndicator = document.createElement("div");
+const qtyTotalIndicator = document.createElement("div");
+
 picIndicator.textContent = picName ? `👤 PIC: ${picName}` : "";
 
-document.querySelector(".container").insertBefore(picIndicator, document.getElementById("teamTable"));
+infoContainer.appendChild(picIndicator);
+infoContainer.appendChild(jobCountIndicator);
+infoContainer.appendChild(qtyTotalIndicator);
+
+document.querySelector(".container").insertBefore(infoContainer, document.getElementById("teamTable"));
 
 function createTableRow(job) {
   const row = document.createElement("tr");

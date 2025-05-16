@@ -3,6 +3,18 @@ import { db } from "./config.js";
 import { ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
 const teamTable = document.getElementById("teamTable").getElementsByTagName("tbody")[0];
+const currentTeam = "Sugity";
+const picName = localStorage.getItem("pic") || "";
+
+// Tampilkan nama PIC jika tersedia
+const picIndicator = document.createElement("div");
+picIndicator.id = "picIndicator";
+picIndicator.style.margin = "10px 0";
+picIndicator.style.fontStyle = "italic";
+picIndicator.style.color = "#2c3e50";
+picIndicator.textContent = picName ? `👤 PIC: ${picName}` : "";
+
+document.querySelector(".container").insertBefore(picIndicator, document.getElementById("teamTable"));
 
 function createTableRow(job) {
   const row = document.createElement("tr");

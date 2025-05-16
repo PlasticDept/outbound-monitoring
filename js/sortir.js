@@ -1,12 +1,6 @@
 // sortir.js
 import { db } from "./config.js";
-import {
-  ref,
-  set,
-  get,
-  update,
-  onValue
-} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import {ref, set, get, update,onValue, remove} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
 // === Notifikasi di atas header ===
 function showNotification(message, isError = false) {
@@ -478,3 +472,21 @@ loadJobsFromFirebase();
 window.navigateTo = function(page) {
   window.location.href = page;
 };
+
+// Fungsi untuk hapus semua job di database
+function clearAllJobs() {
+  if (confirm("Apakah kamu yakin ingin menghapus SEMUA job dari database?")) {
+    remove(ref(db, "outboundJobs"))
+      .then(() => {
+        showNotification("✅ Semua job berhasil dihapus.");
+        loadJobsFromFirebase(); // Refresh tampilan tabel
+      })
+      .catch((err) => {
+        console.error(err);
+        showNotification("❌ Gagal menghapus job!", true);
+      });
+  }
+}
+
+// Event listener tombol
+document.getElementById("clearDatabaseBtn").addEventListener("click", clearAllJobs);

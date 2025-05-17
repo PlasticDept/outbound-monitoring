@@ -5,6 +5,7 @@ import { ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-
 const teamTable = document.getElementById("teamTable").getElementsByTagName("tbody")[0];
 const currentTeam = "Sugity";
 const picName = localStorage.getItem("pic") || "";
+const PLAN_TARGET_QTY = 17250;
 
 function createStatusLabel(status) {
   const span = document.createElement("span");
@@ -13,20 +14,20 @@ function createStatusLabel(status) {
 
   switch (status.toLowerCase()) {
     case "newjob":
-      span.style.backgroundColor = "#e74c3c"; // merah
+      span.style.backgroundColor = "#e74c3c";
       break;
     case "partialpicked":
-      span.style.backgroundColor = "#f39c12"; // oranye
+      span.style.backgroundColor = "#f39c12";
       break;
     case "downloaded":
-      span.style.backgroundColor = "#f1c40f"; // kuning
+      span.style.backgroundColor = "#f1c40f";
       break;
     case "packed":
     case "loaded":
-      span.style.backgroundColor = "#2ecc71"; // hijau
+      span.style.backgroundColor = "#2ecc71";
       break;
     default:
-      span.style.backgroundColor = "#bdc3c7"; // abu-abu
+      span.style.backgroundColor = "#bdc3c7";
   }
 
   span.style.padding = "4px 8px";
@@ -90,7 +91,7 @@ function renderChart(packedCount, totalJobs) {
       labels: ["Selesai", "Belum"],
       datasets: [{
         data: [packedCount, totalJobs - packedCount],
-        backgroundColor: ["#2ecc71", "#ecf0f1"], // ✅ hijau dan abu muda
+        backgroundColor: ["#2ecc71", "#ecf0f1"],
         hoverOffset: 6,
         borderWidth: 2
       }]
@@ -124,15 +125,18 @@ function loadTeamJobs() {
     let totalJobs = 0;
     let totalQty = 0;
     let packedCount = 0;
+    let completedQty = 0;
 
     if (data) {
       Object.values(data).forEach(job => {
         if ((job.team || '').toLowerCase() === currentTeam.toLowerCase()) {
           totalJobs++;
-          totalQty += Number(job.qty) || 0;
+          const qty = Number(job.qty) || 0;
+          totalQty += qty;
 
           if (["packed", "loaded"].includes((job.status || '').toLowerCase())) {
             packedCount++;
+            completedQty += qty;
           }
 
           const row = document.createElement("tr");
@@ -142,7 +146,7 @@ function loadTeamJobs() {
             <td>${job.deliveryNote}</td>
             <td>${job.remark}</td>
             <td></td>
-            <td>${Number(job.qty).toLocaleString()}</td>
+            <td>${qty.toLocaleString()}</td>
             <td>${job.jobType ? `<span class="job-type ${job.jobType}">${job.jobType}</span>` : ""}</td>
           `;
           const statusCell = row.querySelector("td:nth-child(5)");
@@ -151,8 +155,25 @@ function loadTeamJobs() {
         }
       });
     }
+
+    // Update matrix container
+    document.getElementById("planTarget").textContent = `${PLAN_TARGET_QTY.toLocaleString()} kg`;
+    document.getElementById("actualTarget").textContent = `${totalQty.toLocaleString()} kg`;
+    document.getElementById("achievedTarget").textContent = `${completedQty.toLocaleString()} kg`;
+    document.getElementById("remainingTarget").textContent = `${(totalQty - completedQty).toLocaleString()} kg`;
+
     renderChart(packedCount, totalJobs);
   });
 }
+
+// Tampilkan PIC di metric box jika ada
+const picMetricHTML = `
+  <div class="metric-box">
+    <div class="icon">👤</div>
+    <div class="label">PIC</div>
+    <div class="value">${picName}</div>
+  </div>
+`;
+document.querySelector(".metrics")?.insertAdjacentHTML("afterbegin", picMetricHTML);
 
 loadTeamJobs();

@@ -79,17 +79,17 @@ function animatePercentage(target) {
   step();
 }
 
-function renderChart(achievedQty, remainingQty) {
+function renderChart(achievedQty, totalQty) {
   const ctx = document.getElementById("progressChart").getContext("2d");
-  const totalQty = achievedQty + remainingQty;
   const percentage = totalQty === 0 ? 0 : Math.round((achievedQty / totalQty) * 100);
+  const remainingQty = totalQty - achievedQty;
 
   if (window.progressChartInstance) window.progressChartInstance.destroy();
 
   window.progressChartInstance = new Chart(ctx, {
     type: "doughnut",
     data: {
-      labels: ["Selesai", "Belum"],
+      labels: ["Achieved", "Remaining"],
       datasets: [{
         data: [achievedQty, remainingQty],
         backgroundColor: ["#2ecc71", "#ecf0f1"],
@@ -116,6 +116,7 @@ function renderChart(achievedQty, remainingQty) {
       }
     }
   });
+
   animatePercentage(percentage);
 }
 
@@ -160,7 +161,7 @@ function loadTeamJobs() {
     document.getElementById("achievedTarget").textContent = `${achievedQty.toLocaleString()} kg`;
     document.getElementById("remainingTarget").textContent = `${remainingQty.toLocaleString()} kg`;
 
-    renderChart(achievedQty, remainingQty);
+    renderChart(achievedQty, totalQty);
   });
 }
 

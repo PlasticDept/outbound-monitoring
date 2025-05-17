@@ -31,7 +31,6 @@ const picIndicator = document.createElement("div");
 const jobCountIndicator = document.createElement("div");
 const qtyTotalIndicator = document.createElement("div");
 
-picIndicator.textContent = picName ? `👤 PIC: ${picName}` : "";
 
 infoTextContainer.appendChild(picIndicator);
 infoTextContainer.appendChild(jobCountIndicator);

@@ -164,4 +164,15 @@ function loadTeamJobs() {
   });
 }
 
+// Tampilkan PIC di metric box jika ada
+const picMetricHTML = `
+  <div class="metric-box">
+    <div class="icon">👤</div>
+    <div class="label">PIC</div>
+    <div class="value">${picName}</div>
+  </div>
+`;
+document.querySelector(".metrics")?.insertAdjacentHTML("afterbegin", picMetricHTML);
+
 loadTeamJobs();
+

@@ -155,13 +155,24 @@ function loadTeamJobs() {
       });
     }
 
+    // Update matrix
     const remainingQty = totalQty - achievedQty;
     document.getElementById("planTarget").textContent = `${PLAN_TARGET_QTY.toLocaleString()} kg`;
     document.getElementById("actualTarget").textContent = `${totalQty.toLocaleString()} kg`;
     document.getElementById("achievedTarget").textContent = `${achievedQty.toLocaleString()} kg`;
     document.getElementById("remainingTarget").textContent = `${remainingQty.toLocaleString()} kg`;
 
+    // ✅ Chart dan DataTable HARUS di dalam callback ini
     renderChart(achievedQty, totalQty);
+
+    if (!$.fn.DataTable.isDataTable("#teamTable")) {
+      $("#teamTable").DataTable({
+        paging: true,
+        searching: true,
+        ordering: true,
+        info: true
+      });
+    }
   });
 }
 
@@ -176,13 +187,3 @@ const picMetricHTML = `
 document.querySelector(".metrics")?.insertAdjacentHTML("afterbegin", picMetricHTML);
 
 loadTeamJobs();
-
-// Aktifkan DataTables setelah tabel dirender
-$(document).ready(function () {
-  $("#teamTable").DataTable({
-    paging: true,
-    searching: true,
-    ordering: true,
-    info: true
-  });
-});

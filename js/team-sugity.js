@@ -27,20 +27,6 @@ canvas.width = 180;
 canvas.height = 180;
 chartContainer.appendChild(canvas);
 
-const picIndicator = document.createElement("div");
-const jobCountIndicator = document.createElement("div");
-const qtyTotalIndicator = document.createElement("div");
-
-
-infoTextContainer.appendChild(picIndicator);
-infoTextContainer.appendChild(jobCountIndicator);
-infoTextContainer.appendChild(qtyTotalIndicator);
-
-infoContainer.appendChild(infoTextContainer);
-infoContainer.appendChild(chartContainer);
-
-document.querySelector(".container").insertBefore(infoContainer, document.getElementById("teamTable"));
-
 function createStatusLabel(status) {
   const span = document.createElement("span");
   span.textContent = status;
@@ -186,9 +172,6 @@ function loadTeamJobs() {
         }
       });
     }
-
-    jobCountIndicator.textContent = `📦 Total Outbound Job Target: ${totalJobs}`;
-    qtyTotalIndicator.textContent = `🔢 Total Qty Target: ${totalQty.toLocaleString("en-US")} Kg`;
     renderChart(packedCount, totalJobs);
   });
 }

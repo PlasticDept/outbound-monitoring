@@ -81,7 +81,8 @@ function animatePercentage(target) {
 
 function renderChart(packedCount, totalJobs) {
   const ctx = document.getElementById("progressChart").getContext("2d");
-  const percentage = totalJobs === 0 ? 0 : Math.round((packedCount / totalJobs) * 100);
+  const totalQty = achievedQty + remainingQty;
+  const percentage = totalQty === 0 ? 0 : Math.round((achievedQty / totalQty) * 100);
 
   if (window.progressChartInstance) window.progressChartInstance.destroy();
 

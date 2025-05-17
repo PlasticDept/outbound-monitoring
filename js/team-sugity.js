@@ -79,7 +79,7 @@ function animatePercentage(target) {
   step();
 }
 
-function renderChart(packedCount, totalJobs) {
+function renderChart(achievedQty, remainingQty) {
   const ctx = document.getElementById("progressChart").getContext("2d");
   const totalQty = achievedQty + remainingQty;
   const percentage = totalQty === 0 ? 0 : Math.round((achievedQty / totalQty) * 100);
@@ -91,7 +91,7 @@ function renderChart(packedCount, totalJobs) {
     data: {
       labels: ["Selesai", "Belum"],
       datasets: [{
-        data: [packedCount, totalJobs - packedCount],
+        data: [achievedQty, remainingQty],
         backgroundColor: ["#2ecc71", "#ecf0f1"],
         hoverOffset: 6,
         borderWidth: 2
@@ -112,7 +112,7 @@ function renderChart(packedCount, totalJobs) {
         legend: { display: false },
         centerText: {
           text: `${percentage}%`
-        } 
+        }
       }
     }
   });
@@ -125,8 +125,7 @@ function loadTeamJobs() {
     teamTable.innerHTML = "";
     let totalJobs = 0;
     let totalQty = 0;
-    let packedCount = 0;
-    let completedQty = 0;
+    let achievedQty = 0;
 
     if (data) {
       Object.values(data).forEach(job => {
@@ -136,8 +135,7 @@ function loadTeamJobs() {
           totalQty += qty;
 
           if (["packed", "loaded"].includes((job.status || '').toLowerCase())) {
-            packedCount++;
-            completedQty += qty;
+            achievedQty += qty;
           }
 
           const row = document.createElement("tr");
@@ -150,20 +148,19 @@ function loadTeamJobs() {
             <td>${qty.toLocaleString()}</td>
             <td>${job.jobType ? `<span class="job-type ${job.jobType}">${job.jobType}</span>` : ""}</td>
           `;
-          const statusCell = row.querySelector("td:nth-child(5)");
-          statusCell.appendChild(createStatusLabel(job.status));
+          row.querySelector("td:nth-child(5)").appendChild(createStatusLabel(job.status));
           teamTable.appendChild(row);
         }
       });
     }
 
-    // Update matrix container
+    const remainingQty = totalQty - achievedQty;
     document.getElementById("planTarget").textContent = `${PLAN_TARGET_QTY.toLocaleString()} kg`;
     document.getElementById("actualTarget").textContent = `${totalQty.toLocaleString()} kg`;
-    document.getElementById("achievedTarget").textContent = `${completedQty.toLocaleString()} kg`;
-    document.getElementById("remainingTarget").textContent = `${(totalQty - completedQty).toLocaleString()} kg`;
+    document.getElementById("achievedTarget").textContent = `${achievedQty.toLocaleString()} kg`;
+    document.getElementById("remainingTarget").textContent = `${remainingQty.toLocaleString()} kg`;
 
-    renderChart(packedCount, totalJobs);
+    renderChart(achievedQty, remainingQty);
   });
 }
 

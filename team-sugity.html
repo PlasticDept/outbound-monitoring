@@ -9,8 +9,34 @@
 <body>
   <div class="container">
     <h1>Team Sugity - Outbound Jobs</h1>
+    <div class="metrics-container">
+      <div class="metrics">
+        <div class="metric-box">
+          <div class="icon">🗺️</div>
+          <div class="label">Plan Target</div>
+          <div class="value" id="planTarget">0 kg</div>
+        </div>
+        <div class="metric-box">
+          <div class="icon">🎯</div>
+          <div class="label">Actual Target</div>
+          <div class="value" id="actualTarget">0 kg</div>
+        </div>
+        <div class="metric-box">
+          <div class="icon">📋</div>
+          <div class="label">Actual Target Achieved</div>
+          <div class="value" id="achievedTarget">0 kg</div>
+        </div>
+        <div class="metric-box">
+          <div class="icon">📅</div>
+          <div class="label">Actual Target Remaining</div>
+          <div class="value" id="remainingTarget">0 kg</div>
+        </div>
+      </div>
+      <div class="chart-section">
+        <canvas id="progressChart" width="180" height="180"></canvas>
+      </div>
+  </div>
 
-    <!-- Chart + Info akan disisipkan lewat JS -->
 
     <table id="teamTable">
       <thead>

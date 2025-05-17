@@ -135,9 +135,10 @@ function loadTeamJobs() {
           const qty = Number(job.qty) || 0;
           totalQty += qty;
 
-          if (["packed", "loaded"].includes((job.status || '').toLowerCase())) {
+          if (["packed", "loaded", "completed"].includes((job.status || '').toLowerCase())) {
             achievedQty += qty;
           }
+          
 
           const row = document.createElement("tr");
           row.innerHTML = `

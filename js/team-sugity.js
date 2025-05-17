@@ -177,3 +177,12 @@ document.querySelector(".metrics")?.insertAdjacentHTML("afterbegin", picMetricHT
 
 loadTeamJobs();
 
+// Aktifkan DataTables setelah tabel dirender
+$(document).ready(function () {
+  $("#teamTable").DataTable({
+    paging: true,
+    searching: true,
+    ordering: true,
+    info: true
+  });
+});

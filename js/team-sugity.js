@@ -6,27 +6,6 @@ const teamTable = document.getElementById("teamTable").getElementsByTagName("tbo
 const currentTeam = "Sugity";
 const picName = localStorage.getItem("pic") || "";
 
-// Buat container untuk info PIC, total, dan chart
-const infoContainer = document.createElement("div");
-infoContainer.id = "infoContainer";
-infoContainer.style.margin = "20px 0";
-infoContainer.style.fontStyle = "italic";
-infoContainer.style.color = "#2c3e50";
-infoContainer.style.display = "flex";
-infoContainer.style.justifyContent = "space-between";
-infoContainer.style.alignItems = "center";
-
-const infoTextContainer = document.createElement("div");
-const chartContainer = document.createElement("div");
-chartContainer.style.width = "180px";
-chartContainer.style.height = "180px";
-
-const canvas = document.createElement("canvas");
-canvas.id = "progressChart";
-canvas.width = 180;
-canvas.height = 180;
-chartContainer.appendChild(canvas);
-
 function createStatusLabel(status) {
   const span = document.createElement("span");
   span.textContent = status;

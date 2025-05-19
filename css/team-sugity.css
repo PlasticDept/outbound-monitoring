@@ -98,6 +98,10 @@ td {
   border-bottom: 1px solid #ddd;
 }
 
+table.dataTable thead th {
+  text-align: center !important;
+}
+
 /* =======================================
    Status Label Styling
 ======================================= */

@@ -75,6 +75,20 @@ h1 {
   flex-shrink: 0;
 }
 
+#backToSortirBtn {
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  background-color: #2980b9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#backToSortirBtn:hover {
+  background-color: #2471a3;
+}
 
 /* =======================================
    Table Styling
@@ -96,6 +110,14 @@ td {
   padding: 12px;
   text-align: center;
   border-bottom: 1px solid #ddd;
+}
+
+table.dataTable thead th {
+  text-align: center !important;
+}
+
+#teamTable td:nth-child(4) {
+  text-align: left;
 }
 
 /* =======================================

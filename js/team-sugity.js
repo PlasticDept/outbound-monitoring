@@ -188,3 +188,13 @@ const picMetricHTML = `
 document.querySelector(".metrics")?.insertAdjacentHTML("afterbegin", picMetricHTML);
 
 loadTeamJobs();
+
+// ✅ Tampilkan tombol kembali jika login sebagai TEAM LEADER
+const userPosition = localStorage.getItem("position");
+const backBtn = document.getElementById("backToSortirBtn");
+if (userPosition === "TEAM LEADER" && backBtn) {
+  backBtn.style.display = "inline-block";
+  backBtn.addEventListener("click", () => {
+    window.location.href = "sort-job.html";
+  });
+}

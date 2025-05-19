@@ -58,20 +58,20 @@ body {
    Header Styling
 ======================================= */
 .header-section {
+  position: sticky;
+  top: 0;
   background-color: #ffffff;
+  z-index: 50;
   padding: 10px 0;
-  text-align: center;
+  border-bottom: 1px solid #ccc;
 }
 
 h2 {
-  position: sticky;
   font-size: 1.8em;
   color: #2c3e50;
   margin: 0;
-  padding: 12px 0;
-  top: 0;
-  background-color: #fff;
-  z-index: 50;
+  padding: 12px 0 6px;
+  text-align: center;
 }
 
 .upload-section {
@@ -96,7 +96,7 @@ h2 {
 ======================================= */
 .action-bar {
   position: sticky;
-  top: 96px; /* h2 + upload */
+  top: 92px; /* h2 + upload */
   background-color: #ffffff;
   z-index: 40;
   display: flex;
@@ -209,13 +209,13 @@ td {
 }
 
 thead th {
+  position: sticky;
   background-color: #50dcff;
   backdrop-filter: none;
   font-weight: bold;
   color: #2c3e50;
-  position: sticky;
-  top: 100px;
-  z-index: 20;
+  top: 150px;
+  z-index: 30;
   background-color: #29bbff;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;

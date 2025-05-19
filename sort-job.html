@@ -22,6 +22,17 @@
       </div>
 
       <div class="action-bar">
+         <!-- Plan Target Area -->
+        <div class="plan-target-container" id="planTargetSection">
+          <label for="planTargetInput"><strong>Set Plan Target (Kg):</strong></label>
+          <input type="number" id="planTargetInput" placeholder="Masukkan jumlah target" min="0">
+          <select id="planTeamSelector">
+            <option value="Sugity">Team Sugity</option>
+            <option value="Reguler">Team Reguler</option>
+          </select>
+          <button id="setPlanTargetBtn">Set Target</button>
+        </div>
+
         <button id="logoutBtn">🚪 Logout</button>
         <button id="bulkAddBtn">Assign Job Selected</button>
         

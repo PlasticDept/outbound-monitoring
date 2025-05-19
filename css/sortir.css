@@ -1,5 +1,5 @@
 /* =======================================
-   Global Styles
+    Styling for Container and Info Section
 ======================================= */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -10,7 +10,7 @@ body {
 }
 
 .container {
-  max-width: 1800px;
+  max-width: 2000px;
   width: 100%;
   margin: 40px auto;
   background-color: #ffffff;
@@ -52,18 +52,6 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-
-/* =======================================
-   Styling for Container and Info Section
-======================================= */
-.container {
-  font-family: 'Roboto', sans-serif;
-  padding: 30px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* =======================================
@@ -218,6 +206,23 @@ td {
   padding: 12px;
   text-align: center;
   border-bottom: 1px solid #ddd;
+}
+
+thead th {
+  background-color: #50dcff;
+  backdrop-filter: none;
+  font-weight: bold;
+  color: #2c3e50;
+  position: sticky;
+  top: 100px;
+  z-index: 20;
+  background-color: #29bbff;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
 }
 
 /* =======================================

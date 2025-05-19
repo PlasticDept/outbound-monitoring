@@ -91,6 +91,36 @@ h1 {
   z-index: 25;
 }
 
+.action-bar .team-buttons button {
+  background-color: #0307e9;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.action-bar .team-buttons button:hover {
+  background-color: #0237c7b0;
+}
+
+.action-bar button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #2ecc71;
+  color: white;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.action-bar button:hover {
+  background-color: #27ae60;
+}
+
 .plan-target-container {
   display: flex;
   align-items: center;

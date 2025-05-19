@@ -10,13 +10,14 @@ body {
 }
 
 .container {
-  max-width: 2000px;
+  max-width: 100%;
   width: 100%;
   margin: 40px auto;
   background-color: #ffffff;
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: visible;
 }
 
 /* =============================
@@ -42,7 +43,6 @@ body {
   border-color: #f5c6cb;
 }
 
-/* Animasi masuk */
 @keyframes slideFadeIn {
   from {
     opacity: 0;
@@ -63,25 +63,27 @@ body {
   background-color: #ffffff;
   z-index: 50;
   padding: 10px 0;
-  border-bottom: 1px solid #ccc;
 }
 
 h2 {
-  font-size: 1.8em;
-  color: #2c3e50;
-  margin: 0;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 100;
   padding: 12px 0 6px;
-  text-align: center;
+  text-align: left;
 }
+
 
 .upload-section {
   position: sticky;
-  top: 48px; /* tinggi dari h2 */
+  top: 48px; /* h2 = 48px */
   background-color: #ffffff;
-  z-index: 45;
+  z-index: 100;
   padding: 10px 0;
-  text-align: center;
+  text-align: left;
 }
+
 
 #infoContainer {
   display: flex;
@@ -96,9 +98,9 @@ h2 {
 ======================================= */
 .action-bar {
   position: sticky;
-  top: 92px; /* h2 + upload */
+  top: 92px; /* h2 (48) + upload-section (44) */
   background-color: #ffffff;
-  z-index: 40;
+  z-index: 80;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -107,6 +109,7 @@ h2 {
   margin-bottom: 20px;
   padding: 10px 0;
 }
+
 
 .action-bar .team-buttons button {
   background-color: #0307e9;
@@ -166,7 +169,6 @@ h2 {
   background-color: #2980b9;
 }
 
-/* Responsive adjustment */
 @media (max-width: 768px) {
   .action-bar {
     flex-direction: column;
@@ -210,12 +212,12 @@ td {
 
 thead th {
   position: sticky;
+  top: 144px; /* h2 (48) + upload-section (44) + action-bar (52) */
+  z-index: 70;
   background-color: #50dcff;
   backdrop-filter: none;
   font-weight: bold;
   color: #2c3e50;
-  top: 150px;
-  z-index: 30;
   background-color: #29bbff;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
@@ -225,9 +227,8 @@ tr:hover {
   background-color: #f1f1f1;
 }
 
-/* ubah font menjadi bold*/
 #jobTable td {
-  font-weight: bold; /*<==== ubah bagian ini*/
+  font-weight: bold;
 }
 
 /* =======================================
@@ -301,7 +302,6 @@ button:hover {
   background-color: #3498db;
 }
 
-/* Tombol "Assign Job" di dalam Tabel */
 .add-single {
   background-color: #9b59b6;
   color: white;
@@ -371,9 +371,9 @@ button:hover {
    Modal Styles
 ======================================= */
 .modal {
-  display: none; /* Default hidden */
+  display: none;
   position: fixed;
-  z-index: 100; /* Di atas elemen sticky */
+  z-index: 100;
   left: 0;
   top: 0;
   width: 100%;
@@ -393,7 +393,6 @@ button:hover {
   z-index: 101;
 }
 
-/* Tombol Close (X) */
 .close {
   color: #aaa;
   float: right;
@@ -406,7 +405,6 @@ button:hover {
   color: #e74c3c;
 }
 
-/* Form dalam Modal */
 .modal-content label {
   display: block;
   margin-top: 15px;
@@ -437,4 +435,3 @@ button:hover {
 #confirmAdd:hover {
   background-color: #2c3e50;
 }
-

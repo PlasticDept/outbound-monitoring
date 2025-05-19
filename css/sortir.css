@@ -99,7 +99,9 @@ h2 {
 ======================================= */
 .action-bar {
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap; /* ← tambahkan ini */
+  align-items: center; /* ← tambahkan ini */
+  justify-content: space-between; /* bisa pakai center juga */
   gap: 15px;
   margin-bottom: 20px;
   position: sticky;
@@ -168,8 +170,10 @@ h2 {
 
 .plan-target-container {
   display: flex;
-  margin: 20px 0;
-  padding: 10px 0;
+  align-items: center; /* ← pastikan ada */
+  gap: 10px; /* ← ini akan menggantikan margin-right di input */
+  margin: 0; /* ← reset margin default */
+  padding: 0; /* ← reset padding default */
 }
 
 .plan-target-container input,
@@ -405,11 +409,12 @@ tr:hover {
    Responsive Styles (Mobile)
 ======================================= */
 @media (max-width: 768px) {
-  .container {
-    padding: 20px;
-    margin: 20px auto;
-    border-radius: 8px;
+  .plan-target-container {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
   }
+}
 
   .upload-section,
   .action-bar {

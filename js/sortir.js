@@ -260,7 +260,7 @@ function createTableRow(job) {
     <td>${job.status}</td>
     <td>${Number(job.qty).toLocaleString()}</td>
     <td>${job.team}</td>
-    <td><button class="add-single" data-jobno="${job.jobNo}">Add</button></td>
+    <td><button class="add-single" data-jobno="${job.jobNo}">Assign Job</button></td>
   `;
   return row;
 }

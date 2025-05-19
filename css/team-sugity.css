@@ -102,6 +102,10 @@ table.dataTable thead th {
   text-align: center !important;
 }
 
+#teamTable td:nth-child(4) {
+  text-align: left;
+}
+
 /* =======================================
    Status Label Styling
 ======================================= */

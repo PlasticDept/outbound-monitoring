@@ -1,4 +1,27 @@
-/* Notifikasi floating bar */
+/* =======================================
+   Global Styles
+======================================= */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f8;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  max-width: 1800px;
+  width: 100%;
+  margin: 40px auto;
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* =============================
+    Notifikasi floating bar
+================================ */
 .notification-bar {
   position: relative;
   background-color: #d4edda;

@@ -69,6 +69,7 @@ h1 {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  position: sticky;
   font-weight: bold;
 }
 
@@ -175,6 +176,11 @@ thead th {
 
 tr:hover {
   background-color: #f1f1f1;
+}
+
+/* ubah font menjadi bold*/
+#jobTable td {
+  font-weight: bold; /*<==== ubah bagian ini*/
 }
 
 /* =======================================

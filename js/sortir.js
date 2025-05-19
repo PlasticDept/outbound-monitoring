@@ -39,6 +39,9 @@ const dateOptions = document.getElementById("dateOptions");
 const sortTeamBtn = document.getElementById("sortTeamBtn");
 const teamDropdown = document.getElementById("teamDropdown");
 const teamOptions = document.getElementById("teamOptions");
+const planTargetInput = document.getElementById("planTargetInput");
+const planTeamSelector = document.getElementById("planTeamSelector");
+const setPlanTargetBtn = document.getElementById("setPlanTargetBtn");
 
 let selectedSingleJob = null;
 let allJobsData = [];
@@ -90,6 +93,31 @@ window.sortTableBy = function (key) {
   tbody.innerHTML = "";
   jobsOnScreen.forEach(job => tbody.appendChild(job.element));
 };
+
+// Fungsi menyimpan target ke localStorage
+function savePlanTargetToLocal(team, value) {
+  const planData = JSON.parse(localStorage.getItem("planTarget")) || {};
+  planData[team.toLowerCase()] = value;
+  localStorage.setItem("planTarget", JSON.stringify(planData));
+}
+
+// Fungsi mengatur target plan dari input
+function handleSetPlanTarget() {
+  const team = planTeamSelector.value;
+  const target = parseInt(planTargetInput.value);
+
+  if (isNaN(target) || target <= 0) {
+    alert("Masukkan nilai target yang valid.");
+    return;
+  }
+
+  savePlanTargetToLocal(team, target);
+  alert(`Target plan untuk team ${team} telah disimpan: ${target} kg.`);
+  planTargetInput.value = "";
+}
+
+// Event listener untuk tombol set plan target
+setPlanTargetBtn?.addEventListener("click", handleSetPlanTarget);
 
 // Membaca dan parsing file Excel
 function parseExcel(file) {

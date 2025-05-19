@@ -99,18 +99,17 @@ h2 {
 ======================================= */
 .action-bar {
   display: flex;
-  flex-wrap: wrap; /* ← tambahkan ini */
-  align-items: center; /* ← tambahkan ini */
-  justify-content: space-between; /* bisa pakai center juga */
-  gap: 15px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start; /* atau space-between */
+  gap: 10px;
   margin-bottom: 20px;
+  padding: 10px 0;
   position: sticky;
   top: 48px;
   background-color: #ffffff;
-  backdrop-filter: none;
-  z-index: 25;
-  padding: 10px 0;
   border-bottom: 1px solid #ddd;
+  z-index: 25;
 }
 
 .action-bar .team-buttons button {
@@ -170,10 +169,11 @@ h2 {
 
 .plan-target-container {
   display: flex;
-  align-items: center; /* ← pastikan ada */
-  gap: 10px; /* ← ini akan menggantikan margin-right di input */
-  margin: 0; /* ← reset margin default */
-  padding: 0; /* ← reset padding default */
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap; /* biar responsif di layar kecil */
+  flex: 1 1 auto;
+  min-width: 280px;
 }
 
 .plan-target-container input,
@@ -409,9 +409,20 @@ tr:hover {
    Responsive Styles (Mobile)
 ======================================= */
 @media (max-width: 768px) {
+  .action-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .plan-target-container {
     flex-direction: column;
     align-items: flex-start;
+    width: 100%;
+  }
+
+  .plan-target-container input,
+  .plan-target-container select,
+  .plan-target-container button {
     width: 100%;
   }
 }

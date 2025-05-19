@@ -3,9 +3,9 @@ import { db } from "./config.js";
 import { ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
 const teamTable = document.getElementById("teamTable").getElementsByTagName("tbody")[0];
-const currentTeam = "Sugity";
+const currentTeam = localStorage.getItem("team") || "Sugity";
 const picName = localStorage.getItem("pic") || "";
-const PLAN_TARGET_QTY = 17250;
+const PLAN_TARGET_QTY = parseInt(localStorage.getItem("planTarget")) || (currentTeam.toLowerCase() === "reguler" ? 17640 : 35280);
 
 function createStatusLabel(status) {
   const span = document.createElement("span");
@@ -24,6 +24,7 @@ function createStatusLabel(status) {
       break;
     case "packed":
     case "loaded":
+    case "completed":
       span.style.backgroundColor = "#2ecc71";
       break;
     default:
@@ -138,7 +139,6 @@ function loadTeamJobs() {
           if (["packed", "loaded", "completed"].includes((job.status || '').toLowerCase())) {
             achievedQty += qty;
           }
-          
 
           const row = document.createElement("tr");
           row.innerHTML = `
@@ -156,14 +156,12 @@ function loadTeamJobs() {
       });
     }
 
-    // Update matrix
     const remainingQty = totalQty - achievedQty;
     document.getElementById("planTarget").textContent = `${PLAN_TARGET_QTY.toLocaleString()} kg`;
     document.getElementById("actualTarget").textContent = `${totalQty.toLocaleString()} kg`;
     document.getElementById("achievedTarget").textContent = `${achievedQty.toLocaleString()} kg`;
     document.getElementById("remainingTarget").textContent = `${remainingQty.toLocaleString()} kg`;
 
-    // ✅ Chart dan DataTable HARUS di dalam callback ini
     renderChart(achievedQty, totalQty);
 
     if (!$.fn.DataTable.isDataTable("#teamTable")) {
@@ -177,7 +175,6 @@ function loadTeamJobs() {
   });
 }
 
-// Tampilkan PIC di metric box jika ada
 const picMetricHTML = `
   <div class="metric-box">
     <div class="icon">👤</div>
@@ -189,7 +186,6 @@ document.querySelector(".metrics")?.insertAdjacentHTML("afterbegin", picMetricHT
 
 loadTeamJobs();
 
-// ✅ Tampilkan tombol kembali jika login sebagai TEAM LEADER
 const userPosition = localStorage.getItem("position");
 const backBtn = document.getElementById("backToSortirBtn");
 if (["TEAM LEADER", "SPV", "ASST MANAGER", "MANAGER"].includes(userPosition) && backBtn) {

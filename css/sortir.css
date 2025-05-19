@@ -58,31 +58,35 @@ body {
    Header Styling
 ======================================= */
 .header-section {
-  position: sticky;
-  top: 0;
   background-color: #ffffff;
-  z-index: 40;
   padding: 10px 0;
   text-align: center;
-  border-bottom: 1px solid #ddd;
 }
 
 h2 {
+  position: sticky;
   font-size: 1.8em;
   color: #2c3e50;
   margin: 0;
   padding: 12px 0;
-  position: sticky;
   top: 0;
   background-color: #fff;
   z-index: 50;
-  border-bottom: 1px solid #ddd;
+}
+
+.upload-section {
+  position: sticky;
+  top: 48px; /* tinggi dari h2 */
+  background-color: #ffffff;
+  z-index: 45;
+  padding: 10px 0;
+  text-align: center;
 }
 
 #infoContainer {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: left;
   margin-bottom: 20px;
   font-weight: bold;
 }
@@ -91,6 +95,10 @@ h2 {
    Action Bar & Plan Target Container
 ======================================= */
 .action-bar {
+  position: sticky;
+  top: 96px; /* h2 + upload */
+  background-color: #ffffff;
+  z-index: 40;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -98,11 +106,6 @@ h2 {
   gap: 10px;
   margin-bottom: 20px;
   padding: 10px 0;
-  position: sticky;
-  top: 48px;
-  background-color: #ffffff;
-  border-bottom: 1px solid #ddd;
-  z-index: 25;
 }
 
 .action-bar .team-buttons button {

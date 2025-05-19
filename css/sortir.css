@@ -1,3 +1,37 @@
+/* Notifikasi floating bar */
+.notification-bar {
+  position: relative;
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  padding: 6px 12px; 
+  margin-bottom: 16px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 16px;
+  display: none;
+  animation: slideFadeIn 0.3s ease;
+}
+
+.notification-bar.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+/* Animasi masuk */
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
 /* =======================================
    Styling for Container and Info Section
 ======================================= */
@@ -233,3 +267,75 @@ button {
 button:hover {
   background-color: #3498db;
 }
+
+/* =======================================
+   Modal Styles
+======================================= */
+.modal {
+  display: none; /* Default hidden */
+  position: fixed;
+  z-index: 100; /* Di atas elemen sticky */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 30px;
+  border-radius: 12px;
+  width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 101;
+}
+
+/* Tombol Close (X) */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #e74c3c;
+}
+
+/* Form dalam Modal */
+.modal-content label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.modal-content select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+}
+
+#confirmAdd {
+  background-color: #34495e;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+#confirmAdd:hover {
+  background-color: #2c3e50;
+}
+

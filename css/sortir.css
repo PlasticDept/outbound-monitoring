@@ -156,6 +156,15 @@ h2 {
   background-color: #c0392b;
 }
 
+#logoutBtn {
+  background-color: #e74c3c;
+  color: white;
+  font-weight: bold;
+}
+
+#logoutBtn:hover {
+  background-color: #c0392b;
+}
 
 /* Dropdown Sort (Status, Date, Team) */
 .dropdown-container {

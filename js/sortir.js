@@ -500,5 +500,13 @@ function clearAllJobs() {
   }
 }
 
-// Event listener tombol
+// Event listener tombol  Hapus Semua Job di database
 document.getElementById("clearDatabaseBtn").addEventListener("click", clearAllJobs);
+
+// Tambahkan event listener logout di bagian paling bawah
+document.getElementById("logoutBtn")?.addEventListener("click", () => {
+  if (confirm("Apakah kamu yakin ingin logout?")) {
+    localStorage.clear();
+    window.location.href = "index.html"; // kembali ke halaman login
+  }
+});

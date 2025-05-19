@@ -1,107 +1,88 @@
-/* Notifikasi floating bar */
-.notification-bar {
-  position: relative;
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
-  padding: 6px 12px; 
-  margin-bottom: 16px;
-  border-radius: 6px;
-  text-align: center;
-  font-size: 16px;
-  display: none;
-  animation: slideFadeIn 0.3s ease;
-}
-
-.notification-bar.error {
-  background-color: #f8d7da;
-  color: #721c24;
-  border-color: #f5c6cb;
-}
-
-/* Animasi masuk */
-@keyframes slideFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
 /* =======================================
-   Global Styles
+   Styling for Container and Info Section
 ======================================= */
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f6f8;
-  margin: 0;
-  padding: 0;
-  color: #333;
-}
-
 .container {
-  max-width: 1800px;
-  width: 100%;
-  margin: 40px auto;
-  background-color: #ffffff;
+  font-family: 'Roboto', sans-serif;
   padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* =======================================
-   Heading Styles
+   Header Styling
 ======================================= */
-h2 {
-  text-align: center;
+h1 {
+  font-size: 2em;
   color: #2c3e50;
-  margin-bottom: 0;
-  padding: 10px 0;
-  position: sticky;
-  top: 0;
-  background-color: #ffffff;
-  backdrop-filter: none;
-  z-index: 30;
-}
-
-/* =======================================
-   Upload Section
-======================================= */
-.upload-section {
-  text-align: center;
   margin-bottom: 20px;
+  text-align: left;
 }
 
-#fileInput {
-  margin-right: 10px;
+#infoContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-weight: bold;
 }
 
-#uploadBtn {
-  background-color: #3498db;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.metrics-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0 30px;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
-#uploadBtn:hover {
-  background-color: #2980b9;
+.metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  flex: 1;
+}
+
+.metric-box {
+  flex: 1 1 200px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  padding: 15px;
+  text-align: center;
+  border-top: 2px solid #2980b9;
+}
+
+.metric-box .icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.metric-box .label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #2c3e50;
+}
+
+.metric-box .value {
+  font-size: 18px;
+  color: #34495e;
+}
+
+.chart-section {
+  width: 180px;
+  height: 180px;
+  flex-shrink: 0;
 }
 
 /* =======================================
-   Action Bar & Sorting Buttons
+   Action Bar & Plan Target Container
 ======================================= */
 .action-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-start; /* atau space-between */
+  justify-content: flex-start;
   gap: 10px;
   margin-bottom: 20px;
   padding: 10px 0;
@@ -112,66 +93,10 @@ h2 {
   z-index: 25;
 }
 
-.action-bar .team-buttons button {
-  background-color: #0307e9;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.action-bar .team-buttons button:hover {
-  background-color: #0237c7b0;
-}
-
-.action-bar button {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  background-color: #2ecc71;
-  color: white;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
-}
-
-.action-bar button:hover {
-  background-color: #27ae60;
-}
-
-#clearDatabaseBtn {
-  background-color: #e74c3c;
-  color: white;
-  font-weight: bold;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-#clearDatabaseBtn:hover {
-  background-color: #c0392b;
-}
-
-#logoutBtn {
-  background-color: #e74c3c;
-  color: white;
-  font-weight: bold;
-}
-
-#logoutBtn:hover {
-  background-color: #c0392b;
-}
-
 .plan-target-container {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap; /* biar responsif di layar kecil */
   flex: 1 1 auto;
   min-width: 280px;
 }
@@ -179,7 +104,6 @@ h2 {
 .plan-target-container input,
 .plan-target-container select {
   padding: 6px 10px;
-  margin-right: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
@@ -197,221 +121,11 @@ h2 {
   background-color: #2980b9;
 }
 
-
-/* Dropdown Sort (Status, Date, Team) */
-.dropdown-container {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: white;
-  border: 1px solid #ccc;
-  padding: 5px;
-  z-index: 100;
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.dropdown-container.show .dropdown-menu {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* =======================================
-   Table Styles
-======================================= */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: auto;
-  margin-bottom: 30px;
-}
-
-th, td {
-  padding: 10px;
-  text-align: center;
-  border: 1px solid #ddd;
-}
-
-thead th {
-  background-color: #50dcff;
-  backdrop-filter: none;
-  font-weight: bold;
-  color: #2c3e50;
-  position: sticky;
-  top: 100px;
-  z-index: 20;
-  background-color: #29bbff;
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-}
-
-tr:hover {
-  background-color: #f1f1f1;
-}
-
-/* Kolom 1: Checkbox */
-#jobTable th:nth-child(1),
-#jobTable td:nth-child(1) {
-  width: 40px;
-}
-
-/* Kolom 2: Job No */
-#jobTable th:nth-child(2),
-#jobTable td:nth-child(2) {
-  width: 160px;
-}
-
-/* Kolom 3: Delivery Date */
-#jobTable th:nth-child(3),
-#jobTable td:nth-child(3) {
-  width: 130px;
-}
-
-/* Kolom 4: Delivery Note */
-#jobTable th:nth-child(4),
-#jobTable td:nth-child(4) {
-  width: 160px;
-}
-
-/* Kolom 5: Remark */
-#jobTable th:nth-child(5),
-#jobTable td:nth-child(5) {
-  width: 250px;
-  text-align: left;
-}
-
-/* Kolom 6: Status */
-#jobTable th:nth-child(6),
-#jobTable td:nth-child(6) {
-  width: 120px;
-}
-
-/* Kolom 7: Qty */
-#jobTable th:nth-child(7),
-#jobTable td:nth-child(7) {
-  width: 100px;
-}
-
-/* Kolom 8: Team */
-#jobTable th:nth-child(8),
-#jobTable td:nth-child(8) {
-  width: 110px;
-}
-
-/* Kolom 9: Action */
-#jobTable th:nth-child(9),
-#jobTable td:nth-child(9) {
-  width: 90px;
-}
-
-/* ubah font menjadi bold*/
-#jobTable td {
-  font-weight: bold; /*<==== ubah bagian ini*/
-}
-
-/* Tombol "Add" di dalam Tabel */
-.add-single {
-  background-color: #9b59b6;
-  color: white;
-  border: none;
-  padding: 5px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.add-single:hover {
-  background-color: #8e44ad;
-}
-
-/* =======================================
-   Modal Styles
-======================================= */
-.modal {
-  display: none; /* Default hidden */
-  position: fixed;
-  z-index: 100; /* Di atas elemen sticky */
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.5);
-}
-
-.modal-content {
-  background-color: #fff;
-  margin: 10% auto;
-  padding: 30px;
-  border-radius: 12px;
-  width: 400px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  position: relative;
-  z-index: 101;
-}
-
-/* Tombol Close (X) */
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.close:hover {
-  color: #e74c3c;
-}
-
-/* Form dalam Modal */
-.modal-content label {
-  display: block;
-  margin-top: 15px;
-  margin-bottom: 5px;
-  font-weight: 500;
-}
-
-.modal-content select {
-  width: 100%;
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  margin-bottom: 15px;
-}
-
-#confirmAdd {
-  background-color: #34495e;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  width: 100%;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-#confirmAdd:hover {
-  background-color: #2c3e50;
-}
-
-
-
-/* =======================================
-   Responsive Styles (Mobile)
-======================================= */
+/* Responsive adjustment */
 @media (max-width: 768px) {
   .action-bar {
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
   }
 
   .plan-target-container {
@@ -427,38 +141,95 @@ tr:hover {
   }
 }
 
-  .upload-section,
-  .action-bar {
-    flex-direction: column;
-    align-items: center;
-  }
+/* =======================================
+   Table Styling
+======================================= */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-  .action-bar {
-    gap: 10px;
-  }
+th {
+  background-color: #3498db;
+  color: white;
+  padding: 12px;
+  text-align: center;
+  border-radius: 6px;
+}
 
-  table {
-    font-size: 12px;
-    overflow-x: auto;
-    display: block;
-  }
+td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
 
-  th, td {
-    padding: 8px;
-  }
+/* =======================================
+   Status Label Styling
+======================================= */
+.status-label {
+  padding: 5px 12px;
+  border-radius: 6px;
+  color: white;
+}
 
-  .modal-content {
-    width: 90%;
-    padding: 20px;
-  }
+.status-label.newjob {
+  background-color: #e74c3c;
+}
 
-  #confirmAdd {
-    padding: 8px 12px;
-    font-size: 14px;
-  }
+.status-label.partialpicked {
+  background-color: #f39c12;
+}
 
-  .add-single {
-    padding: 4px 8px;
-    font-size: 12px;
-  }
+.status-label.downloaded {
+  background-color: #f1c40f;
+}
+
+.status-label.packed,
+.status-label.loaded {
+  background-color: #2ecc71;
+}
+
+/* =======================================
+   Job Type Styling
+======================================= */
+.job-type {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 0.85em;
+}
+
+.job-type.OT {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.job-type.H-1 {
+  background-color: #f39c12;
+  color: white;
+}
+
+.job-type.Additional {
+  background-color: #2ecc71;
+  color: white;
+}
+
+.job-type.Remaining {
+  background-color: #7f8c8d;
+  color: white;
+}
+
+/* =======================================
+   General Button Styling
+======================================= */
+button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #3498db;
 }

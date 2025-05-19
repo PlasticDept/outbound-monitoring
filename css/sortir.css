@@ -72,54 +72,6 @@ h1 {
   font-weight: bold;
 }
 
-.metrics-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 20px 0 30px;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.metrics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  flex: 1;
-}
-
-.metric-box {
-  flex: 1 1 200px;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-  padding: 15px;
-  text-align: center;
-  border-top: 2px solid #2980b9;
-}
-
-.metric-box .icon {
-  font-size: 24px;
-  margin-bottom: 8px;
-}
-
-.metric-box .label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #2c3e50;
-}
-
-.metric-box .value {
-  font-size: 18px;
-  color: #34495e;
-}
-
-.chart-section {
-  width: 180px;
-  height: 180px;
-  flex-shrink: 0;
-}
-
 /* =======================================
    Action Bar & Plan Target Container
 ======================================= */
@@ -334,6 +286,32 @@ button:hover {
 
 #logoutBtn:hover {
   background-color: #c0392b;
+}
+
+/* Dropdown Sort (Status, Date, Team) */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 5px;
+  z-index: 100;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dropdown-container.show .dropdown-menu {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* =======================================

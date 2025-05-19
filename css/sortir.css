@@ -167,7 +167,7 @@ h2 {
 }
 
 .plan-target-container {
-  display: none; /* Default disembunyikan, muncul via JS kalau role sesuai */
+  display: flex;
   margin: 20px 0;
   padding: 10px 0;
 }

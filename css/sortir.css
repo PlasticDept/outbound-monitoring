@@ -166,6 +166,34 @@ h2 {
   background-color: #c0392b;
 }
 
+.plan-target-container {
+  display: none; /* Default disembunyikan, muncul via JS kalau role sesuai */
+  margin: 20px 0;
+  padding: 10px 0;
+}
+
+.plan-target-container input,
+.plan-target-container select {
+  padding: 6px 10px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.plan-target-container button {
+  padding: 6px 14px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.plan-target-container button:hover {
+  background-color: #2980b9;
+}
+
+
 /* Dropdown Sort (Status, Date, Team) */
 .dropdown-container {
   position: relative;

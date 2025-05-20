@@ -324,7 +324,7 @@ tr:hover {
 /* Kolom 2: Job No */
 #jobTable th:nth-child(2),
 #jobTable td:nth-child(2) {
-  width: 120px;
+  width: 90px;
 }
 
 /* Kolom 3: Delivery Date */
@@ -349,7 +349,7 @@ tr:hover {
 /* Kolom 6: Status */
 #jobTable th:nth-child(6),
 #jobTable td:nth-child(6) {
-  width: 110px;
+  width: 75px;
 }
 
 /* Kolom 7: Qty */
@@ -361,7 +361,7 @@ tr:hover {
 /* Kolom 8: Team */
 #jobTable th:nth-child(8),
 #jobTable td:nth-child(8) {
-  width: 100px;
+  width: 70px;
 }
 
 /* Kolom 9: Tombol Assign */

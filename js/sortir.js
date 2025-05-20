@@ -94,31 +94,6 @@ window.sortTableBy = function (key) {
   jobsOnScreen.forEach(job => tbody.appendChild(job.element));
 };
 
-// Fungsi menyimpan target ke localStorage
-function savePlanTargetToLocal(team, value) {
-  const planData = JSON.parse(localStorage.getItem("planTarget")) || {};
-  planData[team.toLowerCase()] = value;
-  localStorage.setItem("planTarget", JSON.stringify(planData));
-}
-
-// Fungsi mengatur target plan dari input
-function handleSetPlanTarget() {
-  const team = planTeamSelector.value;
-  const target = parseInt(planTargetInput.value);
-
-  if (isNaN(target) || target <= 0) {
-    alert("Masukkan nilai target yang valid.");
-    return;
-  }
-
-  savePlanTargetToLocal(team, target);
-  alert(`Target plan untuk team ${team} telah disimpan: ${target} kg.`);
-  planTargetInput.value = "";
-}
-
-// Event listener untuk tombol set plan target
-setPlanTargetBtn?.addEventListener("click", handleSetPlanTarget);
-
 // Membaca dan parsing file Excel
 function parseExcel(file) {
   const reader = new FileReader();
@@ -288,10 +263,34 @@ function createTableRow(job) {
     <td>${job.status}</td>
     <td>${Number(job.qty).toLocaleString()}</td>
     <td>${job.team}</td>
-    <td><button class="add-single" data-jobno="${job.jobNo}">Assign Job</button></td>
+    <td><button class="add-single" data-jobno="${job.jobNo}">Assigne Job</button></td>
   `;
   return row;
 }
+
+// Fungsi menyimpan target ke Firebase
+function savePlanTargetToFirebase(team, value) {
+  set(ref(db, `planTargets/${team.toLowerCase()}`), value)
+    .then(() => alert(`Target plan untuk team ${team} telah disimpan: ${value} kg.`))
+    .catch((err) => alert("Gagal menyimpan plan target: " + err.message));
+}
+
+// Fungsi mengatur target plan dari input
+function handleSetPlanTarget() {
+  const team = planTeamSelector.value;
+  const target = parseInt(planTargetInput.value);
+
+  if (isNaN(target) || target <= 0) {
+    alert("Masukkan nilai target yang valid.");
+    return;
+  }
+
+  savePlanTargetToFirebase(team, target);
+  planTargetInput.value = "";
+}
+
+// Event listener untuk tombol set plan target
+setPlanTargetBtn?.addEventListener("click", handleSetPlanTarget);
 
 // Isi opsi tanggal di dropdown
 function populateDateOptions(dates) {
@@ -528,13 +527,15 @@ function clearAllJobs() {
   }
 }
 
-// Event listener tombol  Hapus Semua Job di database
+// Event listener tombol
 document.getElementById("clearDatabaseBtn").addEventListener("click", clearAllJobs);
 
 // Tambahkan event listener logout di bagian paling bawah
-document.getElementById("logoutBtn")?.addEventListener("click", () => {
+const logoutBtn = document.getElementById("logoutBtn");
+logoutBtn?.addEventListener("click", () => {
   if (confirm("Apakah kamu yakin ingin logout?")) {
     localStorage.clear();
-    window.location.href = "index.html"; // kembali ke halaman login
+    window.location.href = "index.html";
   }
 });
+

@@ -231,23 +231,22 @@ tr:hover {
   font-weight: bold;
 }
 
-
 /* Kolom 1: Checkbox */
 #jobTable th:nth-child(1),
 #jobTable td:nth-child(1) {
-  width: 40px;
+  width: 20px;
 }
 
 /* Kolom 2: Job No */
 #jobTable th:nth-child(2),
 #jobTable td:nth-child(2) {
-  width: 150px;
+  width: 120px;
 }
 
 /* Kolom 3: Delivery Date */
 #jobTable th:nth-child(3),
 #jobTable td:nth-child(3) {
-  width: 130px;
+  width: 120px;
 }
 
 /* Kolom 4: Delivery Note */
@@ -260,7 +259,7 @@ tr:hover {
 #jobTable th:nth-child(5),
 #jobTable td:nth-child(5) {
   width: 250px;
-  text-align: left;
+  text-align: center;
 }
 
 /* Kolom 6: Status */
@@ -272,13 +271,13 @@ tr:hover {
 /* Kolom 7: Qty */
 #jobTable th:nth-child(7),
 #jobTable td:nth-child(7) {
-  width: 90px;
+  width: 70px;
 }
 
 /* Kolom 8: Team */
 #jobTable th:nth-child(8),
 #jobTable td:nth-child(8) {
-  width: 110px;
+  width: 100px;
 }
 
 /* Kolom 9: Tombol Assign */

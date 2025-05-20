@@ -1,8 +1,11 @@
 // sortir.js
 import { db } from "./config.js";
-import {ref, set, get, update,onValue, remove} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import {ref, set, get, update, onValue, remove} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-// === Notifikasi di atas header ===
+/* =========================
+    FUNGSI UTILITY/HELPER
+========================= */
+// Notifikasi di atas header
 function showNotification(message, isError = false) {
   const notification = document.getElementById('notification');
   notification.textContent = message;
@@ -21,35 +24,131 @@ function sanitizeValue(value) {
   return value ?? "";
 }
 
-// Ambil elemen DOM
-const fileInput = document.getElementById("fileInput");
-const uploadBtn = document.getElementById("uploadBtn");
-const jobTable = document.getElementById("jobTable").getElementsByTagName("tbody")[0];
-const bulkAddBtn = document.getElementById("bulkAddBtn");
-const modal = document.getElementById("addModal");
-const closeModal = document.getElementById("closeModal");
-const confirmAdd = document.getElementById("confirmAdd");
-const selectAllCheckbox = document.getElementById("selectAll");
-const sortStatusBtn = document.getElementById("sortStatusBtn");
-const statusDropdown = document.getElementById("statusDropdown");
-const statusOptions = document.getElementById("statusOptions");
-const sortDateBtn = document.getElementById("sortDateBtn");
-const dateDropdown = document.getElementById("dateDropdown");
-const dateOptions = document.getElementById("dateOptions");
-const sortTeamBtn = document.getElementById("sortTeamBtn");
-const teamDropdown = document.getElementById("teamDropdown");
-const teamOptions = document.getElementById("teamOptions");
-const planTargetInput = document.getElementById("planTargetInput");
-const planTeamSelector = document.getElementById("planTeamSelector");
-const setPlanTargetBtn = document.getElementById("setPlanTargetBtn");
+// Format tanggal ke "dd-MMM-yyyy"
+function formatToCustomDate(date) {
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const month = date.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
+  const year = date.getUTCFullYear();
+  return `${day}-${month}-${year}`;
+}
 
-let selectedSingleJob = null;
-let allJobsData = [];
-let filteredJobs = [];
-let currentSort = { key: null, asc: true };
-let isStatusOpen = false;
-let isDateOpen = false;
-let isTeamOpen = false;
+// Memformat nilai tanggal dari Excel
+function formatDate(input) {
+  if (!input) return "";
+
+  if (typeof input === "number") {
+    const date = new Date(Math.round((input - 25569) * 86400 * 1000)); // Convert from Excel serial date
+    return formatToCustomDate(date);
+  }
+
+  const parsed = new Date(input);
+  if (!isNaN(parsed)) {
+    return formatToCustomDate(parsed);
+  }
+
+  const parts = input.split(/[-/]/);
+  if (parts.length >= 2) {
+    const day = parseInt(parts[0]);
+    const month = parseInt(parts[1]) - 1;
+    const year = new Date().getFullYear();
+    const date = new Date(year, month, day);
+    if (!isNaN(date)) {
+      return formatToCustomDate(date);
+    }
+  }
+  return input;
+}
+
+// Buat baris tabel
+function createTableRow(job) {
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td><input type="checkbox" data-jobno="${job.jobNo}"></td>
+    <td>${job.jobNo}</td>
+    <td>${job.deliveryDate}</td>
+    <td>${job.deliveryNote}</td>
+    <td>${job.remark}</td>
+    <td>${job.status}</td>
+    <td>${Number(job.qty).toLocaleString()}</td>
+    <td>${job.team}</td>
+    <td>
+      <button class="add-single" data-jobno="${job.jobNo}">Assign</button>
+      <button class="unassign-single" data-jobno="${job.jobNo}">Unassign</button>
+    </td>
+  `;
+  return row;
+}
+
+// Fungsi menyimpan target ke Firebase
+function savePlanTargetToFirebase(team, value) {
+  set(ref(db, `planTargets/${team.toLowerCase()}`), value)
+    .then(() => alert(`Target plan untuk team ${team} telah disimpan: ${value} kg.`))
+    .catch((err) => alert("Gagal menyimpan plan target: " + err.message));
+}
+
+// Fungsi mengatur target plan dari input
+function handleSetPlanTarget() {
+  const team = planTeamSelector.value;
+  const target = parseInt(planTargetInput.value);
+
+  if (isNaN(target) || target <= 0) {
+    alert("Masukkan nilai target yang valid.");
+    return;
+  }
+
+  savePlanTargetToFirebase(team, target);
+  planTargetInput.value = "";
+}
+
+// Isi opsi tanggal di dropdown
+function populateDateOptions(dates) {
+  dateOptions.innerHTML = '<option value="all">-- Show All --</option>';
+  [...dates].sort().forEach(date => {
+    const option = document.createElement("option");
+    option.value = date;
+    option.textContent = date;
+    dateOptions.appendChild(option);
+  });
+}
+
+// Isi opsi team di dropdown
+function populateTeamOptions(teams) {
+  teamOptions.innerHTML = '<option value="all">-- Show All --</option>';
+  const uniqueTeams = new Set(teams);
+  uniqueTeams.forEach(team => {
+    const value = team.trim() === "" ? "none" : team;
+    const label = team.trim() === "" ? "None/blank" : team;
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = label;
+    teamOptions.appendChild(option);
+  });
+}
+
+// Ambil job yang dicentang
+function getSelectedJobs() {
+  const checkboxes = document.querySelectorAll("tbody input[type='checkbox']:checked");
+  return Array.from(checkboxes).map(cb => cb.getAttribute("data-jobno"));
+}
+
+// Tampilkan / sembunyikan modal
+function showModal() { modal.style.display = "block"; }
+function hideModal() { modal.style.display = "none"; }
+
+// Fungsi untuk hapus semua job di database
+function clearAllJobs() {
+  if (confirm("Apakah kamu yakin ingin menghapus SEMUA job dari database?")) {
+    remove(ref(db, "outboundJobs"))
+      .then(() => {
+        showNotification("✅ Semua job berhasil dihapus.");
+        loadJobsFromFirebase(); // Refresh tampilan tabel
+      })
+      .catch((err) => {
+        console.error(err);
+        showNotification("❌ Gagal menghapus job!", true);
+      });
+  }
+}
 
 // Fungsi sortir tabel berdasarkan kolom
 window.sortTableBy = function (key) {
@@ -133,44 +232,6 @@ function parseExcel(file) {
   reader.readAsArrayBuffer(file);
 }
 
-// Format tanggal ke "dd-MMM-yyyy"
-function formatToCustomDate(date) {
-  const day = String(date.getUTCDate()).padStart(2, "0");
-  const month = date.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
-  const year = date.getUTCFullYear();
-  return `${day}-${month}-${year}`;
-}
-
-
-// Memformat nilai tanggal dari Excel
-function formatDate(input) {
-  if (!input) return "";
-
-  if (typeof input === "number") {
-    const date = new Date(Math.round((input - 25569) * 86400 * 1000)); // Convert from Excel serial date
-    return formatToCustomDate(date);
-  }
-
-
-  const parsed = new Date(input);
-  if (!isNaN(parsed)) {
-    return formatToCustomDate(parsed);
-  }
-
-  const parts = input.split(/[-/]/);
-  if (parts.length >= 2) {
-    const day = parseInt(parts[0]);
-    const month = parseInt(parts[1]) - 1;
-    const year = new Date().getFullYear();
-    const date = new Date(year, month, day);
-    if (!isNaN(date)) {
-      return formatToCustomDate(date);
-    }
-  }
-
-  return input;
-}
-
 // Menyimpan data dari Excel ke Firebase (per job, aman)
 function syncJobsToFirebase(jobs) {
   let uploadCount = 0;
@@ -250,86 +311,6 @@ function loadJobsFromFirebase() {
     });
 }
 
-
-// Buat baris tabel
-function createTableRow(job) {
-  const row = document.createElement("tr");
-  row.innerHTML = `
-    <td><input type="checkbox" data-jobno="${job.jobNo}"></td>
-    <td>${job.jobNo}</td>
-    <td>${job.deliveryDate}</td>
-    <td>${job.deliveryNote}</td>
-    <td>${job.remark}</td>
-    <td>${job.status}</td>
-    <td>${Number(job.qty).toLocaleString()}</td>
-    <td>${job.team}</td>
-    <td>
-      <button class="add-single" data-jobno="${job.jobNo}">Assign</button>
-      <button class="unassign-single" data-jobno="${job.jobNo}">Unassign</button>
-    </td>
-  `;
-  return row;
-}
-
-// Fungsi menyimpan target ke Firebase
-function savePlanTargetToFirebase(team, value) {
-  set(ref(db, `planTargets/${team.toLowerCase()}`), value)
-    .then(() => alert(`Target plan untuk team ${team} telah disimpan: ${value} kg.`))
-    .catch((err) => alert("Gagal menyimpan plan target: " + err.message));
-}
-
-// Fungsi mengatur target plan dari input
-function handleSetPlanTarget() {
-  const team = planTeamSelector.value;
-  const target = parseInt(planTargetInput.value);
-
-  if (isNaN(target) || target <= 0) {
-    alert("Masukkan nilai target yang valid.");
-    return;
-  }
-
-  savePlanTargetToFirebase(team, target);
-  planTargetInput.value = "";
-}
-
-// Event listener untuk tombol set plan target
-setPlanTargetBtn?.addEventListener("click", handleSetPlanTarget);
-
-// Isi opsi tanggal di dropdown
-function populateDateOptions(dates) {
-  dateOptions.innerHTML = '<option value="all">-- Show All --</option>';
-  [...dates].sort().forEach(date => {
-    const option = document.createElement("option");
-    option.value = date;
-    option.textContent = date;
-    dateOptions.appendChild(option);
-  });
-}
-
-// Isi opsi team di dropdown
-function populateTeamOptions(teams) {
-  teamOptions.innerHTML = '<option value="all">-- Show All --</option>';
-  const uniqueTeams = new Set(teams);
-  uniqueTeams.forEach(team => {
-    const value = team.trim() === "" ? "none" : team;
-    const label = team.trim() === "" ? "None/blank" : team;
-    const option = document.createElement("option");
-    option.value = value;
-    option.textContent = label;
-    teamOptions.appendChild(option);
-  });
-}
-
-// Ambil job yang dicentang
-function getSelectedJobs() {
-  const checkboxes = document.querySelectorAll("tbody input[type='checkbox']:checked");
-  return Array.from(checkboxes).map(cb => cb.getAttribute("data-jobno"));
-}
-
-// Tampilkan / sembunyikan modal
-function showModal() { modal.style.display = "block"; }
-function hideModal() { modal.style.display = "none"; }
-
 // MULTI FILTER - berdasarkan status, tanggal, dan team
 function applyMultiFilter() {
   const selectedStatus = statusOptions.value;
@@ -401,7 +382,49 @@ function closeAllDropdowns() {
   teamDropdown.style.display = "none";
 }
 
-// Event listeners utama
+// Navigasi
+window.navigateTo = function(page) {
+  window.location.href = page;
+};
+
+/* =========================
+    INISIALISASI & EVENT LISTENER
+========================= */
+
+// Ambil elemen DOM
+const fileInput = document.getElementById("fileInput");
+const uploadBtn = document.getElementById("uploadBtn");
+const jobTable = document.getElementById("jobTable").getElementsByTagName("tbody")[0];
+const bulkAddBtn = document.getElementById("bulkAddBtn");
+const modal = document.getElementById("addModal");
+const closeModal = document.getElementById("closeModal");
+const confirmAdd = document.getElementById("confirmAdd");
+const selectAllCheckbox = document.getElementById("selectAll");
+const sortStatusBtn = document.getElementById("sortStatusBtn");
+const statusDropdown = document.getElementById("statusDropdown");
+const statusOptions = document.getElementById("statusOptions");
+const sortDateBtn = document.getElementById("sortDateBtn");
+const dateDropdown = document.getElementById("dateDropdown");
+const dateOptions = document.getElementById("dateOptions");
+const sortTeamBtn = document.getElementById("sortTeamBtn");
+const teamDropdown = document.getElementById("teamDropdown");
+const teamOptions = document.getElementById("teamOptions");
+const planTargetInput = document.getElementById("planTargetInput");
+const planTeamSelector = document.getElementById("planTeamSelector");
+const setPlanTargetBtn = document.getElementById("setPlanTargetBtn");
+
+let selectedSingleJob = null;
+let allJobsData = [];
+let filteredJobs = [];
+let currentSort = { key: null, asc: true };
+let isStatusOpen = false;
+let isDateOpen = false;
+let isTeamOpen = false;
+
+// Event listener untuk tombol set plan target
+setPlanTargetBtn?.addEventListener("click", handleSetPlanTarget);
+
+// Event utama
 uploadBtn.addEventListener("click", () => {
   const file = fileInput.files[0];
   if (file) parseExcel(file);
@@ -454,7 +477,6 @@ jobTable.addEventListener("click", e => {
     });
   }
 });
-
 
 confirmAdd.addEventListener("click", async () => {
   const team = document.getElementById("teamSelect").value;
@@ -544,25 +566,6 @@ teamOptions.addEventListener("change", () => {
 // Load pertama kali saat halaman dimuat
 loadJobsFromFirebase();
 
-window.navigateTo = function(page) {
-  window.location.href = page;
-};
-
-// Fungsi untuk hapus semua job di database
-function clearAllJobs() {
-  if (confirm("Apakah kamu yakin ingin menghapus SEMUA job dari database?")) {
-    remove(ref(db, "outboundJobs"))
-      .then(() => {
-        showNotification("✅ Semua job berhasil dihapus.");
-        loadJobsFromFirebase(); // Refresh tampilan tabel
-      })
-      .catch((err) => {
-        console.error(err);
-        showNotification("❌ Gagal menghapus job!", true);
-      });
-  }
-}
-
 // Event listener tombol
 document.getElementById("clearDatabaseBtn").addEventListener("click", clearAllJobs);
 
@@ -574,4 +577,3 @@ logoutBtn?.addEventListener("click", () => {
     window.location.href = "index.html";
   }
 });
-

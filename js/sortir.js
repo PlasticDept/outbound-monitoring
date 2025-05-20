@@ -263,7 +263,10 @@ function createTableRow(job) {
     <td>${job.status}</td>
     <td>${Number(job.qty).toLocaleString()}</td>
     <td>${job.team}</td>
-    <td><button class="add-single" data-jobno="${job.jobNo}">Assign Job</button></td>
+    <td>
+      <button class="add-single" data-jobno="${job.jobNo}">Assign Job</button>
+      <button class="unassign-single" data-jobno="${job.jobNo}">Unassign</button>
+    </td>
   `;
   return row;
 }
@@ -412,13 +415,46 @@ bulkAddBtn.addEventListener("click", () => {
 });
 
 jobTable.addEventListener("click", e => {
+  // Handler Assign Job
   if (e.target.classList.contains("add-single")) {
     const anyChecked = document.querySelector("tbody input[type='checkbox']:checked");
     if (anyChecked) return showNotification("Kosongkan centang terlebih dahulu.", true);
     selectedSingleJob = e.target.getAttribute("data-jobno");
     showModal();
   }
+  // Handler Unassign Job
+  if (e.target.classList.contains("unassign-single")) {
+    const jobNo = e.target.getAttribute("data-jobno");
+
+    const jobRef = ref(db, "outboundJobs/" + jobNo);
+    get(jobRef).then(snapshot => {
+      if (!snapshot.exists()) {
+        return showNotification("❌ Job tidak ditemukan di database.", true);
+      }
+
+      const jobData = snapshot.val();
+      if (!jobData.team) {
+        return showNotification("⚠️ Job ini belum di-assign ke team manapun.", true);
+      }
+
+      if (confirm("Apakah kamu yakin ingin membatalkan assignment job ini?")) {
+        update(jobRef, {
+          team: "",
+          jobType: ""
+        })
+        .then(() => {
+          showNotification("✅ Job berhasil di-unassign.");
+          refreshDataWithoutReset();
+        })
+        .catch(err => {
+          console.error(err);
+          showNotification("❌ Gagal menghapus assignment job.", true);
+        });
+      }
+    });
+  }
 });
+
 
 confirmAdd.addEventListener("click", async () => {
   const team = document.getElementById("teamSelect").value;

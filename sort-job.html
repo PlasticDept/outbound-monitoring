@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sortir Outbound Job</title>
+  <script>
+    // Cek login sebelum render halaman
+    if (!localStorage.getItem("user")) {
+      window.location.href = "index.html";
+    }
+  </script>
   <link rel="stylesheet" href="css/sortir.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>

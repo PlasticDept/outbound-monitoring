@@ -231,60 +231,60 @@ tr:hover {
   font-weight: bold;
 }
 
-/* =======================================
-   Status Label Styling
-======================================= */
-.status-label {
-  padding: 5px 12px;
-  border-radius: 6px;
-  color: white;
+
+/* Kolom 1: Checkbox */
+#jobTable th:nth-child(1),
+#jobTable td:nth-child(1) {
+  width: 40px;
 }
 
-.status-label.newjob {
-  background-color: #e74c3c;
+/* Kolom 2: Job No */
+#jobTable th:nth-child(2),
+#jobTable td:nth-child(2) {
+  width: 150px;
 }
 
-.status-label.partialpicked {
-  background-color: #f39c12;
+/* Kolom 3: Delivery Date */
+#jobTable th:nth-child(3),
+#jobTable td:nth-child(3) {
+  width: 130px;
 }
 
-.status-label.downloaded {
-  background-color: #f1c40f;
+/* Kolom 4: Delivery Note */
+#jobTable th:nth-child(4),
+#jobTable td:nth-child(4) {
+  width: 160px;
 }
 
-.status-label.packed,
-.status-label.loaded {
-  background-color: #2ecc71;
+/* Kolom 5: Remark */
+#jobTable th:nth-child(5),
+#jobTable td:nth-child(5) {
+  width: 250px;
+  text-align: left;
 }
 
-/* =======================================
-   Job Type Styling
-======================================= */
-.job-type {
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-weight: bold;
-  font-size: 0.85em;
+/* Kolom 6: Status */
+#jobTable th:nth-child(6),
+#jobTable td:nth-child(6) {
+  width: 110px;
 }
 
-.job-type.OT {
-  background-color: #e74c3c;
-  color: white;
+/* Kolom 7: Qty */
+#jobTable th:nth-child(7),
+#jobTable td:nth-child(7) {
+  width: 90px;
 }
 
-.job-type.H-1 {
-  background-color: #f39c12;
-  color: white;
+/* Kolom 8: Team */
+#jobTable th:nth-child(8),
+#jobTable td:nth-child(8) {
+  width: 110px;
 }
 
-.job-type.Additional {
-  background-color: #2ecc71;
-  color: white;
-}
-
-.job-type.Remaining {
-  background-color: #7f8c8d;
-  color: white;
+/* Kolom 9: Tombol Assign */
+#jobTable th:nth-child(9),
+#jobTable td:nth-child(9) {
+  width: 100px;
 }
 
 /* =======================================

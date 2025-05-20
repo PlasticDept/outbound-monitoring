@@ -65,24 +65,41 @@ body {
   padding: 10px 0;
 }
 
+/* H2 Header */
 h2 {
   position: sticky;
   top: 0;
   background-color: #fff;
   z-index: 100;
-  padding: 12px 0 6px;
+  padding: 12px 20px 6px;
   text-align: left;
-  margin-left: 10px;
+  margin: 0;
+}
+
+
+/* Upload + Plan Target Section (top-bar) */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 48px; /* h2 height */
+  background-color: #ffffff;
+  z-index: 90;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ccc;
 }
 
 .upload-section {
-  position: sticky;
-  top: 48px; /* h2 = 48px */
-  background-color: #ffffff;
-  z-index: 100;
-  padding: 10px 0;
-  text-align: left;
-  margin-left: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.upload-section input,
+.upload-section button {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
 }
 
 /* =======================================
@@ -90,13 +107,14 @@ h2 {
 ======================================= */
 .toolbar {
   position: sticky;
-  top: 92px; /* h2 (48) + upload-section (44) */
+  top: 96px; /* h2 (48px) + top-bar (48px) */
   background-color: #ffffff;
   z-index: 80;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
   gap: 10px;
-  margin-bottom: 20px;
   padding: 10px 0;
   border-bottom: 1px solid #ddd;
 }

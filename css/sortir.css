@@ -72,8 +72,8 @@ h2 {
   z-index: 100;
   padding: 12px 0 6px;
   text-align: left;
+  margin-left: 10px;
 }
-
 
 .upload-section {
   position: sticky;
@@ -82,19 +82,11 @@ h2 {
   z-index: 100;
   padding: 10px 0;
   text-align: left;
-}
-
-
-#infoContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: left;
-  margin-bottom: 20px;
-  font-weight: bold;
+  margin-left: 10px;
 }
 
 /* =======================================
-   Action Bar & Plan Target Container
+   Toolbar: Top & Bottom Bar Layout
 ======================================= */
 .toolbar {
   position: sticky;
@@ -102,50 +94,52 @@ h2 {
   background-color: #ffffff;
   z-index: 80;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-start;
+  flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
   padding: 10px 0;
+  border-bottom: 1px solid #ddd;
 }
 
-
-.toolbar .team-buttons button {
-  background-color: #0307e9;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+/* Baris atas toolbar */
+.toolbar-row.top-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
 }
 
-.toolbar .team-buttons button:hover {
-  background-color: #0237c7b0;
+/* Baris bawah toolbar */
+.toolbar-row.bottom-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  border-top: 1px solid #eee;
+  padding-top: 8px;
 }
 
-.toolbar button {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  background-color: #2ecc71;
-  color: white;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
+.left-group,
+.right-group,
+.center-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
 }
 
-.toolbar button:hover {
-  background-color: #27ae60;
-}
-
+/* =======================================
+   Plan Target Styling
+======================================= */
 .plan-target-container {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex: 1 1 auto;
+  flex-wrap: wrap;
   min-width: 280px;
 }
 
@@ -169,21 +163,91 @@ h2 {
   background-color: #2980b9;
 }
 
+/* =======================================
+   General Buttons
+======================================= */
+.toolbar button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #2ecc71;
+  color: white;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.toolbar button:hover {
+  background-color: #27ae60;
+}
+
+button.blue {
+  background-color: #0307e9;
+  color: white;
+}
+
+button.blue:hover {
+  background-color: #0237c7b0;
+}
+
+button.red {
+  background-color: #e74c3c;
+  color: white;
+  font-weight: bold;
+}
+
+button.red:hover {
+  background-color: #c0392b;
+}
+
+/* =======================================
+   Dropdown Menus (for Filters)
+======================================= */
+.dropdown-container {
+  position: relative;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 5px;
+  z-index: 100;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dropdown-container.show .dropdown-menu {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =======================================
+   Responsive
+======================================= */
 @media (max-width: 768px) {
-  .action-bar {
+  .toolbar-row.top-row,
+  .toolbar-row.bottom-row {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .plan-target-container {
+  .left-group,
+  .right-group,
+  .center-group {
     flex-direction: column;
-    align-items: flex-start;
     width: 100%;
+    align-items: flex-start;
   }
 
+  .toolbar button,
   .plan-target-container input,
-  .plan-target-container select,
-  .plan-target-container button {
+  .plan-target-container select {
     width: 100%;
   }
 }

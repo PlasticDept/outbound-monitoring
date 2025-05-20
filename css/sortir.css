@@ -365,7 +365,7 @@ tr:hover {
 /* Kolom 9: Tombol Assign */
 #jobTable th:nth-child(9),
 #jobTable td:nth-child(9) {
-  width: 100px;
+  width: 150px;
 }
 
 /* =======================================

@@ -96,7 +96,7 @@ h2 {
 /* =======================================
    Action Bar & Plan Target Container
 ======================================= */
-.action-bar {
+.toolbar {
   position: sticky;
   top: 92px; /* h2 (48) + upload-section (44) */
   background-color: #ffffff;
@@ -111,7 +111,7 @@ h2 {
 }
 
 
-.action-bar .team-buttons button {
+.toolbar .team-buttons button {
   background-color: #0307e9;
   color: white;
   border: none;
@@ -122,11 +122,11 @@ h2 {
   transition: background-color 0.2s ease;
 }
 
-.action-bar .team-buttons button:hover {
+.toolbar .team-buttons button:hover {
   background-color: #0237c7b0;
 }
 
-.action-bar button {
+.toolbar button {
   padding: 8px 14px;
   border: none;
   border-radius: 6px;
@@ -137,7 +137,7 @@ h2 {
   transition: background-color 0.3s ease;
 }
 
-.action-bar button:hover {
+.toolbar button:hover {
   background-color: #27ae60;
 }
 

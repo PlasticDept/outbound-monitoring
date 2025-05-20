@@ -383,6 +383,7 @@ button:hover {
   background-color: #3498db;
 }
 
+/*assign btn*/
 .add-single {
   background-color: #9b59b6;
   color: white;
@@ -397,6 +398,23 @@ button:hover {
   background-color: #8e44ad;
 }
 
+/*unassign btn*/
+.unassign-single {
+  background-color: #e74c3c; /* merah */
+  color: white;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 6px; /* beri sedikit jarak dari tombol Assign */
+}
+
+.unassign-single:hover {
+  background-color: #c0392b;
+}
+
+/*clearDatabaseBtn*/
 #clearDatabaseBtn {
   background-color: #e74c3c;
   color: white;

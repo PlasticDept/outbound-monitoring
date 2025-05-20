@@ -1,6 +1,4 @@
-/* =======================================
-    Styling for Container and Info Section
-======================================= */
+/* ========== Global & Container ========== */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f4f6f8;
@@ -20,94 +18,87 @@ body {
   overflow: visible;
 }
 
-/* =============================
-    Notifikasi floating bar
-================================ */
+/* ========== Notification Bar ========== */
 .notification-bar {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-width: 1920px;    /* Sesuaikan jika container kamu ada max-width */
+  margin: 0 auto;
+  right: 0;
   background-color: #d4edda;
   color: #155724;
   border: 1px solid #c3e6cb;
-  padding: 6px 12px; 
-  margin-bottom: 16px;
-  border-radius: 6px;
+  padding: 6px 12px;
+  border-radius: 0 0 6px 6px;  /* Supaya sudut bawah tetap membulat */
   text-align: center;
   font-size: 16px;
   display: none;
+  z-index: 999;
   animation: slideFadeIn 0.3s ease;
 }
-
 .notification-bar.error {
   background-color: #f8d7da;
   color: #721c24;
   border-color: #f5c6cb;
 }
-
 @keyframes slideFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* =======================================
-   Header Styling
-======================================= */
-.header-section {
-  position: sticky;
-  top: 0;
-  background-color: #ffffff;
-  z-index: 50;
-  padding: 10px 0;
-}
-
-/* H2 Header */
-h2 {
-  position: sticky;
-  top: 0;
-  background-color: #fff;
-  z-index: 100;
-  padding: 12px 20px 6px;
-  text-align: left;
-  margin: 0;
-}
-
-
-/* Upload + Plan Target Section (top-bar) */
+/* ========== Top Bar: Upload & Plan Target ========== */
 .top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
-  top: 48px; /* h2 height */
+  top: 0;
   background-color: #ffffff;
   z-index: 90;
   padding: 10px 20px;
   border-bottom: 1px solid #ccc;
 }
-
 .upload-section {
   display: flex;
   gap: 10px;
 }
-
 .upload-section input,
 .upload-section button {
   padding: 6px 10px;
   border-radius: 4px;
   border: 1px solid #ccc;
 }
+.plan-target-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 280px;
+}
+.plan-target-container input,
+.plan-target-container select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.plan-target-container button {
+  padding: 6px 14px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.plan-target-container button:hover {
+  background-color: #2980b9;
+}
 
-/* =======================================
-   Toolbar: Top & Bottom Bar Layout
-======================================= */
+/* ========== Toolbar & Team Buttons ========== */
 .toolbar {
   position: sticky;
-  top: 96px; /* h2 (48px) + top-bar (48px) */
+  top: 56px;
   background-color: #ffffff;
   z-index: 80;
   display: flex;
@@ -118,113 +109,58 @@ h2 {
   padding: 10px 0;
   border-bottom: 1px solid #ddd;
 }
-
-/* Baris atas toolbar */
-.toolbar-row.top-row {
+.team-buttons {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 0 10px;
-}
-
-/* Baris bawah toolbar */
-.toolbar-row.bottom-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  padding: 0 10px;
-  border-top: 1px solid #eee;
-  padding-top: 8px;
-}
-
-.left-group,
-.right-group,
-.center-group {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
   gap: 10px;
 }
 
-/* =======================================
-   Plan Target Styling
-======================================= */
-.plan-target-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  min-width: 280px;
-}
-
-.plan-target-container input,
-.plan-target-container select {
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.plan-target-container button {
-  padding: 6px 14px;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.plan-target-container button:hover {
-  background-color: #2980b9;
-}
-
-/* =======================================
-   General Buttons
-======================================= */
-.toolbar button {
-  padding: 8px 14px;
-  border: none;
+/* ========== General Button ========== */
+button {
+  padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+button:hover {
+  background-color: #3498db;
+}
+.toolbar button {
+  padding: 8px 14px;
+  border-radius: 6px;
   background-color: #2ecc71;
   color: white;
   font-weight: 500;
   transition: background-color 0.3s ease;
 }
-
 .toolbar button:hover {
   background-color: #27ae60;
 }
-
 button.blue {
   background-color: #0307e9;
   color: white;
 }
-
 button.blue:hover {
   background-color: #0237c7b0;
 }
-
-button.red {
+button.red,
+#logoutBtn,
+#clearDatabaseBtn {
   background-color: #e74c3c;
   color: white;
   font-weight: bold;
 }
-
-button.red:hover {
+button.red:hover,
+#logoutBtn:hover,
+#clearDatabaseBtn:hover {
   background-color: #c0392b;
 }
 
-/* =======================================
-   Dropdown Menus (for Filters)
-======================================= */
+/* ========== Dropdown ========== */
 .dropdown-container {
   position: relative;
+  display: inline-block;
 }
-
 .dropdown-menu {
   display: none;
   position: absolute;
@@ -238,79 +174,56 @@ button.red:hover {
   transform: translateY(-10px);
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
-
 .dropdown-container.show .dropdown-menu {
   display: block;
   opacity: 1;
   transform: translateY(0);
 }
 
-/* =======================================
-   Responsive
-======================================= */
-@media (max-width: 768px) {
-  .toolbar-row.top-row,
-  .toolbar-row.bottom-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .left-group,
-  .right-group,
-  .center-group {
-    flex-direction: column;
-    width: 100%;
-    align-items: flex-start;
-  }
-
-  .toolbar button,
-  .plan-target-container input,
-  .plan-target-container select {
-    width: 100%;
-  }
+/* ========== Filter Indicator & Loading ========== */
+.filter-indicator {
+  margin-bottom: 10px;
+  font-style: italic;
+  color: #2c3e50;
+}
+.loading-indicator {
+  display: none;
+  color: gray;
+  margin-top: 10px;
 }
 
-/* =======================================
-   Table Styling
-======================================= */
+/* ========== Table ========== */
 table {
   width: 100%;
   border-collapse: collapse;
 }
-
 th {
   background-color: #3498db;
   color: white;
   padding: 12px;
   text-align: center;
   border-radius: 6px;
+  cursor: pointer;
 }
-
 td {
   padding: 12px;
   text-align: center;
   border-bottom: 1px solid #ddd;
 }
-
 thead th {
   position: sticky;
-  top: 144px; /* h2 (48) + upload-section (44) + action-bar (52) */
+  top: 112px; /* top-bar (56) + toolbar (56) */
   z-index: 70;
-  background-color: #50dcff;
-  backdrop-filter: none;
+  background-color: #29bbff;
   font-weight: bold;
   color: #2c3e50;
-  background-color: #29bbff;
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
 }
-
 tr:hover {
   background-color: #f1f1f1;
 }
-
-#jobTable th,
-#jobTable td {
+#jobTable th, #jobTable td {
   font-weight: bold;
   border: 1px solid #ddd;
 }
@@ -340,10 +253,14 @@ tr:hover {
 }
 
 /* Kolom 5: Remark */
-#jobTable th:nth-child(5),
 #jobTable td:nth-child(5) {
   width: 250px;
-  text-align: center;
+  text-align: left;
+}
+
+#jobTable th:nth-child(5) {
+  width: 250px;
+  text-align: center; /* atau left, sesuai preferensi */
 }
 
 /* Kolom 6: Status */
@@ -364,113 +281,13 @@ tr:hover {
   width: 70px;
 }
 
-/* Kolom 9: Tombol Assign */
+/* Kolom 9: Action */
 #jobTable th:nth-child(9),
 #jobTable td:nth-child(9) {
   width: 150px;
 }
 
-/* =======================================
-   General Button Styling
-======================================= */
-button {
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  border: none;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #3498db;
-}
-
-/*assign btn*/
-.add-single {
-  background-color: #9b59b6;
-  color: white;
-  border: none;
-  padding: 5px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.add-single:hover {
-  background-color: #8e44ad;
-}
-
-/*unassign btn*/
-.unassign-single {
-  background-color: #e74c3c; /* merah */
-  color: white;
-  border: none;
-  padding: 5px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-left: 6px; /* beri sedikit jarak dari tombol Assign */
-}
-
-.unassign-single:hover {
-  background-color: #c0392b;
-}
-
-/*clearDatabaseBtn*/
-#clearDatabaseBtn {
-  background-color: #e74c3c;
-  color: white;
-  font-weight: bold;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-#clearDatabaseBtn:hover {
-  background-color: #c0392b;
-}
-
-#logoutBtn {
-  background-color: #e74c3c;
-  color: white;
-  font-weight: bold;
-}
-
-#logoutBtn:hover {
-  background-color: #c0392b;
-}
-
-/* Dropdown Sort (Status, Date, Team) */
-.dropdown-container {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: white;
-  border: 1px solid #ccc;
-  padding: 5px;
-  z-index: 100;
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.dropdown-container.show .dropdown-menu {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* =======================================
-   Modal Styles
-======================================= */
+/* ========== Modal ========== */
 .modal {
   display: none;
   position: fixed;
@@ -482,7 +299,6 @@ button:hover {
   overflow: auto;
   background-color: rgba(0,0,0,0.5);
 }
-
 .modal-content {
   background-color: #fff;
   margin: 10% auto;
@@ -493,7 +309,6 @@ button:hover {
   position: relative;
   z-index: 101;
 }
-
 .close {
   color: #aaa;
   float: right;
@@ -501,18 +316,15 @@ button:hover {
   font-weight: bold;
   cursor: pointer;
 }
-
 .close:hover {
   color: #e74c3c;
 }
-
 .modal-content label {
   display: block;
   margin-top: 15px;
   margin-bottom: 5px;
   font-weight: 500;
 }
-
 .modal-content select {
   width: 100%;
   padding: 8px;
@@ -520,7 +332,6 @@ button:hover {
   border: 1px solid #ccc;
   margin-bottom: 15px;
 }
-
 #confirmAdd {
   background-color: #34495e;
   color: white;
@@ -532,7 +343,27 @@ button:hover {
   font-weight: bold;
   transition: background-color 0.3s ease;
 }
-
 #confirmAdd:hover {
   background-color: #2c3e50;
+}
+
+/* ========== Responsive (Mobile) ========== */
+@media (max-width: 768px) {
+  .top-bar,
+  .toolbar,
+  .plan-target-container,
+  .team-buttons {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .upload-section {
+    flex-direction: column;
+    width: 100%;
+  }
+  .toolbar button,
+  .plan-target-container input,
+  .plan-target-container select {
+    width: 100%;
+  }
 }

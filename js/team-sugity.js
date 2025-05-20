@@ -1,11 +1,10 @@
 // team-sugity.js
 import { db } from "./config.js";
-import { ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { ref, onValue, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
 const teamTable = document.getElementById("teamTable").getElementsByTagName("tbody")[0];
-const currentTeam = localStorage.getItem("team") || "Sugity";
+const currentTeam = "Sugity";
 const picName = localStorage.getItem("pic") || "";
-const PLAN_TARGET_QTY = parseInt(localStorage.getItem("planTarget")) || (currentTeam.toLowerCase() === "reguler" ? 17640 : 35280);
 
 function createStatusLabel(status) {
   const span = document.createElement("span");
@@ -121,7 +120,15 @@ function renderChart(achievedQty, totalQty) {
   animatePercentage(percentage);
 }
 
-function loadTeamJobs() {
+// Ambil plan target dari Firebase
+function fetchPlanTargetAndLoadJobs() {
+  get(ref(db, `planTargets/${currentTeam.toLowerCase()}`)).then(snapshot => {
+    const planTargetQty = snapshot.exists() ? snapshot.val() : 0;
+    loadTeamJobs(planTargetQty);
+  });
+}
+
+function loadTeamJobs(planTargetQty) {
   onValue(ref(db, "outboundJobs"), snapshot => {
     const data = snapshot.val();
     teamTable.innerHTML = "";
@@ -157,7 +164,7 @@ function loadTeamJobs() {
     }
 
     const remainingQty = totalQty - achievedQty;
-    document.getElementById("planTarget").textContent = `${PLAN_TARGET_QTY.toLocaleString()} kg`;
+    document.getElementById("planTarget").textContent = `${planTargetQty.toLocaleString()} kg`;
     document.getElementById("actualTarget").textContent = `${totalQty.toLocaleString()} kg`;
     document.getElementById("achievedTarget").textContent = `${achievedQty.toLocaleString()} kg`;
     document.getElementById("remainingTarget").textContent = `${remainingQty.toLocaleString()} kg`;
@@ -175,6 +182,7 @@ function loadTeamJobs() {
   });
 }
 
+// Tampilkan PIC di metric box jika ada
 const picMetricHTML = `
   <div class="metric-box">
     <div class="icon">👤</div>
@@ -184,8 +192,10 @@ const picMetricHTML = `
 `;
 document.querySelector(".metrics")?.insertAdjacentHTML("afterbegin", picMetricHTML);
 
-loadTeamJobs();
+// Jalankan proses awal
+fetchPlanTargetAndLoadJobs();
 
+// ✅ Tampilkan tombol kembali jika login sebagai TEAM LEADER
 const userPosition = localStorage.getItem("position");
 const backBtn = document.getElementById("backToSortirBtn");
 if (["TEAM LEADER", "SPV", "ASST MANAGER", "MANAGER"].includes(userPosition) && backBtn) {

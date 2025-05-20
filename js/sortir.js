@@ -264,7 +264,7 @@ function createTableRow(job) {
     <td>${Number(job.qty).toLocaleString()}</td>
     <td>${job.team}</td>
     <td>
-      <button class="add-single" data-jobno="${job.jobNo}">Assign Job</button>
+      <button class="add-single" data-jobno="${job.jobNo}">Assign</button>
       <button class="unassign-single" data-jobno="${job.jobNo}">Unassign</button>
     </td>
   `;
